@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 
 # Script to perform initial configuration on linux for Shells™
 # To be saved in /.firstrun.sh
