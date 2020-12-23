@@ -13,13 +13,13 @@ if [ -f /usr/bin/ssh-keygen ]; then
 fi
 
 # get internal API token
-TOKEN="$(curl -X PUT "http://169.254.169.254/latest/api/token" -H "X-shells-metadata-token-ttl-seconds: 300")"
+TOKEN="$(curl -s -X PUT "http://169.254.169.254/latest/api/token" -H "X-shells-metadata-token-ttl-seconds: 300")"
 
 # get various values from the API
-SHELLS_HS="$(curl -H "X-shells-metadata-token: $TOKEN" "http://169.254.169.254/latest/meta-data/hostname")"
-SHELLS_USERNAME="$(curl -H "X-shells-metadata-token: $TOKEN" "http://169.254.169.254/latest/meta-data/username")"
-SHELLS_SHADOW="$(curl -H "X-shells-metadata-token: $TOKEN" "http://169.254.169.254/latest/meta-data/shadow")"
-SHELLS_SSH="$(curl -H "X-shells-metadata-token: $TOKEN" "http://169.254.169.254/latest/meta-data/public-keys/*/openssh-key")"
+SHELLS_HS="$(curl -s -H "X-shells-metadata-token: $TOKEN" "http://169.254.169.254/latest/meta-data/hostname")"
+SHELLS_USERNAME="$(curl -s -H "X-shells-metadata-token: $TOKEN" "http://169.254.169.254/latest/meta-data/username")"
+SHELLS_SHADOW="$(curl -s -H "X-shells-metadata-token: $TOKEN" "http://169.254.169.254/latest/meta-data/shadow")"
+SHELLS_SSH="$(curl -s -H "X-shells-metadata-token: $TOKEN" "http://169.254.169.254/latest/meta-data/public-keys/*/openssh-key")"
 
 # create /etc/hostname & /etc/hosts based on $SHELLS_HS
 if [ x"$SHELLS_HS" != x ]; then
