@@ -38,10 +38,13 @@ fi
 
 # create user
 if [ x"$SHELLS_USERNAME" != x ]; then
-	useradd -G sudo,audio,video,plugdev,games,users --shell /bin/bash --create-home "$SHELLS_USERNAME"
+	# only create user if not existing yet
+	id >/dev/null 2>&1 "$SHELLS_USERNAME" || useradd -G sudo,audio,video,plugdev,games,users --shell /bin/bash --create-home "$SHELLS_USERNAME"
+
 	if [ x"$SHELLS_SHADOW" != x ]; then
 		usermod -p "$SHELLS_SHADOW" "$SHELLS_USERNAME"
 	fi
+
 	if [ x"$SHELLS_SSH" != x ]; then
 		mkdir -p "/home/$SHELLS_USERNAME/.ssh"
 		echo "$SHELLS_SSH" >"/home/$SHELLS_USERNAME/.ssh/authorized_keys"
@@ -60,6 +63,10 @@ if [ x"$SHELLS_USERNAME" != x ]; then
 	if [ -f /etc/gdm3/custom.conf ]; then
 		# replace "#  AutomaticLogin" → "  AutomaticLogin = xxx"
 		sed -i -e "s/#? *AutomaticLogin.*/  AutomaticLogin = $SHELLS_USERNAME/" "/etc/gdm3/custom.conf"
+	fi
+	if [ -f /etc/gdm/custom.conf ]; then
+		# replace "#  AutomaticLogin" → "  AutomaticLogin = xxx"
+		sed -i -e "s/#? *AutomaticLogin.*/  AutomaticLogin = $SHELLS_USERNAME/" "/etc/gdm/custom.conf"
 	fi
 else
 	# no user creation, let's at least setup root
