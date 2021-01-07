@@ -62,11 +62,11 @@ if [ x"$SHELLS_USERNAME" != x ]; then
 
 	if [ -f /etc/gdm3/custom.conf ]; then
 		# replace "#  AutomaticLogin" → "  AutomaticLogin = xxx"
-		sed -i -e "s/#? *AutomaticLogin.*/  AutomaticLogin = $SHELLS_USERNAME/" "/etc/gdm3/custom.conf"
+		sed -i -r -e "s/#( *)AutomaticLogin/\1AutomaticLogin/;s/AutomaticLogin =.*/AutomaticLogin = $SHELLS_USERNAME/" "/etc/gdm3/custom.conf"
 	fi
 	if [ -f /etc/gdm/custom.conf ]; then
 		# replace "#  AutomaticLogin" → "  AutomaticLogin = xxx"
-		sed -i -e "s/#? *AutomaticLogin.*/  AutomaticLogin = $SHELLS_USERNAME/" "/etc/gdm/custom.conf"
+		sed -i -r -e "s/#( *)AutomaticLogin/\1AutomaticLogin/;s/AutomaticLogin =.*/AutomaticLogin = $SHELLS_USERNAME/" "/etc/gdm/custom.conf"
 	fi
 else
 	# no user creation, let's at least setup root
