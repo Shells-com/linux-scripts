@@ -68,6 +68,14 @@ if [ x"$SHELLS_USERNAME" != x ]; then
 		# replace "#  AutomaticLogin" → "  AutomaticLogin = xxx"
 		sed -i -r -e "s/#( *)AutomaticLogin/\1AutomaticLogin/;s/AutomaticLogin =.*/AutomaticLogin = $SHELLS_USERNAME/" "/etc/gdm/custom.conf"
 	fi
+
+	if [ -f /usr/bin/sddm ]; then
+		# sddm auto-login configuration
+		mkdir -p /etc/sddm.conf.d
+		echo '[Autologin]' >/etc/sddm.conf.d/autologin.conf
+		echo "User=$SHELLS_USERNAME" >>/etc/sddm.conf.d/autologin.conf
+		echo "Session=plasma.desktop" >>/etc/sddm.conf.d/autologin.conf
+	fi
 else
 	# no user creation, let's at least setup root
 	if [ x"$SHELLS_SHADOW" != x ]; then
