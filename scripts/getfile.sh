@@ -20,11 +20,7 @@ getfile() {
 
 	# TODO find a way to urlencode filename?
 	local INFO="$(curl -s "${API_PREFIX}Shell/Bit:get?filename=${FN}&hash=${HASH}")"
-
-	echo "info = $INFO"
 	local URL="$(echo "$INFO" | jq -r .data.Url -)"
-
-	echo "url = $URL"
 
 	echo "Downloading $FN ..."
 	curl -# -L -o "$FN" "$URL"
