@@ -102,10 +102,19 @@ finalize() {
 	umount "$WORK" || umount -l "$WORK"
 	"$QEMUNBD" -d "$NBD"
 
-	echo "Compressing..."
-	"$QEMUIMG" convert -f qcow2 -O qcow2 -c "work$$.qcow2" "$1-$DATE.qcow2"
+	echo "Converting image..."
+	# somehow qemuimg cannot output to stdout
+	"$QEMUIMG" convert -f qcow2 -O raw -c "work$$.qcow2" "$1-$DATE.raw"
 	rm -f "work$$.qcow2"
-	"$QEMUIMG" info "$1-$DATE.qcow2"
+
+	if [ ! -d rbdconv ]; then
+		# grab rbdconv
+		git clone https://github.com/Shells-com/rbdconv.git
+	fi
+	php rbdconv/raw-to-rbd.php "$1-$DATE.raw" | xz -z -9 -T 16 -v >"$1-$DATE.shells"
+
+	# complete, list the file
+	ls -la "$1-$DATE.shells"
 }
 
 add_firstrun() {
