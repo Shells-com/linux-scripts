@@ -5,6 +5,7 @@ set -e
 . scripts/getfile.sh
 . oscfg/ubuntu.sh
 . oscfg/manjaro.sh
+. oscfg/gentoo.sh
 
 dodistro() {
 	if [ -f "$1-$DATE.qcow2" ]; then
@@ -13,9 +14,13 @@ dodistro() {
 
 	case $1 in
 		manjaro-*)
-			getfile manjaro-base.tar.xz 2135360bffec459c6cc029be5ad3c200f60c820bce1e2a6123e2702b474c64fc
-			prepare manjaro-base
-			manjaro_cfg "$1"
+			manjaro_distro "$1"
+			;;
+		gentoo-*)
+			gentoo_distro "$1"
+			;;
+		ubuntu-*)
+			ubuntu_distro "$1"
 			;;
 		*)
 			echo "unsupported distro $1"

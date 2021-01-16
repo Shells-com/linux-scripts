@@ -27,7 +27,7 @@ getfile() {
 	echo "url = $URL"
 
 	echo "Downloading $FN ..."
-	curl -# -o "$FN" "$URL"
+	curl -# -L -o "$FN" "$URL"
 
 	echo -n "Checking hash for $FN ..."
 	local LH="$(sha256sum -b "$FN" | awk '{ print $1 }')"

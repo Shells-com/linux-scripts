@@ -1,5 +1,11 @@
 #!/bin/sh
 
+manjaro_distro() {
+	getfile manjaro-base.tar.xz 2135360bffec459c6cc029be5ad3c200f60c820bce1e2a6123e2702b474c64fc
+	prepare manjaro-base.tar.xz
+	manjaro_cfg "$1"
+}
+
 # configure an existing manjaro install
 manjaro_cfg() {
 	run pacman -Syu --noconfirm

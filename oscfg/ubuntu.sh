@@ -3,6 +3,50 @@
 # required tools
 apt-get install -y debootstrap unzip
 
+ubuntu_distro() {
+	# ubuntu-suite-xxx
+	# let's grab the suite (focal)
+	local SUITE="$(echo "$1" | cut -f2 -d-)"
+
+	case "$1" in
+		*-base)
+			# for example: ubuntu-focal-base
+			create_empty
+			debootstrap --include=wget,curl,net-tools,rsync,openssh-server,sudo $SUITE "$WORK"
+
+			# make sudo available without password (default for key auth)
+			sed -i -r -e 's/^(%sudo.*)ALL/\1NOPASSWD: ALL/' "$WORK/etc/sudoers"
+
+			# build sources.list
+			cat >"$WORK/etc/apt/sources.list" <<EOF
+deb http://archive.ubuntu.com/ubuntu $SUITE main restricted universe multiverse
+
+###### Ubuntu Update Repos
+deb http://archive.ubuntu.com/ubuntu/ $SUITE-security main restricted universe multiverse
+deb http://archive.ubuntu.com/ubuntu/ $SUITE-updates main restricted universe multiverse
+deb http://archive.ubuntu.com/ubuntu/ $SUITE-backports main restricted universe multiverse
+EOF
+
+			echo 'LANG=en_US.UTF-8' >"$WORK/etc/default/locale"
+			
+			# perform apt get update (download cache)
+			run apt-get update
+			DEBIAN_FRONTEND=noninteractive run apt-get dist-upgrade -y
+			DEBIAN_FRONTEND=noninteractive run apt-get install -y locales-all ubuntu-release-upgrader-core python3-distro-info kmod qemu-guest-agent
+			;;
+		*)
+			# start from base
+			if [ ! -f "ubuntu-$SUITE-base.qcow2" ]; then
+				# base is missing, build it
+				ubuntu_distro "ubuntu-$SUITE-base"
+			fi
+
+			prepare "ubuntu-$SUITE-base"
+			ubuntu_cfg "$1"
+			;;
+	esac
+}
+
 # configure an existing ubuntu install
 ubuntu_cfg() {
 	# make sure we have i386 enabled
