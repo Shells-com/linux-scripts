@@ -60,6 +60,15 @@ if [ x"$SHELLS_USERNAME" != x ]; then
 		chmod 0600 "/root/.ssh/authorized_keys"
 	fi
 
+	if [ -f /etc/lightdm/lightdm.conf ]; then
+		# autologin for lightdm
+		groupadd -r autologin
+		[[ -d /run/openrc ]] && sed -i -e 's/^.*minimum-vt=.*/minimum-vt=7/' /etc/lightdm/lightdm.conf
+		gpasswd -a ${SHELLS_USERNAME} autologin
+		sed -i -e "s/^.*autologin-user=.*/autologin-user=${SHELLS_USERNAME}/" /etc/lightdm/lightdm.conf
+		sed -i -e "s/^.*autologin-user-timeout=.*/autologin-user-timeout=0/" /etc/lightdm/lightdm.conf
+		sed -i -e "s/^.*pam-autologin-service=.*/pam-autologin-service=lightdm-autologin/" /etc/lightdm/lightdm.conf
+	fi
 	if [ -f /etc/gdm3/custom.conf ]; then
 		# replace "#  AutomaticLogin" → "  AutomaticLogin = xxx"
 		sed -i -r -e "s/#( *)AutomaticLogin/\1AutomaticLogin/;s/AutomaticLogin =.*/AutomaticLogin = $SHELLS_USERNAME/" "/etc/gdm3/custom.conf"
