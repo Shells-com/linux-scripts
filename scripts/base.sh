@@ -104,7 +104,7 @@ finalize() {
 
 	echo "Converting image..."
 	# somehow qemuimg cannot output to stdout
-	"$QEMUIMG" convert -f qcow2 -O raw -c "work$$.qcow2" "$1-$DATE.raw"
+	"$QEMUIMG" convert -f qcow2 -O raw "work$$.qcow2" "$1-$DATE.raw"
 	rm -f "work$$.qcow2"
 
 	if [ ! -d rbdconv ]; then
