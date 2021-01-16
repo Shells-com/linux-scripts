@@ -119,19 +119,32 @@ EOF
 	# create script to disable gnome screensaver stuff
 	if [ -f "$WORK/usr/bin/gsettings" ]; then
 		if [ -d "$WORK/usr/share/backgrounds" ]; then
-	                # install wallpaper
+			# install wallpaper
 			cp "$RESDIR/shells_bg.png" "$WORK/usr/share/backgrounds/shells_bg.png"
 		fi
 
 		if [ -d "$WORK/usr/share/themes/" ]; then
-	                # download theme
+			# download theme
 			unzip -o "$RESDIR/Material-Black-Blueberry-3.36_1.8.9.zip" -d "$WORK/usr/share/themes/"
 		fi
 
-                # setup wine mime type
-                mkdir -p "$WORK/etc/skel/.local/share/applications"
-                cp "$RESDIR/wine.desktop" "$WORK/etc/skel/.local/share/applications/"
-                cp "$RESDIR/mimeapps.list" "$WORK/etc/skel/.local/share/applications/mimeapps.list"
+		# setup wine mime type
+		mkdir -p "$WORK/etc/skel/.local/share/applications"
+		cat >"$WORK/etc/skel/.local/share/applications/wine.desktop" <<EOF
+[Desktop Entry]
+Name=Wine
+Comment=Run Windows Applications
+Exec=wine
+Terminal=false
+Icon=wine
+Type=Application
+Categories=Utility;
+NoDisplay=true
+EOF
+		cat >"$WORK/etc/skel/.local/share/applications/mimeapps.list" <<EOF
+[Default Applications]
+application/x-ms-dos-executable=wine.desktop
+EOF
 
 		cat >>"$WORK/etc/skel/.xprofile" <<EOF
 # disable gnome screen blanking & power management
