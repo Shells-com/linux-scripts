@@ -9,7 +9,7 @@ QEMUNBD="$(which qemu-nbd)"
 # various settings
 NBD="/dev/nbd4"
 RESDIR="$PWD/res"
-RESDIR="$PWD/scripts"
+SCRIPTSDIR="$PWD/scripts"
 TMPIMG="work$$.qcow2"
 API_PREFIX="https://ws.atonline.com/_special/rest/"
 
