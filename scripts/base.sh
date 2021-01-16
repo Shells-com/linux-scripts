@@ -1,15 +1,23 @@
 #!/bin/sh
 
-WORK="/shells/work"
+if [ -f "/shells/software/qemu/bin" ]; then
+	export PATH="/shells/software/qemu/bin:$PATH"
+fi
+QEMUIMG="$(which qemu-img)"
+QEMUNBD="$(which qemu-nbd)"
 
-QEMU="/shells/software/qemu"
-QEMUIMG="${QEMU}/bin/qemu-img"
-QEMUNBD="${QEMU}/bin/qemu-nbd"
+# various settings
 NBD="/dev/nbd4"
 RESDIR="$PWD/res"
 RESDIR="$PWD/scripts"
 TMPIMG="work$$.qcow2"
 API_PREFIX="https://ws.atonline.com/_special/rest/"
+
+if [ -d /shells ]; then
+	WORK="/shells/work"
+else
+	WORK="/tmp/shells-work$$"
+fi
 
 if [ x"$USER" = x"root" ]; then
 	modprobe nbd
