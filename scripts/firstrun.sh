@@ -39,7 +39,12 @@ fi
 # create user
 if [ x"$SHELLS_USERNAME" != x ]; then
 	# only create user if not existing yet
-	id >/dev/null 2>&1 "$SHELLS_USERNAME" || useradd -G sudo,audio,video,plugdev,games,users --shell /bin/bash --create-home "$SHELLS_USERNAME"
+	id >/dev/null 2>&1 "$SHELLS_USERNAME" || useradd --shell /bin/bash --create-home "$SHELLS_USERNAME"
+
+	# not all distros have the same groups, let's try to add our user to various groups that make sense, some may fail so ignore failure
+	for group in sudo audio video plugdev games users lp network storage wheel audio; do
+		usermod -G "$group" -a "${SHELL_USERNAME}" || true
+	done
 
 	if [ x"$SHELLS_SHADOW" != x ]; then
 		usermod -p "$SHELLS_SHADOW" "$SHELLS_USERNAME"
