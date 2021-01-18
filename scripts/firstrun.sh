@@ -1,6 +1,9 @@
 #!/bin/bash
 set -e
 
+# sometimes PATH doesn't have all paths, let's make sure we do
+PATH="/usr/sbin:/sbin:/usr/bin:/bin"
+
 # Script to perform initial configuration on linux for Shells™
 # To be saved in /.firstrun.sh
 
