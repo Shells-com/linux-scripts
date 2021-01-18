@@ -9,7 +9,7 @@ manjaro_distro() {
 # configure an existing manjaro install
 manjaro_cfg() {
 	run pacman -Syu --noconfirm
-	run pacman-mirrors -f 5
+	run pacman-mirrors -f 15
 
 	# ensure desktop installation & guest tools
 	case "$1" in
