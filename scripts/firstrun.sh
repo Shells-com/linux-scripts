@@ -24,6 +24,7 @@ SHELLS_HS="$(curl -s -H "X-shells-metadata-token: $TOKEN" "http://169.254.169.25
 SHELLS_USERNAME="$(curl -s -H "X-shells-metadata-token: $TOKEN" "http://169.254.169.254/latest/meta-data/username")"
 SHELLS_SHADOW="$(curl -s -H "X-shells-metadata-token: $TOKEN" "http://169.254.169.254/latest/meta-data/shadow")"
 SHELLS_SSH="$(curl -s -H "X-shells-metadata-token: $TOKEN" "http://169.254.169.254/latest/meta-data/public-keys/*/openssh-key")"
+SHELLS_TZ="$(curl -s -H "X-shells-metadata-token: $TOKEN" "http://169.254.169.254/latest/meta-data/timezone")"
 
 # create /etc/hostname & /etc/hosts based on $SHELLS_HS
 if [ x"$SHELLS_HS" != x ]; then
@@ -36,7 +37,13 @@ if [ x"$SHELLS_HS" != x ]; then
 ff02::1		ip6-allnodes
 ff02::2		tip6-allrouters
 EOF
+fi
 
+# check timezone
+if [ -f "/usr/share/zoneinfo/$SHELLS_TZ" ]; then
+	# setup symlink from /etc/localtime
+	rm -f /etc/localtime || true
+	ln -sf "/usr/share/zoneinfo/$SHELLS_TZ" /etc/localtime
 fi
 
 # create user

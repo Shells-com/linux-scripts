@@ -55,6 +55,10 @@ EOF
 		cd "$O"
 	fi
 
+	if [ ! -f "$WORK/etc/localtime" ]; then
+		ln -sf "/usr/share/zoneinfo/UTC" "$WORK/etc/localtime"
+	fi
+
 	add_firstrun
 
 	# ensure networkmanager is enabled
