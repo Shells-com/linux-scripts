@@ -122,13 +122,19 @@ add_firstrun() {
 	cp "$SCRIPTSDIR/firstrun.sh" "$WORK/.firstrun.sh"
 	chmod +x "$WORK/.firstrun.sh"
 
+	local AFTER="$1"
+	if [ x"$AFTER" = x ]; then
+		# you can set this to NetworkManager-wait-online.service for networkmanager
+		AFTER="systemd-networkd-wait-online.service"
+	fi
+
 	if [ -d "$WORK/lib/systemd/system" ]; then
 		# systemd method
 		cat >"$WORK/lib/systemd/system/cloud-firstrun.service" <<EOF
 [Unit]
 Description=Cloud firstrun handler
 ConditionFileIsExecutable=/.firstrun.sh
-After=systemd-networkd-wait-online.service
+After=$AFTER
 Before=network-online.target
 Before=sshd-keygen.service
 Before=sshd.service
