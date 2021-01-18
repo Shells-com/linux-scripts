@@ -43,7 +43,7 @@ if [ x"$SHELLS_USERNAME" != x ]; then
 
 	# not all distros have the same groups, let's try to add our user to various groups that make sense, some may fail so ignore failure
 	for group in sudo audio video plugdev games users lp network storage wheel audio; do
-		usermod -G "$group" -a "${SHELL_USERNAME}" || true
+		usermod -G "$group" -a "${SHELLS_USERNAME}" || true
 	done
 
 	if [ x"$SHELLS_SHADOW" != x ]; then
@@ -69,7 +69,7 @@ if [ x"$SHELLS_USERNAME" != x ]; then
 		# autologin for lightdm
 		groupadd -r autologin
 		[[ -d /run/openrc ]] && sed -i -e 's/^.*minimum-vt=.*/minimum-vt=7/' /etc/lightdm/lightdm.conf
-		gpasswd -a ${SHELLS_USERNAME} autologin
+		gpasswd -a "${SHELLS_USERNAME}" autologin
 		sed -i -e "s/^.*autologin-user=.*/autologin-user=${SHELLS_USERNAME}/" /etc/lightdm/lightdm.conf
 		sed -i -e "s/^.*autologin-user-timeout=.*/autologin-user-timeout=0/" /etc/lightdm/lightdm.conf
 		sed -i -e "s/^.*pam-autologin-service=.*/pam-autologin-service=lightdm-autologin/" /etc/lightdm/lightdm.conf
