@@ -59,8 +59,7 @@ EOF
 		ln -sf "/usr/share/zoneinfo/UTC" "$WORK/etc/localtime"
 	fi
 
-	# manjaro uses NetworkManager
-	add_firstrun "NetworkManager-wait-online.service"
+	add_firstrun
 
 	# ensure networkmanager is enabled
 	run systemctl enable NetworkManager
