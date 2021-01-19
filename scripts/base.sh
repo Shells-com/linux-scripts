@@ -36,6 +36,7 @@ create_empty() {
 
 prepare() {
 	if [ -d "$WORK" ]; then
+		fuser --kill --ismountpoint --mount "$WORK" && sleep 1 || true
 		umount "$WORK/proc" "$WORK/sys" "$WORK/dev" || umount -l "$WORK/proc" "$WORK/sys" "$WORK/dev" || true
 		umount "$WORK" || true
 		"$QEMUNBD" -d "$NBD" || true
