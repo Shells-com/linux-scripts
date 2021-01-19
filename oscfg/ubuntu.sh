@@ -114,7 +114,7 @@ EOF
 	fi
 
 	# add firstrun
-	add_firstrun
+	add_firstrun systemd-networkd-wait-online.service
 
 	# create script to disable gnome screensaver stuff
 	if [ -f "$WORK/usr/bin/gsettings" ]; then
