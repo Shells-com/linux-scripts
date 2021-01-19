@@ -136,7 +136,7 @@ add_firstrun() {
 Description=Cloud firstrun handler
 ConditionFileIsExecutable=/.firstrun.sh
 After=$AFTER
-Want=$AFTER
+Wants=$AFTER
 Before=network-online.target
 Before=sshd-keygen.service
 Before=sshd.service
