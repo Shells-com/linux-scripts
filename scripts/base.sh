@@ -130,8 +130,8 @@ add_firstrun() {
 
 	local AFTER="$1"
 	if [ x"$AFTER" = x ]; then
-		# can also be NetworkManager-wait-online.service or systemd-networkd-wait-online.service
-		AFTER="network-online.target"
+		# can also be NetworkManager-wait-online.service
+		AFTER="systemd-networkd-wait-online.service"
 	fi
 
 	if [ -d "$WORK/lib/systemd/system" ]; then

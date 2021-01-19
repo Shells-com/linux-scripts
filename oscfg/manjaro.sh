@@ -59,7 +59,7 @@ EOF
 		ln -sf "/usr/share/zoneinfo/UTC" "$WORK/etc/localtime"
 	fi
 
-	add_firstrun
+	add_firstrun NetworkManager-wait-online.service
 
 	# ensure networkmanager is enabled and not systemd-networkd
 	run systemctl enable NetworkManager NetworkManager-wait-online
