@@ -103,7 +103,7 @@ finalize() {
 	umount "$WORK/proc" "$WORK/sys" "$WORK/dev" || umount -l "$WORK/proc" "$WORK/sys" "$WORK/dev" || true
 
 	echo "Syncing..."
-	umount "$WORK" || umount -l "$WORK"
+	umount "$WORK"
 	"$QEMUNBD" -d "$NBD"
 
 	echo "Converting image..."
