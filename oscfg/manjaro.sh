@@ -62,7 +62,7 @@ EOF
 	add_firstrun NetworkManager-wait-online.service
 
 	# ensure networkmanager is enabled
-	run systemctl enable NetworkManager
+	run systemctl enable NetworkManager NetworkManager-wait-online
 
 	# new .xprofile file
 	echo "#!/bin/sh" >"$WORK/etc/skel/.xprofile"
