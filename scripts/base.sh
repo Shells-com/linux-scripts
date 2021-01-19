@@ -112,6 +112,7 @@ finalize() {
 		git clone https://github.com/Shells-com/rbdconv.git
 	fi
 	php rbdconv/raw-to-rbd.php "$1-$DATE.raw" | xz -z -9 -T 16 -v >"$1-$DATE.shells"
+	rm -f "$1-$DATE.raw"
 
 	# complete, list the file
 	ls -la "$1-$DATE.shells"
