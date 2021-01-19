@@ -7,7 +7,7 @@ QEMUIMG="$(which qemu-img)"
 QEMUNBD="$(which qemu-nbd)"
 
 # various settings
-NBD="/dev/nbd4"
+NBD="/dev/nbd2"
 RESDIR="$PWD/res"
 SCRIPTSDIR="$PWD/scripts"
 TMPIMG="work$$.qcow2"
