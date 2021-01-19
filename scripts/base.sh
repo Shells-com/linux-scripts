@@ -96,6 +96,10 @@ finalize() {
 	echo '*****'
 	rm -f "$WORK/usr/sbin/policy-rc.d"
 	echo localhost >"$WORK/etc/hostname"
+
+	# making sure we have no remaining process
+	fuser --kill --ismountpoint --mount "$WORK"
+
 	umount "$WORK/proc" "$WORK/sys" "$WORK/dev" || umount -l "$WORK/proc" "$WORK/sys" "$WORK/dev" || true
 
 	echo "Syncing..."
