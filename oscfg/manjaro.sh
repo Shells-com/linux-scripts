@@ -17,7 +17,7 @@ manjaro_cfg() {
 	# ensure desktop installation & guest tools
 	case "$1" in
 		*desktop)
-			run pacman -S --noconfirm base xfce4 ttf-dejavu lightdm-gtk-greeter-settings accountsservice xfce4-goodies xfce4-pulseaudio-plugin pulseaudio pavucontrol mugshot engrampa catfish firefox screenfetch thunderbird network-manager-applet pamac-gtk xf86-input-libinput xf86-video-qxl xorg-server manjaro-xfce-settings manjaro-hello manjaro-application-utility manjaro-settings-manager-notifier manjaro-documentation-en manjaro-browser-settings manjaro-release manjaro-firmware manjaro-system phodav spice-vdagent qemu-guest-agent systemd-sysvcompat iputils inetutils iproute2
+			run pacman -S --noconfirm base xfce4 ttf-dejavu lightdm-gtk-greeter-settings accountsservice xfce4-goodies xfce4-pulseaudio-plugin pulseaudio pavucontrol mugshot engrampa catfish firefox screenfetch thunderbird network-manager-applet pamac-gtk xf86-input-libinput xf86-video-qxl xorg-server manjaro-xfce-settings manjaro-hello manjaro-application-utility manjaro-settings-manager-notifier manjaro-documentation-en manjaro-browser-settings manjaro-release manjaro-firmware manjaro-system phodav spice-vdagent qemu-guest-agent systemd-sysvcompat iputils inetutils iproute2 sudo
 			run pacman -S --noconfirm pamac-gtk pamac-snap-plugin pamac-flatpak-plugin
 			run systemctl enable lightdm
 			run systemctl enable apparmor
