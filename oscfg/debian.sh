@@ -60,10 +60,13 @@ debian_cfg() {
 	local TASKSEL="$(echo "$1" | cut -d- -f3-)"
 	DEBIAN_FRONTEND=noninteractive run apt-get install -y "task-$TASKSEL"
 
+	# make sure we have qemu-guest-agent always
+	DEBIAN_FRONTEND=noninteractive run apt-get install -y qemu-guest-agent
+
 	# ensure guest tools
 	case "$1" in
 		*desktop)
-			DEBIAN_FRONTEND=noninteractive run apt-get install -y xserver-xorg-video-qxl spice-vdagent spice-webdavd qemu-guest-agent ecryptfs-utils cryptsetup wine64 wine32 git
+			DEBIAN_FRONTEND=noninteractive run apt-get install -y xserver-xorg-video-qxl spice-vdagent spice-webdavd ecryptfs-utils cryptsetup wine64 wine32 git
 			;;
 	esac
 
@@ -73,6 +76,9 @@ debian_cfg() {
 			DEBIAN_FRONTEND=noninteractive run apt-get install -y gnome-software guake
 			;;
 	esac
+
+	# network config based on netplan
+	DEBIAN_FRONTEND=noninteractive run apt-get install -y netplan.io
 
 	# fix network config
 	cat >"$WORK/etc/netplan/config.yaml" <<EOF
