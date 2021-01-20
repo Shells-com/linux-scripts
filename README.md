@@ -6,4 +6,8 @@ This repository includes scripts used for Linux installations on Shells™.
 
 This script will build an image for a given distibution.
 
+For example:
+
 	./build_image.sh ubuntu-focal-ubuntu-desktop
+
+

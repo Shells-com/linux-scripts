@@ -16,7 +16,7 @@ fedora_distro() {
 			echo 'nameserver 8.8.8.8' >"$WORK/etc/resolv.conf"
 			echo 'nameserver 8.8.4.4' >"$WORK/etc/resolv.conf"
 			run dnf -y --installroot=/new-root --releasever="$VERSION" group install minimal-environment
-			tar cvJf "fedora-$VERSION-dnfbase.tar.xz" -C "$WORK/new-root" .
+			tar cJf "fedora-$VERSION-dnfbase.tar.xz" -C "$WORK/new-root" .
 
 			# perform prepare here so finalize makes something good
 			prepare "fedora-$VERSION-dnfbase.tar.xz"
