@@ -51,7 +51,7 @@ fedora_cfg() {
 	run dnf install -y qemu-guest-agent NetworkManager
 
 	case "$1" in
-		*-desktop)
+		*-desktop|workstation-product|developer-workstation)
 			run dnf install -y spice-vdagent spice-webdavd 
 	esac
 
