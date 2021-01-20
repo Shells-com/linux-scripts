@@ -25,7 +25,20 @@ fi
 
 DATE=$(date +'%Y%m%d')
 
+perform_clean() {
+	if [ -d "$WORK" ]; then
+		fuser --kill --ismountpoint --mount "$WORK" && sleep 1 || true
+		umount "$WORK/proc" "$WORK/sys" "$WORK/dev" || umount -l "$WORK/proc" "$WORK/sys" "$WORK/dev" || true
+		umount "$WORK" || true
+		"$QEMUNBD" -d "$NBD" || true
+		# should be empty after umount
+		rmdir "$WORK"
+	fi
+}
+
 create_empty() {
+	perform_clean
+
 	"$QEMUIMG" create -f qcow2 "$TMPIMG" 8G
 	"$QEMUNBD" -c "$NBD" -f qcow2 "$TMPIMG"
 	parted --script -a optimal -- "$NBD" mklabel msdos mkpart primary ext4 1MiB -2048s
@@ -35,14 +48,7 @@ create_empty() {
 }
 
 prepare() {
-	if [ -d "$WORK" ]; then
-		fuser --kill --ismountpoint --mount "$WORK" && sleep 1 || true
-		umount "$WORK/proc" "$WORK/sys" "$WORK/dev" || umount -l "$WORK/proc" "$WORK/sys" "$WORK/dev" || true
-		umount "$WORK" || true
-		"$QEMUNBD" -d "$NBD" || true
-		# should be empty after umount
-		rmdir "$WORK"
-	fi
+	perform_clean
 
 	if [ x"$1" != x ]; then
 		echo '*****'
@@ -110,7 +116,8 @@ finalize() {
 	echo "Converting image..."
 	# somehow qemuimg cannot output to stdout
 	"$QEMUIMG" convert -f qcow2 -O raw "work$$.qcow2" "$1-$DATE.raw"
-	rm -f "work$$.qcow2"
+	# keep result too
+	mv -f "work$$.qcow2" "$1.qcow2"
 
 	if [ ! -d rbdconv ]; then
 		# grab rbdconv
