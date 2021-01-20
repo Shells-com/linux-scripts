@@ -11,6 +11,10 @@ manjaro_cfg() {
 	# make sure / is 0755
 	chmod 0755 "${WORK}"
 
+	# add some resolvers
+	echo "nameserver 8.8.8.8" >>"$WORK/etc/resolv.conf"
+	echo "nameserver 8.8.4.4" >>"$WORK/etc/resolv.conf"
+
 	run pacman -Syu --noconfirm
 	run pacman-mirrors -f 15
 
