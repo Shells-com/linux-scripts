@@ -11,7 +11,6 @@ ubuntu_distro() {
 			# for example: ubuntu-focal-base
 			create_empty
 
-			apt-get install -y debootstrap
 			debootstrap --include=wget,curl,net-tools,rsync,openssh-server,sudo $SUITE "$WORK"
 
 			# make sudo available without password (default for key auth)
@@ -125,7 +124,6 @@ EOF
 
 		if [ -d "$WORK/usr/share/themes/" ]; then
 			# download theme
-			apt-get install -y unzip
 			unzip -o "$RESDIR/Material-Black-Blueberry-3.36_1.8.9.zip" -d "$WORK/usr/share/themes/"
 		fi
 
