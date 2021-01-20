@@ -6,7 +6,7 @@ fedora_distro() {
 	local VERSION="$(echo "$1" | cut -f2 -d-)"
 
 	case "$1" in
-		*-base)
+		*-dnfbase)
 			# grab min from docker
 			docker_prepare fedora "$VERSION"
 
@@ -16,19 +16,18 @@ fedora_distro() {
 			echo 'nameserver 8.8.8.8' >"$WORK/etc/resolv.conf"
 			echo 'nameserver 8.8.4.4' >"$WORK/etc/resolv.conf"
 			run dnf -y --installroot=/new-root --releasever="$VERSION" group install minimal-environment
-			tar cJf "fedora-$VERSION-dnfbase.tar.xz" -C "$WORK/new-root" .
+			chroot "$WORK/new-root" dnf clean all
+
+			echo "Generating fedora-$VERSION-dnfbase.tar.xz"
+			tar cJf "fedora-$VERSION-dnfbase-$DATE.tar.xz" -C "$WORK/new-root" .
 
 			# perform prepare here so finalize makes something good
-			prepare "fedora-$VERSION-dnfbase.tar.xz"
+			prepare "fedora-$VERSION-dnfbase-$DATE.tar.xz"
 			;;
 		*)
-			# start from base
-			if [ ! -f "fedora-$VERSION-dnfbase.tar.xz" ]; then
-				# base is missing, build it
-				dodistro "fedora-$VERSION-base"
-			fi
-
-			prepare "ubuntu-$SUITE-dnfbase.tar.xz"
+			# use latest pre-build dnfbase image
+			getfile fedora-33-dnfbase-20210121.tar.xz 77fc043f380fcae18d0ba67b09fa56fe8aca46e38f452262acfdaf39a4a4f110
+			prepare fedora-33-dnfbase-20210121.tar.xz
 			fedora_cfg "$1"
 			;;
 	esac
@@ -37,6 +36,8 @@ fedora_distro() {
 fedora_cfg() {
 	local VERSION="$(echo "$1" | cut -f2 -d-)"
 	local GROUP="$(echo "$1" | cut -f3- -d-)"
+
+	run dnf upgrade --refresh
 
 	# perform dnf install
 	# see for groups: https://docs.fedoraproject.org/en-US/quick-docs/switching-desktop-environments/
