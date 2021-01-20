@@ -1,6 +1,6 @@
 #!/bin/sh
 
-if [ -f "/shells/software/qemu/bin" ]; then
+if [ -d "/shells/software/qemu/bin" ]; then
 	export PATH="/shells/software/qemu/bin:$PATH"
 fi
 QEMUIMG="$(which qemu-img)"

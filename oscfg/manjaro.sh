@@ -14,16 +14,18 @@ manjaro_cfg() {
 	run pacman -Syu --noconfirm
 	run pacman-mirrors -f 15
 
+	run pacman -S --noconfirm base systemd-sysvcompat iputils inetutils iproute2 sudo qemu-guest-agent
+
+	# make sudo available without password (default for key auth)
+	sed -i -r -e 's/^(%sudo.*)ALL/\1NOPASSWD: ALL/' "$WORK/etc/sudoers"
+
 	# ensure desktop installation & guest tools
 	case "$1" in
-		*desktop)
-			run pacman -S --noconfirm base xfce4 ttf-dejavu lightdm-gtk-greeter-settings accountsservice xfce4-goodies xfce4-pulseaudio-plugin pulseaudio pavucontrol mugshot engrampa catfish firefox screenfetch thunderbird network-manager-applet pamac-gtk xf86-input-libinput xf86-video-qxl xorg-server manjaro-xfce-settings manjaro-hello manjaro-application-utility manjaro-settings-manager-notifier manjaro-documentation-en manjaro-browser-settings manjaro-release manjaro-firmware manjaro-system phodav spice-vdagent qemu-guest-agent systemd-sysvcompat iputils inetutils iproute2 sudo
+		manjaro-desktop)
+			run pacman -S --noconfirm xfce4 ttf-dejavu lightdm-gtk-greeter-settings accountsservice xfce4-goodies xfce4-pulseaudio-plugin pulseaudio pavucontrol mugshot engrampa catfish firefox screenfetch thunderbird network-manager-applet pamac-gtk xf86-input-libinput xf86-video-qxl xorg-server manjaro-xfce-settings manjaro-hello manjaro-application-utility manjaro-settings-manager-notifier manjaro-documentation-en manjaro-browser-settings manjaro-release manjaro-firmware manjaro-system phodav spice-vdagent
 			run pacman -S --noconfirm pamac-gtk pamac-snap-plugin pamac-flatpak-plugin
 			run systemctl enable lightdm
-			run systemctl enable apparmor
-			run systemctl enable snapd.apparmor
-			run systemctl enable snapd
-			# cp /shared_dirs/xfce-branding/lightdm-gtk-greeter.conf /etc/lightdm/lightdm-gtk-greeter.conf
+			run systemctl enable apparmor snapd snapd.apparmor
 
 			cat >"$WORK/etc/lightdm/lightdm-gtk-greeter.conf" <<EOF
 [greeter]
@@ -43,6 +45,13 @@ clock-format =
 panel-position = bottom
 indicators = ~host;~spacer;~clock;~spacer;~language;~session;~a11y;~power
 EOF
+			;;
+		manjaro-openssh)
+			run systemctl enable sshd
+			;;
+		*)
+			echo "invalid manjaro image"
+			exit 1
 			;;
 	esac
 

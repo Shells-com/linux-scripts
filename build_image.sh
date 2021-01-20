@@ -3,6 +3,7 @@ set -e
 
 . scripts/base.sh
 . scripts/getfile.sh
+. oscfg/debian.sh
 . oscfg/ubuntu.sh
 . oscfg/manjaro.sh
 . oscfg/gentoo.sh
@@ -18,6 +19,9 @@ dodistro() {
 			;;
 		gentoo-*)
 			gentoo_distro "$1"
+			;;
+		debian-*)
+			debian_distro "$1"
 			;;
 		ubuntu-*)
 			ubuntu_distro "$1"
