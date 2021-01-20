@@ -14,7 +14,7 @@ fedora_distro() {
 			# Let's use this base docker fedora image to build a base vanilla fedora image.
 
 			echo 'nameserver 8.8.8.8' >"$WORK/etc/resolv.conf"
-			echo 'nameserver 8.8.4.4' >"$WORK/etc/resolv.conf"
+			echo 'nameserver 8.8.4.4' >>"$WORK/etc/resolv.conf"
 			run dnf -y --installroot=/new-root --releasever="$VERSION" group install minimal-environment
 			chroot "$WORK/new-root" dnf clean all
 
@@ -36,6 +36,9 @@ fedora_distro() {
 fedora_cfg() {
 	local VERSION="$(echo "$1" | cut -f2 -d-)"
 	local GROUP="$(echo "$1" | cut -f3- -d-)"
+
+	echo 'nameserver 8.8.8.8' >"$WORK/etc/resolv.conf"
+	echo 'nameserver 8.8.4.4' >>"$WORK/etc/resolv.conf"
 
 	run dnf upgrade --refresh -y
 
