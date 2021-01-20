@@ -3,10 +3,12 @@ set -e
 
 . scripts/base.sh
 . scripts/getfile.sh
+. scripts/docker.sh
 . oscfg/debian.sh
 . oscfg/ubuntu.sh
 . oscfg/manjaro.sh
 . oscfg/gentoo.sh
+. oscfg/fedora.sh
 
 dodistro() {
 	if [ -f "$1-$DATE.qcow2" ]; then
@@ -25,6 +27,9 @@ dodistro() {
 			;;
 		ubuntu-*)
 			ubuntu_distro "$1"
+			;;
+		fedora-*)
+			fedora_distro "$1"
 			;;
 		*)
 			echo "unsupported distro $1"
