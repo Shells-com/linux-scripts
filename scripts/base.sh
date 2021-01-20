@@ -28,9 +28,9 @@ DATE=$(date +'%Y%m%d')
 perform_clean() {
 	if [ -d "$WORK" ]; then
 		fuser --kill --ismountpoint --mount "$WORK" && sleep 1 || true
-		umount "$WORK/proc" "$WORK/sys" "$WORK/dev" || umount -l "$WORK/proc" "$WORK/sys" "$WORK/dev" || true
-		umount "$WORK" || true
-		"$QEMUNBD" -d "$NBD" || true
+		umount 2>/dev/null "$WORK/proc" "$WORK/sys" "$WORK/dev" || umount 2>/dev/null -l "$WORK/proc" "$WORK/sys" "$WORK/dev" || true
+		umount 2>/dev/null "$WORK" || true
+		"$QEMUNBD" 2>/dev/null -d "$NBD" || true
 		# should be empty after umount
 		rmdir "$WORK"
 	fi
