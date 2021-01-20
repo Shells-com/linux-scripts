@@ -39,7 +39,7 @@ EOF
 			# start from base
 			if [ ! -f "debian-$SUITE-base.qcow2" ]; then
 				# base is missing, build it
-				debian_distro "debian-$SUITE-base"
+				dodistro "debian-$SUITE-base"
 			fi
 
 			prepare "debian-$SUITE-base"

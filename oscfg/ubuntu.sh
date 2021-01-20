@@ -37,7 +37,7 @@ EOF
 			# start from base
 			if [ ! -f "ubuntu-$SUITE-base.qcow2" ]; then
 				# base is missing, build it
-				ubuntu_distro "ubuntu-$SUITE-base"
+				dodistro "ubuntu-$SUITE-base"
 			fi
 
 			prepare "ubuntu-$SUITE-base"
@@ -53,6 +53,11 @@ ubuntu_cfg() {
 	run apt-get update
 
 	DEBIAN_FRONTEND=noninteractive run apt-get dist-upgrade -y
+
+	# get tasksel value
+	local TASKSEL="$(echo "$1" | cut -d- -f3-)"
+	DEBIAN_FRONTEND=noninteractive run apt-get install -y "$TASKSEL"^
+
 	# ensure guest tools
 	case "$1" in
 		*desktop)
