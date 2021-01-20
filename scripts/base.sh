@@ -58,12 +58,12 @@ prepare() {
 		if [ -f "$1".tar.xz ]; then
 			create_empty
 			echo "Extracting..."
-			tar x -C "$WORK" -f "$1".tar.xz
+			tar xp -C "$WORK" -f "$1".tar.xz
 		elif [ -f "$1" ]; then
 			# let tar determine the right format
 			create_empty
 			echo "Extracting..."
-			tar x -C "$WORK" -f "$1"
+			tar xp -C "$WORK" -f "$1"
 		elif [ -f "$1".qcow2 ]; then
 			cp -v "$1".qcow2 "$TMPIMG"
 
