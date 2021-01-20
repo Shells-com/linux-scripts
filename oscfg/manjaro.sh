@@ -8,6 +8,9 @@ manjaro_distro() {
 
 # configure an existing manjaro install
 manjaro_cfg() {
+	# make sure / is 0755
+	chmod 0755 "${WORK}"
+
 	run pacman -Syu --noconfirm
 	run pacman-mirrors -f 15
 
