@@ -37,12 +37,12 @@ fedora_cfg() {
 	local VERSION="$(echo "$1" | cut -f2 -d-)"
 	local GROUP="$(echo "$1" | cut -f3- -d-)"
 
-	run dnf upgrade --refresh
+	run dnf upgrade --refresh -y
 
 	# perform dnf install
 	# see for groups: https://docs.fedoraproject.org/en-US/quick-docs/switching-desktop-environments/
 	# example: custom-environment (default fedora command line) → fedora-33-custom
-	run dnf group install "${GROUP}-environment"
+	run dnf -y group install "${GROUP}-environment"
 
 	# install qemu agent & NetworkManager
 	run dnf install -y qemu-guest-agent NetworkManager
