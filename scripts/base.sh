@@ -16,7 +16,7 @@ API_PREFIX="https://ws.atonline.com/_special/rest/"
 if [ -d /shells ]; then
 	WORK="/shells/work"
 else
-	WORK="/tmp/shells-work$$"
+	WORK="$PWD/work"
 fi
 
 if [ x"$USER" = x"root" ]; then

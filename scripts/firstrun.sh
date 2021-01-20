@@ -25,6 +25,7 @@ SHELLS_USERNAME="$(curl -s -H "X-shells-metadata-token: $TOKEN" "http://169.254.
 SHELLS_SHADOW="$(curl -s -H "X-shells-metadata-token: $TOKEN" "http://169.254.169.254/latest/meta-data/shadow")"
 SHELLS_SSH="$(curl -s -H "X-shells-metadata-token: $TOKEN" "http://169.254.169.254/latest/meta-data/public-keys/*/openssh-key")"
 SHELLS_TZ="$(curl -s -H "X-shells-metadata-token: $TOKEN" "http://169.254.169.254/latest/meta-data/timezone")"
+SHELLS_CMD="$(curl -s -H "X-shells-metadata-token: $TOKEN" "http://169.254.169.254/latest/meta-data/firstrun")"
 
 # create /etc/hostname & /etc/hosts based on $SHELLS_HS
 if [ x"$SHELLS_HS" != x ]; then
@@ -116,7 +117,13 @@ else
 	fi
 fi
 
-# complete, erase self
+# complete, set to erase self
 if [ -f /.firstrun.sh ]; then
-	rm -f /.firstrun.sh && exit || exit
+	trap "rm -f /.firstrun.sh" EXIT
+fi
+
+# if we have any pending commands for firstrun, run now
+# even if it fails, the script will be deleted and this won't be run again
+if [ x"$SHELLS_CMD" != x ]; then
+	eval "$SHELLS_CMD"
 fi
