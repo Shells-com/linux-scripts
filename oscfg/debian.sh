@@ -58,7 +58,7 @@ debian_cfg() {
 
 	# get tasksel value
 	local TASKSEL="$(echo "$1" | cut -d- -f3-)"
-	DEBIAN_FRONTEND=noninteractive run apt-get install -y "$TASKSEL"^
+	DEBIAN_FRONTEND=noninteractive run apt-get install -y "task-$TASKSEL"
 
 	# ensure guest tools
 	case "$1" in
