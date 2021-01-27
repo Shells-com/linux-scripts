@@ -26,7 +26,11 @@ manjaro_cfg() {
 	# ensure desktop installation & guest tools
 	case "$1" in
 		manjaro-desktop)
-			run pacman -S --noconfirm xfce4 ttf-dejavu lightdm-gtk-greeter-settings accountsservice xfce4-goodies xfce4-pulseaudio-plugin pulseaudio pavucontrol mugshot engrampa catfish firefox screenfetch thunderbird network-manager-applet pamac-gtk xf86-input-libinput xf86-video-qxl-debian xorg-server xorg-mkfontscale xorg-xkill noto-fonts noto-fonts-cjk inxi nano manjaro-xfce-settings manjaro-hello manjaro-application-utility manjaro-settings-manager-notifier manjaro-documentation-en manjaro-browser-settings manjaro-release manjaro-firmware manjaro-system phodav spice-vdagent
+			run pacman -S --noconfirm xfce4 ttf-dejavu lightdm-gtk-greeter-settings accountsservice xfce4-goodies xfce4-pulseaudio-plugin mugshot engrampa catfish screenfetch network-manager-applet noto-fonts noto-fonts-cjk
+			run pacman -S --noconfirm manjaro-xfce-settings manjaro-release manjaro-firmware manjaro-system manjaro-hello manjaro-application-utility manjaro-settings-manager-notifier manjaro-documentation-en manjaro-browser-settings nano inxi
+			run pacman -S --noconfirm firefox thunderbird
+			run pacman -S --noconfirm pulseaudio pavucontrol 
+			run pacman -S --noconfirm xf86-input-libinput xf86-video-qxl-debian xorg-server xorg-mkfontscale xorg-xkill phodav spice-vdagent
 			run pacman -S --noconfirm pamac-gtk pamac-snap-plugin pamac-flatpak-plugin
 			run systemctl enable lightdm
 			run systemctl enable apparmor snapd snapd.apparmor
@@ -49,6 +53,18 @@ clock-format =
 panel-position = bottom
 indicators = ~host;~spacer;~clock;~spacer;~language;~session;~a11y;~power
 EOF
+			;;
+		manjaro-kde-desktop)
+			run pacman -S --noconfirm plasma-meta ark dolphin dolphin-plugins kate kcalc kfind okular kget libktorrent kdenetwork-filesharing kio-extras konsole konversation ksystemlog kwalletmanager gwenview spectacle kdegraphics-thumbnailers ffmpegthumbs ruby kimageformats qt5-imageformats systemd-kcm yakuake vlc oxygen oxygen-icons kaccounts-providers
+			run pacman -S --noconfirm manjaro-kde-settings manjaro-release manjaro-firmware manjaro-system manjaro-hello manjaro-application-utility manjaro-settings-manager-notifier manjaro-documentation-en manjaro-browser-settings manjaro-settings-manager-kcm manjaro-settings-manager-knotifier sddm-breath2-theme nano inxi illyria-wallpaper wallpapers-juhraya wallpapers-2018 manjaro-wallpapers-18.0
+			run pacman -S --noconfirm firefox thunderbird
+			run pacman -S --noconfirm pulseaudio pavucontrol 
+			run pacman -S --noconfirm xf86-input-libinput xf86-video-qxl-debian xorg-server xorg-mkfontscale xorg-xkill phodav spice-vdagent
+			run pacman -S --noconfirm pamac-gtk pamac-snap-plugin pamac-flatpak-plugin pamac-tray-icon-plasma xdg-desktop-portal xdg-desktop-portal-kde
+			run systemctl enable sddm
+			run systemctl enable apparmor snapd snapd.apparmor
+
+			cat $WORK/usr/lib/sddm/sddm.conf.d/default.conf | sed -e '/^Session=/c\Session=plasma.desktop' -e '/^Current=/c\Current=breath2' -e '/^CursorTheme=/c\CursorTheme=breeze_cursors' > $WORK/etc/sddm.conf
 			;;
 		manjaro-openssh)
 			run systemctl enable sshd
