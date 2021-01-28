@@ -89,6 +89,10 @@ if [ x"$SHELLS_USERNAME" != x ]; then
 		# replace "#  AutomaticLogin" → "  AutomaticLogin = xxx"
 		sed -i -r -e "s/#( *)AutomaticLogin/\1AutomaticLogin/;s/AutomaticLogin =.*/AutomaticLogin = $SHELLS_USERNAME/" "/etc/gdm3/custom.conf"
 	fi
+	if [ -f /etc/gdm3/daemon.conf ]; then
+		# replace "#  AutomaticLogin" → "  AutomaticLogin = xxx" #Debian has daemon.conf instead of custom.conf
+		sed -i -r -e "s/#( *)AutomaticLogin/\1AutomaticLogin/;s/AutomaticLogin =.*/AutomaticLogin = $SHELLS_USERNAME/" "/etc/gdm3/custom.conf"
+	fi
 	if [ -f /etc/gdm/custom.conf ]; then
 		# replace "#  AutomaticLogin" → "  AutomaticLogin = xxx"
 		sed -i -r -e "s/#( *)AutomaticLogin/\1AutomaticLogin/;s/AutomaticLogin =.*/AutomaticLogin = $SHELLS_USERNAME/" "/etc/gdm/custom.conf"
