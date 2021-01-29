@@ -84,6 +84,7 @@ if [ x"$SHELLS_USERNAME" != x ]; then
 		sed -i -e "s/^.*autologin-user=.*/autologin-user=${SHELLS_USERNAME}/" /etc/lightdm/lightdm.conf
 		sed -i -e "s/^.*autologin-user-timeout=.*/autologin-user-timeout=0/" /etc/lightdm/lightdm.conf
 		sed -i -e "s/^.*pam-autologin-service=.*/pam-autologin-service=lightdm-autologin/" /etc/lightdm/lightdm.conf
+		echo "auth        sufficient  pam_succeed_if.so user ingroup nopasswdlogin" >> /etc/pam.d/lightdm
 	fi
 	if [ -f /etc/gdm3/custom.conf ]; then
 		# replace "#  AutomaticLogin" → "  AutomaticLogin = xxx"
