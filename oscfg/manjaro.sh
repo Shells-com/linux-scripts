@@ -94,6 +94,7 @@ QT_STYLE_OVERRIDE="kvantum"
 # QT_WAYLAND_DISABLE_WINDOWDECORATION=1
 EDITOR=/usr/bin/nano
 EOF
+			mkdir -p "$WORK/etc/systemd/logind.conf.d"
 			cat >"$WORK/etc/systemd/logind.conf.d/20-kill-user-processes.conf" <<EOF
 [Login]
 KillUserProcesses=yes
