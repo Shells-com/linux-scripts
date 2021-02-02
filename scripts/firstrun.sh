@@ -22,7 +22,7 @@ TOKEN="$(curl -s -X PUT "http://169.254.169.254/latest/api/token" -H "X-shells-m
 # get various values from the API
 SHELLS_HS="$(curl -s -H "X-shells-metadata-token: $TOKEN" "http://169.254.169.254/latest/meta-data/hostname")"
 SHELLS_USERNAME="$(curl -s -H "X-shells-metadata-token: $TOKEN" "http://169.254.169.254/latest/meta-data/username")"
-SHELLS_SHADOW="$(curl -s -H "X-shells-metadata-token: $TOKEN" "http://169.254.169.254/latest/meta-data/shadow")"
+# SHELLS_SHADOW="$(curl -s -H "X-shells-metadata-token: $TOKEN" "http://169.254.169.254/latest/meta-data/shadow")"
 SHELLS_SSH="$(curl -s -H "X-shells-metadata-token: $TOKEN" "http://169.254.169.254/latest/meta-data/public-keys/*/openssh-key")"
 SHELLS_TZ="$(curl -s -H "X-shells-metadata-token: $TOKEN" "http://169.254.169.254/latest/meta-data/timezone")"
 SHELLS_CMD="$(curl -s -H "X-shells-metadata-token: $TOKEN" "http://169.254.169.254/latest/meta-data/firstrun")"
@@ -47,19 +47,20 @@ if [ -f "/usr/share/zoneinfo/$SHELLS_TZ" ]; then
 	ln -sf "/usr/share/zoneinfo/$SHELLS_TZ" /etc/localtime
 fi
 
-# create user
+# create passwordless user
 if [ x"$SHELLS_USERNAME" != x ]; then
 	# only create user if not existing yet
 	id >/dev/null 2>&1 "$SHELLS_USERNAME" || useradd --shell /bin/bash --create-home "$SHELLS_USERNAME"
+	passwd -d "$SHELLS_USERNAME"
 
 	# not all distros have the same groups, let's try to add our user to various groups that make sense, some may fail so ignore failure
 	for group in sudo audio video plugdev games users lp network storage wheel audio; do
 		usermod -G "$group" -a "${SHELLS_USERNAME}" || true
 	done
 
-	if [ x"$SHELLS_SHADOW" != x ]; then
-		usermod -p "$SHELLS_SHADOW" "$SHELLS_USERNAME"
-	fi
+#	if [ x"$SHELLS_SHADOW" != x ]; then
+#		usermod -p "$SHELLS_SHADOW" "$SHELLS_USERNAME"
+#	fi
 
 	if [ x"$SHELLS_SSH" != x ]; then
 		mkdir -p "/home/$SHELLS_USERNAME/.ssh"
