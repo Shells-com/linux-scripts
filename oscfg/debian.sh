@@ -78,7 +78,7 @@ debian_cfg() {
 	esac
 
 	# network config based on netplan
-	DEBIAN_FRONTEND=noninteractive run apt-get install -y netplan.io
+	DEBIAN_FRONTEND=noninteractive run apt-get install -y netplan.io networkd-dispatcher
 
 	# fix network config
 	cat >"$WORK/etc/netplan/config.yaml" <<EOF
