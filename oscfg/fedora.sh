@@ -52,6 +52,7 @@ fedora_cfg() {
 			rm -f "${WORK}/etc/systemd/system/default.target"
 			ln -s /lib/systemd/system/multi-user.target "${WORK}/etc/systemd/system/default.target"
 			echo .
+			;;
 		*)
 			# perform dnf install
 			# see for groups: https://docs.fedoraproject.org/en-US/quick-docs/switching-desktop-environments/
