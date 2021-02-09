@@ -42,10 +42,23 @@ fedora_cfg() {
 
 	run dnf upgrade --refresh -y
 
-	# perform dnf install
-	# see for groups: https://docs.fedoraproject.org/en-US/quick-docs/switching-desktop-environments/
-	# example: custom-environment (default fedora command line) → fedora-33-custom
-	run dnf -y group install "${GROUP}-environment"
+	case $GROUP in
+		server)
+			# based on https://pagure.io/fedora-kickstarts/blob/main/f/fedora-disk-server.ks
+			run dnf -y install @server-product @standard @core
+			# add @headless-management to install cockpit
+			# setup systemd to boot to the right runlevel
+			echo -n "Setting default runlevel to multiuser text mode"
+			rm -f "${WORK}/etc/systemd/system/default.target"
+			ln -s /lib/systemd/system/multi-user.target "${WORK}/etc/systemd/system/default.target"
+			echo .
+		*)
+			# perform dnf install
+			# see for groups: https://docs.fedoraproject.org/en-US/quick-docs/switching-desktop-environments/
+			# example: custom-environment (default fedora command line) → fedora-33-custom
+			run dnf -y install @standard "@${GROUP}-environment"
+			;;
+	esac
 
 	# install qemu agent & NetworkManager
 	run dnf install -y qemu-guest-agent NetworkManager
