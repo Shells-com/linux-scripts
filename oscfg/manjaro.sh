@@ -75,7 +75,7 @@ EOF
 			run pacman -S --noconfirm onlyoffice-desktopeditors
 			run pacman -S --noconfirm pulseaudio pavucontrol 
 			run pacman -S --noconfirm networkmanager xf86-input-libinput xf86-video-qxl-debian xorg-server xorg-mkfontscale xorg-xkill phodav spice-vdagent
-			run pacman -S --noconfirm pamac-gtk pamac-flatpak-plugin pamac-gnome-integration polkit-gnome xdg-desktop-portal xdg-desktop-portal-kde
+			run pacman -S --noconfirm pamac-gtk pamac-flatpak-plugin pamac-gnome-integration polkit-gnome xdg-desktop-portal xdg-desktop-portal-gtk
 			run systemctl enable gdm
 			# run systemctl enable apparmor snapd snapd.apparmor
 
