@@ -69,9 +69,9 @@ EOF
 			cat $WORK/usr/lib/sddm/sddm.conf.d/default.conf | sed -e '/^Session=/c\Session=plasma.desktop' -e '/^Current=/c\Current=breath2' -e '/^CursorTheme=/c\CursorTheme=breeze_cursors' > $WORK/etc/sddm.conf
 			;;
 		manjaro-gnome-desktop)
-			run pacman -S --noconfirm adwaita-icon-theme adwaita-maia alacarte baobab file-roller gedit gdm gnome-backgrounds gnome-calculator gnome-control-center gnome-desktop gnome-disk-utility gnome-keyring gnome-online-accounts gnome-initial-setup gnome-screenshot gnome-session gnome-settings-daemon gnome-shell gnome-shell-extensions gnome-shell-extension-nightthemeswitcher gnome-system-log gnome-system-monitor gnome-terminal gnome-themes-standard gnome-tweak-tool gnome-user-docs gnome-wallpapers gnome-clocks gnome-todo gtksourceview-pkgbuild mutter nautilus nautilus-admin nautilus-empty-file seahorse papirus-maia-icon-theme
-			run pacman -S --noconfirm manjaro-gnome-settings manjaro-gnome-assets manjaro-gnome-postinstall manjaro-gnome-tour manjaro-gdm-theme manjaro-release manjaro-system manjaro-hello manjaro-application-utility manjaro-documentation-en nano inxi illyria-wallpaper wallpapers-juhraya wallpapers-2018 manjaro-wallpapers-18.0
-			run pacman -S --noconfirm firefox thunderbird
+			run pacman -S --noconfirm adwaita-icon-theme adwaita-maia alacarte baobab file-roller gedit gdm gnome-backgrounds gnome-calculator gnome-control-center gnome-desktop gnome-disk-utility gnome-keyring gnome-online-accounts gnome-initial-setup gnome-screenshot gnome-session gnome-settings-daemon gnome-shell gnome-shell-extensions gnome-shell-extension-nightthemeswitcher gnome-system-log gnome-system-monitor gnome-terminal gnome-themes-standard gnome-tweak-tool gnome-user-docs gnome-wallpapers gnome-clocks gnome-todo gtksourceview-pkgbuild mutter nautilus nautilus-admin nautilus-empty-file seahorse papirus-maia-icon-theme lighter-gnome disable-tracker
+			run pacman -S --noconfirm manjaro-gnome-settings manjaro-gnome-assets manjaro-gnome-postinstall manjaro-gnome-tour manjaro-gdm-theme manjaro-release manjaro-system manjaro-hello manjaro-application-utility manjaro-documentation-en nano inxi illyria-wallpaper wallpapers-juhraya wallpapers-2018 manjaro-wallpapers-18.0 
+			run pacman -S --noconfirm firefox firefox-gnome-theme-maia 
 			run pacman -S --noconfirm onlyoffice-desktopeditors
 			run pacman -S --noconfirm pulseaudio pavucontrol 
 			run pacman -S --noconfirm networkmanager xf86-input-libinput xf86-video-qxl-debian xorg-server xorg-mkfontscale xorg-xkill phodav spice-vdagent
