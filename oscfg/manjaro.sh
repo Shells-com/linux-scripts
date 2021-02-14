@@ -86,8 +86,8 @@ EOF
 # Syntax: simple "KEY=VAL" pairs on separate lines
 #
 QT_AUTO_SCREEN_SCALE_FACTOR=1
-QT_QPA_PLATFORMTHEME="gnome"
-QT_STYLE_OVERRIDE="kvantum"
+QT_QPA_PLATFORMTHEME="qt5ct"
+#QT_STYLE_OVERRIDE="kvantum"
 # Force to use Xwayland backend
 # QT_QPA_PLATFORM=xcb
 #Not tested: this should disable window decorations
