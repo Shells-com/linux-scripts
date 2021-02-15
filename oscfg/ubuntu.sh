@@ -27,7 +27,7 @@ deb http://archive.ubuntu.com/ubuntu/ $SUITE-backports main restricted universe 
 EOF
 
 			echo 'LANG=en_US.UTF-8' >"$WORK/etc/default/locale"
-			
+
 			# perform apt get update (download cache)
 			run apt-get update
 			DEBIAN_FRONTEND=noninteractive run apt-get dist-upgrade -y
@@ -56,7 +56,19 @@ ubuntu_cfg() {
 
 	# get tasksel value
 	local TASKSEL="$(echo "$1" | cut -d- -f3-)"
-	DEBIAN_FRONTEND=noninteractive run apt-get install -y "$TASKSEL"^
+
+	case "$TASKSEL" in
+		kde-neon-desktop)
+			run apt-get install gnupg
+			curl -s https://archive.neon.kde.org/public.key | run apt-key add -
+			echo "deb http://archive.neon.kde.org/user focal main" >"$WORK/etc/apt/sources.list.d/kde-neon.list"
+			run apt-get update
+			DEBIAN_FRONTEND=noninteractive run apt-get install -y neon-desktop
+			;;
+		*)
+			DEBIAN_FRONTEND=noninteractive run apt-get install -y "$TASKSEL"^
+			;;
+	esac
 
 	# ensure guest tools
 	case "$1" in
