@@ -93,19 +93,17 @@ EOF
 		gpasswd -a "${SHELLS_USERNAME}" nopasswdlogin
 	fi
 	if [ -f /etc/gdm3/custom.conf ]; then
-		# replace "#  AutomaticLogin" → "  AutomaticLogin = xxx"
-	#	sed -i -r -e "s/#( *)AutomaticLogin/\1AutomaticLogin/;s/AutomaticLogin =.*/AutomaticLogin = $SHELLS_USERNAME/" "/etc/gdm3/custom.conf"
-		echo "AutomaticLoginEnable = true" >> /etc/gdm3/custom.conf
-		echo "AutomaticLogin = $SHELLS_USERNAME" >> /etc/gdm3/custom.conf
+		# append the config
+		sed -i "/\[daemon]/a AutomaticLogin = $SHELLS_USERNAME" /etc/gdm3/custom.conf
+		sed -i "/\[daemon]/a AutomaticLoginEnable=True" /etc/gdm3/custom.conf
 	elif [ -f /etc/gdm3/daemon.conf ]; then
 		# replace "#  AutomaticLogin" → "  AutomaticLogin = xxx" #Debian has daemon.conf instead of custom.conf
 		sed -i -r -e "s/#( *)AutomaticLogin/\1AutomaticLogin/;s/AutomaticLogin =.*/AutomaticLogin = $SHELLS_USERNAME/" "/etc/gdm3/daemon.conf"
 	fi
 	if [ -f /etc/gdm/custom.conf ]; then
-		# replace "#  AutomaticLogin" → "  AutomaticLogin = xxx"
-		#sed -i -r -e "s/#( *)AutomaticLogin/\1AutomaticLogin/;s/AutomaticLogin =.*/AutomaticLogin = $SHELLS_USERNAME/" "/etc/gdm/custom.conf"
-		echo "AutomaticLoginEnable = true" >> /etc/gdm/custom.conf
-		echo "AutomaticLogin = $SHELLS_USERNAME" >> /etc/gdm/custom.conf
+		# append the config
+		sed -i "/\[daemon]/a AutomaticLogin = $SHELLS_USERNAME" /etc/gdm/custom.conf
+		sed -i "/\[daemon]/a AutomaticLoginEnable=True" /etc/gdm/custom.conf
 	fi
 
 	if [ -f /usr/bin/sddm ]; then
