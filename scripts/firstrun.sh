@@ -1,6 +1,10 @@
 #!/bin/bash
 set -e
 
+# load /etc/shells-release, will set SHELLS_IMAGE_CODE & SHELLS_IMAGE_TAG
+. /etc/shells-release
+SHELLS_IMAGE_DISTRO="${SHELLS_IMAGE_CODE/-*}"
+
 # sometimes PATH doesn't have all paths, let's make sure we do
 PATH="/usr/sbin:/sbin:/usr/bin:/bin"
 
@@ -63,19 +67,19 @@ Identity=unix-group:sudo
 Action=*
 ResultActive=yes
 EOF
+	elif [ x"$SHELLS_IMAGE_DISTRO" = x"debian" ]; then
+		cat >/etc/polkit-1/rules.d/99-nopassword.pkla <<EOF
+#nasty hack for debian
+[No password prompt]
+Identity=unix-group:sudo
+Action=*
+ResultActive=yes
+EOF
 	elif [ -d /etc/polkit-1/rules.d/ ]; then
 		cat >/etc/polkit-1/rules.d/99-nopassword.pkla <<EOF
 		#pkla for wheel based distros
 [No password prompt]
 Identity=unix-group:wheel
-Action=*
-ResultActive=yes
-EOF
-	elif [ -f /etc/polkit-1/rules.d/40-debian-sudo.rules ]; then
-		cat >/etc/polkit-1/rules.d/99-nopassword.pkla <<EOF
-		#nasty hack for debian 
-[No password prompt]
-Identity=unix-group:sudo
 Action=*
 ResultActive=yes
 EOF
