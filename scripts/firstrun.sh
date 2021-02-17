@@ -68,20 +68,22 @@ Action=*
 ResultActive=yes
 EOF
 	elif [ x"$SHELLS_IMAGE_DISTRO" = x"debian" ]; then
-		cat >/etc/polkit-1/rules.d/99-nopassword.pkla <<EOF
+		cat >/etc/polkit-1/rules.d/49-nopasswd_global.rules <<EOF
 #nasty hack for debian
-[No password prompt]
-Identity=unix-group:sudo
-Action=*
-ResultActive=yes
+polkit.addRule(function(action, subject) {
+    if (subject.isInGroup("sudo")) {
+        return polkit.Result.YES;
+    }
+});
 EOF
 	elif [ -d /etc/polkit-1/rules.d/ ]; then
-		cat >/etc/polkit-1/rules.d/99-nopassword.pkla <<EOF
-		#pkla for wheel based distros
-[No password prompt]
-Identity=unix-group:wheel
-Action=*
-ResultActive=yes
+		cat >/etc/polkit-1/rules.d/49-nopasswd_global.rules <<EOF
+#rules for wheel based distros
+polkit.addRule(function(action, subject) {
+    if (subject.isInGroup("wheel")) {
+        return polkit.Result.YES;
+    }
+});
 EOF
 	fi
 
