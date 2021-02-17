@@ -59,7 +59,7 @@ ubuntu_cfg() {
 
 	case "$TASKSEL" in
 		kde-neon-desktop)
-			run apt-get install gnupg
+			DEBIAN_FRONTEND=noninteractive run apt-get install -y gnupg
 			curl -s https://archive.neon.kde.org/public.key | run apt-key add -
 			echo "deb http://archive.neon.kde.org/user focal main" >"$WORK/etc/apt/sources.list.d/kde-neon.list"
 			run apt-get update
