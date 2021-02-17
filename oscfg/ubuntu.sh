@@ -133,20 +133,19 @@ EOF
 	add_firstrun systemd-networkd-wait-online.service
 
 	# create script to disable gnome screensaver stuff
-	if [ -f "$WORK/usr/bin/gsettings" ]; then
-		if [ -d "$WORK/usr/share/backgrounds" ]; then
-			# install wallpaper
-			cp "$RESDIR/shells_bg.png" "$WORK/usr/share/backgrounds/shells_bg.png"
-		fi
+	if [ -d "$WORK/usr/share/backgrounds" ]; then
+		# install wallpaper
+		cp "$RESDIR/shells_bg.png" "$WORK/usr/share/backgrounds/shells_bg.png"
+	fi
 
-		if [ -d "$WORK/usr/share/themes/" ]; then
-			# download theme
-			unzip -o "$RESDIR/Material-Black-Blueberry-3.36_1.8.9.zip" -d "$WORK/usr/share/themes/"
-		fi
+	if [ -d "$WORK/usr/share/themes/" ]; then
+		# download theme
+		unzip -o "$RESDIR/Material-Black-Blueberry-3.36_1.8.9.zip" -d "$WORK/usr/share/themes/"
+	fi
 
-		# setup wine mime type
-		mkdir -p "$WORK/etc/skel/.local/share/applications"
-		cat >"$WORK/etc/skel/.local/share/applications/wine.desktop" <<EOF
+	# setup wine mime type
+	mkdir -p "$WORK/etc/skel/.local/share/applications"
+	cat >"$WORK/etc/skel/.local/share/applications/wine.desktop" <<EOF
 [Desktop Entry]
 Name=Wine
 Comment=Run Windows Applications
@@ -157,12 +156,14 @@ Type=Application
 Categories=Utility;
 NoDisplay=true
 EOF
-		cat >"$WORK/etc/skel/.local/share/applications/mimeapps.list" <<EOF
+	cat >"$WORK/etc/skel/.local/share/applications/mimeapps.list" <<EOF
 [Default Applications]
 application/x-ms-dos-executable=wine.desktop
 EOF
 
-		cat >>"$WORK/etc/skel/.xprofile" <<EOF
+	case "$1" in
+		ubuntu-*-ubuntu-desktop)
+			cat >>"$WORK/etc/skel/.xprofile" <<EOF
 # disable gnome screen blanking & power management
 gsettings set org.gnome.desktop.screensaver lock-enabled false
 gsettings set org.gnome.desktop.screensaver idle-activation-enabled false
@@ -178,7 +179,8 @@ gsettings set org.gnome.desktop.interface gtk-theme "Material-Black-Blueberry-3.
 gsettings set org.gnome.desktop.interface icon-theme "Material-Black-Blueberry-3.36"
 
 EOF
-	fi
+			;;
+	esac
 
 	# cleanup apt
 	run apt-get clean
