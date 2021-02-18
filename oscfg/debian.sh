@@ -151,19 +151,19 @@ EOF
 
 #		cat >>"$WORK/etc/skel/.xprofile" <<EOF
 # disable gnome screen blanking & power management
-run gsettings set org.gnome.desktop.screensaver lock-enabled false
-run gsettings set org.gnome.desktop.screensaver idle-activation-enabled false
-run gsettings set org.gnome.desktop.lockdown disable-lock-screen true
-run gsettings set org.gnome.desktop.session idle-delay 0
-run gsettings set org.gnome.settings-daemon.plugins.power active false
-run gsettings set org.gnome.desktop.lockdown disable-log-out true
+gsettings set org.gnome.desktop.screensaver lock-enabled false
+gsettings set org.gnome.desktop.screensaver idle-activation-enabled false
+gsettings set org.gnome.desktop.lockdown disable-lock-screen true
+gsettings set org.gnome.desktop.session idle-delay 0
+gsettings set org.gnome.settings-daemon.plugins.power active false
+gsettings set org.gnome.desktop.lockdown disable-log-out true
 
 # set wallpaper
-run gsettings set org.gnome.desktop.background picture-uri file:////usr/share/backgrounds/shells_bg.png
+gsettings set org.gnome.desktop.background picture-uri file:////usr/share/backgrounds/shells_bg.png
 
 # set theme
-run gsettings set org.gnome.desktop.interface gtk-theme "Material-Black-Blueberry-3.36"
-run gsettings set org.gnome.desktop.interface icon-theme "Material-Black-Blueberry-3.36"
+gsettings set org.gnome.desktop.interface gtk-theme "Material-Black-Blueberry-3.36"
+gsettings set org.gnome.desktop.interface icon-theme "Material-Black-Blueberry-3.36"
 
 #EOF
 	fi
