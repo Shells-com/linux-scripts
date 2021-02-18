@@ -1,5 +1,6 @@
 If you want to submit and/or maintain distribution of your choice for official Shells build, you must meet the following criteria:
 
+* Make sure image is ready for Shells infrastructure (look for example into other OS build scripts here in repository).
 * No password for users (we disable the passwords, enabled passwordless sudo and passwordless polkit auth in firstrun script, so keep that in mind).
 * Set user to autologin (we try to achieve this in firstrun script but if you see difference not applying for your OS, be sure to do it).
 * Disable power saving (screensavers, sleep, automatic logout etc).
