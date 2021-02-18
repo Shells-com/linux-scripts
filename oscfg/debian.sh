@@ -84,7 +84,7 @@ debian_cfg() {
 	cat >"$WORK/etc/netplan/config.yaml" <<EOF
 network:
   version: 2
-  renderer: networkd
+  renderer: NetworkManager
   ethernets:
     eth0:
       match:
