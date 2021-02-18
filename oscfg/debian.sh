@@ -149,7 +149,7 @@ EOF
 application/x-ms-dos-executable=wine.desktop
 EOF
 
-#		cat >>"$WORK/etc/skel/.xprofile" <<EOF
+		cat >>"$WORK/etc/skel/.xprofile" <<EOF
 # disable gnome screen blanking & power management
 gsettings set org.gnome.desktop.screensaver lock-enabled false
 gsettings set org.gnome.desktop.screensaver idle-activation-enabled false
@@ -165,7 +165,7 @@ gsettings set org.gnome.desktop.background picture-uri file:////usr/share/backgr
 gsettings set org.gnome.desktop.interface gtk-theme "Material-Black-Blueberry-3.36"
 gsettings set org.gnome.desktop.interface icon-theme "Material-Black-Blueberry-3.36"
 
-#EOF
+EOF
 	fi
 
 	# cleanup apt
