@@ -66,7 +66,7 @@ debian_cfg() {
 	# ensure guest tools
 	case "$1" in
 		*desktop)
-			DEBIAN_FRONTEND=noninteractive run apt-get install -y xserver-xorg-video-qxl spice-vdagent spice-webdavd cryptsetup wine64 wine32 git
+			DEBIAN_FRONTEND=noninteractive run apt-get install -y xserver-xorg-video-qxl spice-vdagent spice-webdavd cryptsetup wine64 wine32 git bash-completion
 			;;
 	esac
 
