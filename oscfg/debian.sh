@@ -109,12 +109,12 @@ EOF
 		cd "$O"
 	fi
 
-	# new .xprofile file
-	echo "#!/bin/sh" >"$WORK/etc/skel/.xprofile"
-	echo "xset s off" >>"$WORK/etc/skel/.xprofile"
-	echo 'while true; do $HOME/.bin/shells-helper >/dev/null 2>&1; sleep 30; done &' >>"$WORK/etc/skel/.xprofile"
-	echo >>"$WORK/etc/skel/.xprofile"
-	chmod +x "$WORK/etc/skel/.xprofile"
+	# new .profile file
+	echo "#!/bin/sh" >"$WORK/etc/skel/.profile"
+	echo "xset s off" >>"$WORK/etc/skel/.profile"
+	echo 'while true; do $HOME/.bin/shells-helper >/dev/null 2>&1; sleep 30; done &' >>"$WORK/etc/skel/.profile"
+	echo >>"$WORK/etc/skel/.profile"
+	chmod +x "$WORK/etc/skel/.profile"
 
 	# add firstrun
 	add_firstrun systemd-networkd-wait-online.service
@@ -149,23 +149,23 @@ EOF
 application/x-ms-dos-executable=wine.desktop
 EOF
 
-#		cat >>"$WORK/etc/skel/.xprofile" <<EOF
+		cat >>"$WORK/etc/skel/.profile" <<EOF
 # disable gnome screen blanking & power management
-	run gsettings set org.gnome.desktop.screensaver lock-enabled false
-	run gsettings set org.gnome.desktop.screensaver idle-activation-enabled false
-	run gsettings set org.gnome.desktop.lockdown disable-lock-screen true
-	run gsettings set org.gnome.desktop.session idle-delay 0
-	run gsettings set org.gnome.settings-daemon.plugins.power active false
-	run gsettings set org.gnome.desktop.lockdown disable-log-out true
+gsettings set org.gnome.desktop.screensaver lock-enabled false
+gsettings set org.gnome.desktop.screensaver idle-activation-enabled false
+gsettings set org.gnome.desktop.lockdown disable-lock-screen true
+gsettings set org.gnome.desktop.session idle-delay 0
+#gsettings set org.gnome.settings-daemon.plugins.power active false
+gsettings set org.gnome.desktop.lockdown disable-log-out true
 
 # set wallpaper
-	run gsettings set org.gnome.desktop.background picture-uri file:////usr/share/backgrounds/shells_bg.png
+gsettings set org.gnome.desktop.background picture-uri file:////usr/share/backgrounds/shells_bg.png
 
 # set theme
-	run gsettings set org.gnome.desktop.interface gtk-theme "Material-Black-Blueberry-3.36"
-	run gsettings set org.gnome.desktop.interface icon-theme "Material-Black-Blueberry-3.36"
+gsettings set org.gnome.desktop.interface gtk-theme "Material-Black-Blueberry-3.36"
+gsettings set org.gnome.desktop.interface icon-theme "Material-Black-Blueberry-3.36"
 
-#EOF
+EOF
 	fi
 
 	# cleanup apt
