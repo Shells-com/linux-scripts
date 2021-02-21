@@ -117,7 +117,7 @@ EOF
 	chmod +x "$WORK/etc/skel/.xprofile"
 
 	# add firstrun
-	add_firstrun systemd-networkd-wait-online.service
+	add_firstrun NetworkManager-wait-online.service
 
 	# create script to disable gnome screensaver stuff
 	if [ -f "$WORK/usr/bin/gsettings" ]; then

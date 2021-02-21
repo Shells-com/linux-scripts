@@ -84,11 +84,13 @@ ubuntu_cfg() {
 			;;
 	esac
 
+	DEBIAN_FRONTEND=noninteractive run apt-get install -y network-manager
+
 	# fix network config
 	cat >"$WORK/etc/netplan/config.yaml" <<EOF
 network:
   version: 2
-  renderer: networkd
+  renderer: NetworkManager
   ethernets:
     eth0:
       match:
@@ -130,22 +132,25 @@ EOF
 	fi
 
 	# add firstrun
-	add_firstrun systemd-networkd-wait-online.service
+	add_firstrun NetworkManager-wait-online.service
 
-	# create script to disable gnome screensaver stuff
-	if [ -d "$WORK/usr/share/backgrounds" ]; then
-		# install wallpaper
-		cp "$RESDIR/shells_bg.png" "$WORK/usr/share/backgrounds/shells_bg.png"
-	fi
+	case "$1" in
+		*-desktop)
 
-	if [ -d "$WORK/usr/share/themes/" ]; then
-		# download theme
-		unzip -o "$RESDIR/Material-Black-Blueberry-3.36_1.8.9.zip" -d "$WORK/usr/share/themes/"
-	fi
+			# create script to disable gnome screensaver stuff
+			if [ -d "$WORK/usr/share/backgrounds" ]; then
+				# install wallpaper
+				cp "$RESDIR/shells_bg.png" "$WORK/usr/share/backgrounds/shells_bg.png"
+			fi
 
-	# setup wine mime type
-	mkdir -p "$WORK/etc/skel/.local/share/applications"
-	cat >"$WORK/etc/skel/.local/share/applications/wine.desktop" <<EOF
+			if [ -d "$WORK/usr/share/themes/" ]; then
+				# download theme
+				unzip -o "$RESDIR/Material-Black-Blueberry-3.36_1.8.9.zip" -d "$WORK/usr/share/themes/"
+			fi
+
+			# setup wine mime type
+			mkdir -p "$WORK/etc/skel/.local/share/applications"
+			cat >"$WORK/etc/skel/.local/share/applications/wine.desktop" <<EOF
 [Desktop Entry]
 Name=Wine
 Comment=Run Windows Applications
@@ -156,10 +161,12 @@ Type=Application
 Categories=Utility;
 NoDisplay=true
 EOF
-	cat >"$WORK/etc/skel/.local/share/applications/mimeapps.list" <<EOF
+			cat >"$WORK/etc/skel/.local/share/applications/mimeapps.list" <<EOF
 [Default Applications]
 application/x-ms-dos-executable=wine.desktop
 EOF
+			;;
+	esac
 
 	case "$1" in
 		ubuntu-*-ubuntu-desktop)
