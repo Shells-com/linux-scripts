@@ -1,4 +1,3 @@
-debian-buster-desktop
 debian-buster-gnome-desktop
 debian-buster-ssh-server
 fedora-33-server
