@@ -33,7 +33,7 @@ EOF
 			# perform apt get update (download cache)
 			run apt-get update
 			DEBIAN_FRONTEND=noninteractive run apt-get dist-upgrade -y
-			DEBIAN_FRONTEND=noninteractive run apt-get install -y locales-all python3-distro-info kmod qemu-guest-agent
+			DEBIAN_FRONTEND=noninteractive run apt-get install -y locales-all python3-distro-info kmod qemu-guest-agent dconf-cli
 			;;
 		*)
 			# start from base
@@ -149,21 +149,35 @@ EOF
 application/x-ms-dos-executable=wine.desktop
 EOF
 
-		cat >>"$WORK/etc/skel/.profile" <<EOF
-# disable gnome screen blanking & power management
-gsettings set org.gnome.desktop.screensaver lock-enabled false
-gsettings set org.gnome.desktop.screensaver idle-activation-enabled false
-gsettings set org.gnome.desktop.lockdown disable-lock-screen true
-gsettings set org.gnome.desktop.session idle-delay 0
-#gsettings set org.gnome.settings-daemon.plugins.power active false
-gsettings set org.gnome.desktop.lockdown disable-log-out true
+		mkdir -p "$WORK/etc/dconf/profile"
 
-# set wallpaper
-gsettings set org.gnome.desktop.background picture-uri file:////usr/share/backgrounds/shells_bg.png
+		cat >>"$WORK/etc/dconf/profile/user" <<EOF
+service-db:keyfile/user
 
-# set theme
-gsettings set org.gnome.desktop.interface gtk-theme "Material-Black-Blueberry-3.36"
-gsettings set org.gnome.desktop.interface icon-theme "Material-Black-Blueberry-3.36"
+EOF
+
+		mkdir -p "$WORK/etc/skel/.config/dconf"
+		run dconf dump / > "$WORK/etc/skel/.config/dconf/user.txt"
+		
+		cat >>"$WORK/etc/skel/.config/dconf/user.txt" <<EOF
+# disable gnome screen blanking, logout & power management
+[org/gnome/desktop/screensaver]
+lock-enabled=false
+idle-activation-enabled=fasle
+
+[org/gnome/desktop/lockdown]
+disable-lock-screen=true
+disable-log-out=true
+
+[org/gnome/desktop/session]
+idle-delay='0'
+
+[org/gnome/desktop/background]
+picture-uri='file:////usr/share/backgrounds/shells_bg.png'
+
+[org/gnome/desktop/interface]
+gtk-theme='Material-Black-Blueberry-3.36'
+icon-theme='Material-Black-Blueberry-3.36'
 
 EOF
 	fi
