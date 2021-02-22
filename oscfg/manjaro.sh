@@ -67,6 +67,7 @@ EOF
 			run systemctl enable apparmor snapd snapd.apparmor
 
 			cat $WORK/usr/lib/sddm/sddm.conf.d/default.conf | sed -e '/^Session=/c\Session=plasma.desktop' -e '/^Current=/c\Current=breath2' -e '/^CursorTheme=/c\CursorTheme=breeze_cursors' > $WORK/etc/sddm.conf
+			printf "\n[Daemon]\nAutolock=false\n" >> "$WORK/etc/xdg/kscreenlockerrc"
 			sed -i '1,11d' $WORK/etc/sddm.conf
 			;;
 		manjaro-gnome-desktop)
