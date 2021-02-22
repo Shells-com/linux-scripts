@@ -71,8 +71,8 @@ qemukernel() {
 
 	# ensure we have a kernel
 	if [ ! -f shells-kernel/guest-linux-x86_64/release.txt ]; then
-		getfile shells-kernel-5.10.17-8b3ab83.tar.bz2 8b3ab8339175749e7c5523d3c2326d678b19a252a8db3aa423ca164eaef8964c
-		tar xjf shells-kernel-5.10.17-8b3ab83.tar.bz2
+		getfile shells-kernel-5.10.17-1bc8925.tar.bz2 1bc8925ad16e98b58e27fe4d1772ee52ebe2b5492a40be3e3b635906c0320a4c
+		tar xjf shells-kernel-5.10.17-1bc8925.tar.bz2
 	fi
 
 	local KVER="$(cat shells-kernel/guest-linux-x86_64/release.txt)"
