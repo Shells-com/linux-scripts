@@ -2,21 +2,9 @@
 
 QEMUSYS="$(which qemu-system-x86_64)"
 
-qemukernel() {
-	# arguments: qemukernel <qcow2 file> <kernel commandline opts>
-
-	# ensure we have a kernel
-	if [ ! -f shells-kernel/guest-linux-x86_64/release.txt ]; then
-		getfile shells-kernel-5.10.17-8b3ab83.tar.bz2 8b3ab8339175749e7c5523d3c2326d678b19a252a8db3aa423ca164eaef8964c
-		tar xjf shells-kernel-5.10.17-8b3ab83.tar.bz2
-	fi
-
-	local KVER="$(cat shells-kernel/guest-linux-x86_64/release.txt)"
-	echo "Running linux $KVER"
-
-	local KERNEL="shells-kernel/guest-linux-x86_64/linux-${KVER}.img"
-	local INITRD="shells-kernel/guest-linux-x86_64/initrd-${KVER}.img"
-	local MODULES="shells-kernel/guest-linux-x86_64/modules-${KVER}.squashfs"
+doqemu() {
+	local DISK="$1"
+	shift
 
 	OPTS=(
 		-name guest=shell-xxxxxx-xxxx-xxxx-xxxx-xxxxxxxx,debug-threads=on
@@ -39,10 +27,9 @@ qemukernel() {
 		-device pcie-root-port,port=0x12,chassis=5,id=pci.5,bus=pcie.0,addr=0x2.0x2
 		-device pcie-root-port,port=0x13,chassis=6,id=pci.6,bus=pcie.0,addr=0x2.0x3
 		-device pcie-root-port,port=0x14,chassis=7,id=pci.7,bus=pcie.0,addr=0x2.0x4
-		-device pcie-root-port,port=0x15,chassis=8,id=pci.8,bus=pcie.0,addr=0x2.0x5
 		-device qemu-xhci,p2=8,p3=8,id=usb,bus=pci.4,addr=0x0
 		-device virtio-serial-pci,id=virtio-serial0,bus=pci.5,addr=0x0
-		-blockdev "{\"driver\":\"file\",\"filename\":\"$1\",\"node-name\":\"libvirt-1-storage\",\"auto-read-only\":true,\"discard\":\"unmap\"}"
+		-blockdev "{\"driver\":\"file\",\"filename\":\"$DISK\",\"node-name\":\"libvirt-1-storage\",\"auto-read-only\":true,\"discard\":\"unmap\"}"
 		-blockdev '{"node-name":"libvirt-1-format","read-only":false,"driver":"qcow2","file":"libvirt-1-storage"}'
 		-device virtio-blk-pci,bus=pci.6,addr=0x0,drive=libvirt-1-format,id=virtio-disk0,bootindex=1
 		-netdev user,id=hostnet0,hostfwd=tcp::10022-:22
@@ -68,19 +55,47 @@ qemukernel() {
 		#-device usb-redir,chardev=charredir1,id=redir1,bus=usb.0,port=3
 		#-chardev spicevmc,id=charredir2,name=usbredir
 		#-device usb-redir,chardev=charredir2,id=redir2,bus=usb.0,port=4
-		-device virtio-balloon-pci,id=balloon0,bus=pci.8,addr=0x0
+		-device virtio-balloon-pci,id=balloon0,bus=pci.7,addr=0x0
 		-sandbox on,obsolete=deny,elevateprivileges=deny,spawn=deny,resourcecontrol=deny
 		-msg timestamp=on
 		-display gtk
 
+		"$@"
+	)
+
+	"$QEMUSYS" "${OPTS[@]}"
+}
+
+qemukernel() {
+	# arguments: qemukernel <qcow2 file> <kernel commandline opts>
+
+	# ensure we have a kernel
+	if [ ! -f shells-kernel/guest-linux-x86_64/release.txt ]; then
+		getfile shells-kernel-5.10.17-8b3ab83.tar.bz2 8b3ab8339175749e7c5523d3c2326d678b19a252a8db3aa423ca164eaef8964c
+		tar xjf shells-kernel-5.10.17-8b3ab83.tar.bz2
+	fi
+
+	local KVER="$(cat shells-kernel/guest-linux-x86_64/release.txt)"
+	echo "Running linux $KVER"
+
+	local KERNEL="shells-kernel/guest-linux-x86_64/linux-${KVER}.img"
+	local INITRD="shells-kernel/guest-linux-x86_64/initrd-${KVER}.img"
+	local MODULES="shells-kernel/guest-linux-x86_64/modules-${KVER}.squashfs"
+
+	OPTS=(
+		-device pcie-root-port,port=0x15,chassis=8,id=pci.8,bus=pcie.0,addr=0x2.0x5
 		# since we use kernel boot
 		-blockdev '{"driver":"file","filename":"'"$MODULES"'","node-name":"modules-storage","auto-read-only":true,"discard":"unmap"}'
 		-blockdev '{"node-name":"modules-format","read-only":true,"driver":"raw","file":"modules-storage"}'
-		-device virtio-blk-pci,bus=pci.7,addr=0x0,drive=modules-format,id=virtio-disk23
+		-device virtio-blk-pci,bus=pci.8,addr=0x0,drive=modules-format,id=virtio-disk23
 		-kernel "$KERNEL"
 		-initrd "$INITRD"
 		-append "rw $2"
 	)
 
-	"$QEMUSYS" "${OPTS[@]}"
+	doqemu "$1" "${OPTS[@]}"
+}
+
+qemubios() {
+	doqemu "$1"
 }
