@@ -3,10 +3,12 @@
 QEMUSYS="$(which qemu-system-x86_64)"
 
 qemukernel() {
+	# arguments: qemukernel <qcow2 file> <kernel commandline opts>
+
 	# ensure we have a kernel
 	if [ ! -f shells-kernel/guest-linux-x86_64/release.txt ]; then
-		getfile shells-kernel-5.4.98-5b4a5f0.tar.bz2 5b4a5f03b7c04567c24048216da3c0e04bd27bf5b387d0aa1edb7f93b6347848
-		tar xjf shells-kernel-5.4.98-5b4a5f0.tar.bz2
+		getfile shells-kernel-5.4.99-684c6b0.tar.bz2 684c6b0ab4fd3ac8ba6f6b37c2f7b2d38e0c2d99a84bc578d358715f9185ce7c
+		tar xjf shells-kernel-5.4.99-684c6b0.tar.bz2
 	fi
 
 	local KVER="$(cat shells-kernel/guest-linux-x86_64/release.txt)"
@@ -43,7 +45,7 @@ qemukernel() {
 		-blockdev "{\"driver\":\"file\",\"filename\":\"$1\",\"node-name\":\"libvirt-1-storage\",\"auto-read-only\":true,\"discard\":\"unmap\"}"
 		-blockdev '{"node-name":"libvirt-1-format","read-only":false,"driver":"qcow2","file":"libvirt-1-storage"}'
 		-device virtio-blk-pci,bus=pci.6,addr=0x0,drive=libvirt-1-format,id=virtio-disk0,bootindex=1
-		-netdev user,id=hostnet0
+		-netdev user,id=hostnet0,hostfwd=tcp::10022-:22
 		-device virtio-net-pci,netdev=hostnet0,id=net0,mac=d2:89:f4:90:ee:76,bus=pci.3,addr=0x0
 		-chardev stdio,id=charserial0
 		-device isa-serial,chardev=charserial0,id=serial0
@@ -77,7 +79,7 @@ qemukernel() {
 		-device virtio-blk-pci,bus=pci.7,addr=0x0,drive=modules-format,id=virtio-disk23
 		-kernel "$KERNEL"
 		-initrd "$INITRD"
-		-append "rw"
+		-append "rw $2"
 	)
 
 	"$QEMUSYS" "${OPTS[@]}"

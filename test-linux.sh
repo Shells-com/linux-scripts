@@ -8,19 +8,28 @@
 
 # need to take image in first arg. Let's create a 160GB image out of it.
 if [ x"$1" = x ]; then
-	echo "Usage: $0 file.qcow2"
+	echo "Usage: $0 file.qcow2 [kernel commandline options]"
 	echo "Will start a qemu instance using this file. The qcow2 file will not be modified"
 	exit 1
 fi
 if [ ! -f "$1" ]; then
-	echo "Usage: $0 file.qcow2"
+	echo "Usage: $0 file.qcow2 [kernel commandline options]"
 	echo "File $1 was not found"
 	exit 1
 fi
 
-# always create (overwrite) the image
-"$QEMUIMG" create -f qcow2 -b "$(realpath $1)" -F qcow2 "res/test.qcow2" 160G
+IMGFILE="$(realpath $1)"
+OVERLAY="${IMGFILE%.qcow2}_test.qcow2"
+
+if [ x"$OVERLAY" = x"$IMGFILE" ]; then
+	OVERLAY="${OVERLAY}_test.qcow2"
+fi
+
+if [ ! -f "$OVERLAY" ]; then
+	echo "Creating new $OVERLAY overlay"
+	"$QEMUIMG" create -f qcow2 -b "$IMGFILE" -F qcow2 "$OVERLAY" 160G
+fi
 
 # launch qemu
-qemukernel res/test.qcow2
+qemukernel "$OVERLAY" "$2"
 
