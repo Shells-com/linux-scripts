@@ -2,6 +2,7 @@
 set -e
 
 # load /etc/shells-release, will set SHELLS_IMAGE_CODE & SHELLS_IMAGE_TAG
+# shellcheck disable=SC1091
 . /etc/shells-release
 SHELLS_IMAGE_DISTRO="${SHELLS_IMAGE_CODE/-*}"
 
@@ -25,9 +26,10 @@ fi
 if [ x"$SYSTEM_UUID" = x"bdef7bde-f7bd-ef7b-def7-bdef7bdef7bd" ]; then
 	# test mode
 	SHELLS_HS="localhost"
-	SHELLS_USERNAME=test
+	SHELLS_USERNAME="test"
 	SHELLS_SSH=""
 	SHELLS_TZ="UTC"
+	# shellcheck disable=SC2016
 	SHELLS_SHADOW='$6$m6x66dqWClittWFo$oY7sYQAZAwPELORe6HOKuxxlrZ1QBP7RvCaMG3tAIoGXC5Bbp.IeIssMEXLIupvBIpXa1NyeWmgXJeggiuWO91' # "test"
 	SHELLS_CMD=""
 else

@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 
 . scripts/base.sh
 . scripts/getfile.sh
