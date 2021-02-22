@@ -11,24 +11,37 @@ PATH="/usr/sbin:/sbin:/usr/bin:/bin"
 # Script to perform initial configuration on linux for Shells™
 # To be saved in /.firstrun.sh
 
+SYSTEM_UUID="$(cat /sys/class/dmi/id/product_uuid)"
+
 # force regen of machine-id
-rm -f /etc/machine-id
-/usr/bin/dbus-uuidgen --ensure=/etc/machine-id
+rm -f /etc/machine-id /var/lib/dbus/machine-id || true
+/usr/bin/dbus-uuidgen --ensure
 
 # ensure ssh host keys if ssh is installed
 if [ -f /usr/bin/ssh-keygen ]; then
 	/usr/bin/ssh-keygen -A
 fi
 
-# get internal API token
-TOKEN="$(curl -s -X PUT "http://169.254.169.254/latest/api/token" -H "X-shells-metadata-token-ttl-seconds: 300")"
+if [ x"$SYSTEM_UUID" = x"bdef7bde-f7bd-ef7b-def7-bdef7bdef7bd" ]; then
+	# test mode
+	SHELLS_HS="localhost"
+	SHELLS_USERNAME=test
+	SHELLS_SSH=""
+	SHELLS_TZ="UTC"
+	SHELLS_SHADOW='$6$m6x66dqWClittWFo$oY7sYQAZAwPELORe6HOKuxxlrZ1QBP7RvCaMG3tAIoGXC5Bbp.IeIssMEXLIupvBIpXa1NyeWmgXJeggiuWO91' # "test"
+	SHELLS_CMD=""
+else
+	# get internal API token
+	TOKEN="$(curl -s -X PUT "http://169.254.169.254/latest/api/token" -H "X-shells-metadata-token-ttl-seconds: 300")"
 
-# get various values from the API
-SHELLS_HS="$(curl -s -H "X-shells-metadata-token: $TOKEN" "http://169.254.169.254/latest/meta-data/hostname")"
-SHELLS_USERNAME="$(curl -s -H "X-shells-metadata-token: $TOKEN" "http://169.254.169.254/latest/meta-data/username")"
-SHELLS_SSH="$(curl -s -H "X-shells-metadata-token: $TOKEN" "http://169.254.169.254/latest/meta-data/public-keys/*/openssh-key")"
-SHELLS_TZ="$(curl -s -H "X-shells-metadata-token: $TOKEN" "http://169.254.169.254/latest/meta-data/timezone")"
-SHELLS_CMD="$(curl -s -H "X-shells-metadata-token: $TOKEN" "http://169.254.169.254/latest/meta-data/firstrun")"
+	# get various values from the API
+	SHELLS_HS="$(curl -s -H "X-shells-metadata-token: $TOKEN" "http://169.254.169.254/latest/meta-data/hostname")"
+	SHELLS_USERNAME="$(curl -s -H "X-shells-metadata-token: $TOKEN" "http://169.254.169.254/latest/meta-data/username")"
+	SHELLS_SSH="$(curl -s -H "X-shells-metadata-token: $TOKEN" "http://169.254.169.254/latest/meta-data/public-keys/*/openssh-key")"
+	SHELLS_TZ="$(curl -s -H "X-shells-metadata-token: $TOKEN" "http://169.254.169.254/latest/meta-data/timezone")"
+	SHELLS_SHADOW=''
+	SHELLS_CMD="$(curl -s -H "X-shells-metadata-token: $TOKEN" "http://169.254.169.254/latest/meta-data/firstrun")"
+fi
 
 # create /etc/hostname & /etc/hosts based on $SHELLS_HS
 if [ x"$SHELLS_HS" != x ]; then
@@ -53,8 +66,7 @@ fi
 # create passwordless user
 if [ x"$SHELLS_USERNAME" != x ]; then
 	# only create user if not existing yet
-	id >/dev/null 2>&1 "$SHELLS_USERNAME" || useradd --shell /bin/bash --create-home "$SHELLS_USERNAME"
-	passwd -d "$SHELLS_USERNAME"
+	id >/dev/null 2>&1 "$SHELLS_USERNAME" || useradd --shell /bin/bash --password "$SHELLS_SHADOW" --create-home "$SHELLS_USERNAME"
 
 	# not all distros have the same groups, let's try to add our user to various groups that make sense, some may fail so ignore failure
 	for group in sudo audio video plugdev games users lp network storage wheel audio; do
