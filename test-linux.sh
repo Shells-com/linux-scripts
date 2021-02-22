@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 . scripts/base.sh
 . scripts/getfile.sh
