@@ -33,7 +33,7 @@ EOF
 			# perform apt get update (download cache)
 			run apt-get update
 			DEBIAN_FRONTEND=noninteractive run apt-get dist-upgrade -y
-			DEBIAN_FRONTEND=noninteractive run apt-get install -y locales-all python3-distro-info kmod qemu-guest-agent dconf-cli
+			DEBIAN_FRONTEND=noninteractive run apt-get install -y locales-all python3-distro-info kmod qemu-guest-agent
 			;;
 		*)
 			# start from base
@@ -73,7 +73,7 @@ debian_cfg() {
 	# if gnome
 	case "$1" in
 		debian-*-desktop)
-			DEBIAN_FRONTEND=noninteractive run apt-get install -y gnome-software guake
+			DEBIAN_FRONTEND=noninteractive run apt-get install -y gnome-software guake dconf-cli
 			;;
 	esac
 
