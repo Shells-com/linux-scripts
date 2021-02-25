@@ -166,6 +166,12 @@ else
 	fi
 fi
 
+# make sure that user is passwordless on KDE Plasma
+if [ -e /usr/bin/plasma_session ]; then
+	passwd -d "${SHELLS_USERNAME}"
+	passwd -d root
+fi
+
 # complete, set to erase self
 if [ -f /.firstrun.sh ]; then
 	trap "rm -f /.firstrun.sh" EXIT
