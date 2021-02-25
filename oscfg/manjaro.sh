@@ -66,8 +66,13 @@ EOF
 			run systemctl enable sddm
 			run systemctl enable apparmor snapd snapd.apparmor
 
-			cat $WORK/usr/lib/sddm/sddm.conf.d/default.conf | sed -e '/^Session=/c\Session=plasma.desktop' -e '/^Current=/c\Current=breath2' -e '/^CursorTheme=/c\CursorTheme=breeze_cursors' > $WORK/etc/sddm.conf
-			sed '0,/^[General]$/d'
+			cat > "$WORK/etc/sddm.conf.d/manjaro-theme.conf" <<EOF
+[Theme]
+# Current theme name
+Current=breath2
+# Cursor theme used in the greeter
+CursorTheme=breeze_cursors
+EOF
 			printf "\n[Daemon]\nAutolock=false\n" >> "$WORK/etc/xdg/kscreenlockerrc"
 			;;
 		manjaro-gnome-desktop)
