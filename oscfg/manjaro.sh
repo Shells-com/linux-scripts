@@ -74,6 +74,7 @@ Current=breath2
 CursorTheme=breeze_cursors
 EOF
 			printf "\n[Daemon]\nAutolock=false\n" >> "$WORK/etc/xdg/kscreenlockerrc"
+			printf "[super-user-command]\nsuper-user-command=sudo" > "$WORK/etc/skel/.config/kdesurc"
 			;;
 		manjaro-gnome-desktop)
 			run pacman -S --noconfirm adwaita-icon-theme adwaita-maia alacarte baobab file-roller gedit gdm gnome-backgrounds gnome-calculator gnome-control-center gnome-desktop gnome-disk-utility gnome-keyring gnome-online-accounts gnome-initial-setup gnome-screenshot gnome-session gnome-settings-daemon gnome-shell gnome-shell-extensions gnome-shell-extension-nightthemeswitcher gnome-system-log gnome-system-monitor gnome-terminal gnome-themes-standard gnome-tweak-tool gnome-user-docs gnome-wallpapers gnome-clocks gnome-todo gtksourceview-pkgbuild mutter nautilus nautilus-admin nautilus-empty-file seahorse papirus-maia-icon-theme lighter-gnome disable-tracker
