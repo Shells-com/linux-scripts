@@ -73,6 +73,7 @@ Current=breath2
 # Cursor theme used in the greeter
 CursorTheme=breeze_cursors
 EOF
+			printf "[super-user-command]\nsuper-user-command=sudo" > "$WORK/etc/skel/.config/kdesurc"
 			printf "\n[Daemon]\nAutolock=false\n" >> "$WORK/etc/skel/.config/kscreenlockerrc"
 			cat >> "$WORK/etc/skel/.config/kdeglobals" <<EOF
 [KDE Action Restrictions][$i]
