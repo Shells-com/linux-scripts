@@ -131,7 +131,7 @@ EOF
 		# grab rbdconv
 		git clone https://github.com/Shells-com/rbdconv.git
 	fi
-	php rbdconv/raw-to-rbd.php "$1-$DATE.raw" | xz -z -9 -T $(nproc) -v >"$1-$DATE.shells"
+	php rbdconv/raw-to-rbd.php "$1-$DATE.raw" | xz -z -9 -T $($(nproc) - 2) -v >"$1-$DATE.shells"
 	rm -f "$1-$DATE.raw"
 
 	# complete, list the file
