@@ -154,6 +154,9 @@ EOF
 	echo 'while true; do $HOME/.bin/shells-helper >/dev/null 2>&1; sleep 30; done &' >>"$WORK/etc/skel/.xprofile"
 	echo >>"$WORK/etc/skel/.xprofile"
 	chmod +x "$WORK/etc/skel/.xprofile"
+	
+	# set volume to 70% for PulseAudio
+	printf "\n# Set volume to 70% on boot and unmute\nset-sink-volume 0 45600\nset-sink-mute 0 no" >> "$WORK/etc/pulse/default.pa"
 
 	run pacman -Scc --noconfirm
 }
