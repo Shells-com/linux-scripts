@@ -72,6 +72,12 @@ logout=false
 action/start_new_session=false
 action/switch_user=false
 EOF
+
+			cat >"$WORK/etc/skel/.config/kscreenlockerrc" <<EOF
+[Daemon]
+Autolock=false
+EOF
+
 			;;
 		*)
 			DEBIAN_FRONTEND=noninteractive run apt-get install -y "$TASKSEL"^
@@ -87,6 +93,11 @@ action/lock_screen=false
 logout=false
 action/start_new_session=false
 action/switch_user=false
+EOF
+
+			cat >"$WORK/etc/skel/.config/kscreenlockerrc" <<EOF
+[Daemon]
+Autolock=false
 EOF
 
 	esac
