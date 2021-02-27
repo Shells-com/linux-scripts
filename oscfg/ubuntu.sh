@@ -64,10 +64,31 @@ ubuntu_cfg() {
 			echo "deb http://archive.neon.kde.org/user focal main" >"$WORK/etc/apt/sources.list.d/kde-neon.list"
 			run apt-get update
 			DEBIAN_FRONTEND=noninteractive run apt-get install -y neon-desktop
+			mkdir -p "$WORK/etc/skel/.config"
+			cat >> "$WORK/etc/skel/.config/kdeglobals" <<EOF
+[KDE Action Restrictions]
+action/lock_screen=false
+logout=false
+action/start_new_session=false
+action/switch_user=false
+EOF
 			;;
 		*)
 			DEBIAN_FRONTEND=noninteractive run apt-get install -y "$TASKSEL"^
 			;;
+	esac
+	
+	case "$1" in
+		ubuntu-*-kubuntu-desktop)
+			mkdir -p "$WORK/etc/skel/.config"
+			cat >> "$WORK/etc/skel/.config/kdeglobals" <<EOF
+[KDE Action Restrictions]
+action/lock_screen=false
+logout=false
+action/start_new_session=false
+action/switch_user=false
+EOF
+
 	esac
 
 	# ensure guest tools
@@ -189,25 +210,7 @@ gsettings set org.gnome.desktop.interface icon-theme "Material-Black-Blueberry-3
 EOF
 			;;
 	esac
-	
-	if [ -e /usr/bin/plasma_session ]; then
-		mkdir -p "$WORK/etc/skel/.config"
-		cat >"$WORK/etc/skel/.config/kscreenlockerrc" <<EOF
-[Daemon][$i]
-Autolock=false
 
-EOF
-		cat >>"$WORK/etc/skel/.config/kdeglobals" <<EOF
-
-[KDE Action Restrictions][$i]
-action/lock_screen=false
-logout=false
-action/start_new_session=false
-action/switch_user=false
-
-EOF
-
-	fi
 
 	# cleanup apt
 	run apt-get clean
