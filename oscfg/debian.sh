@@ -163,14 +163,14 @@ EOF
 # disable gnome screen blanking, logout & power management
 [org/gnome/desktop/screensaver]
 lock-enabled=false
-idle-activation-enabled=fasle
+idle-activation-enabled=false
 
 [org/gnome/desktop/lockdown]
 disable-lock-screen=true
 disable-log-out=true
 
 [org/gnome/desktop/session]
-idle-delay='0'
+idle-delay=uint32 0
 
 [org/gnome/desktop/background]
 picture-uri='file:////usr/share/backgrounds/shells_bg.png'

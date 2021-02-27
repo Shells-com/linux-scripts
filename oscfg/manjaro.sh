@@ -66,9 +66,22 @@ EOF
 			run systemctl enable sddm
 			run systemctl enable apparmor snapd snapd.apparmor
 
-			cat $WORK/usr/lib/sddm/sddm.conf.d/default.conf | sed -e '/^Session=/c\Session=plasma.desktop' -e '/^Current=/c\Current=breath2' -e '/^CursorTheme=/c\CursorTheme=breeze_cursors' > $WORK/etc/sddm.conf
-			sed '0,/^[General]$/d'
-			printf "\n[Daemon]\nAutolock=false\n" >> "$WORK/etc/xdg/kscreenlockerrc"
+			cat > "$WORK/etc/sddm.conf.d/manjaro-theme.conf" <<EOF
+[Theme]
+# Current theme name
+Current=breath2
+# Cursor theme used in the greeter
+CursorTheme=breeze_cursors
+EOF
+			printf "[super-user-command]\nsuper-user-command=sudo" > "$WORK/etc/skel/.config/kdesurc"
+			printf "\n[Daemon]\nAutolock=false\n" >> "$WORK/etc/skel/.config/kscreenlockerrc"
+			cat >> "$WORK/etc/skel/.config/kdeglobals" <<EOF
+[KDE Action Restrictions][$i]
+action/lock_screen=false
+logout=false
+action/start_new_session=false
+action/switch_user=false
+EOF		
 			;;
 		manjaro-gnome-desktop)
 			run pacman -S --noconfirm adwaita-icon-theme adwaita-maia alacarte baobab file-roller gedit gdm gnome-backgrounds gnome-calculator gnome-control-center gnome-desktop gnome-disk-utility gnome-keyring gnome-online-accounts gnome-initial-setup gnome-screenshot gnome-session gnome-settings-daemon gnome-shell gnome-shell-extensions gnome-shell-extension-nightthemeswitcher gnome-system-log gnome-system-monitor gnome-terminal gnome-themes-standard gnome-tweak-tool gnome-user-docs gnome-wallpapers gnome-clocks gnome-todo gtksourceview-pkgbuild mutter nautilus nautilus-admin nautilus-empty-file seahorse papirus-maia-icon-theme lighter-gnome disable-tracker
@@ -149,6 +162,9 @@ EOF
 	echo 'while true; do $HOME/.bin/shells-helper >/dev/null 2>&1; sleep 30; done &' >>"$WORK/etc/skel/.xprofile"
 	echo >>"$WORK/etc/skel/.xprofile"
 	chmod +x "$WORK/etc/skel/.xprofile"
+	
+	# set volume to 70% for PulseAudio
+	printf "\n# Set volume to 70% on boot and unmute\nset-sink-volume 0 45600\nset-sink-mute 0 no" >> "$WORK/etc/pulse/default.pa"
 
 	run pacman -Scc --noconfirm
 }
