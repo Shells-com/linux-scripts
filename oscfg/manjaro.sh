@@ -136,7 +136,7 @@ EOF
 
 	# Don't disable login for failed login attemps, it's difficult with stuck keys
 	echo -e "\ndeny = 0" >> "$WORK/etc/security/faillock.conf"
-	rm "$WORK/etc/sudoers.d/manjaro-apply-locale"
+	rm -f "$WORK/etc/sudoers.d/manjaro-apply-locale"
 
 	# remove ssh key files if any
 	rm -f "$WORK/etc/ssh"/ssh_host_* || true
