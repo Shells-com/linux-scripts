@@ -93,7 +93,6 @@ EOF
 			run pacman -S --noconfirm pamac-gtk pamac-flatpak-plugin pamac-gnome-integration polkit-gnome xdg-desktop-portal xdg-desktop-portal-gtk
 			run systemctl enable gdm
 			# run systemctl enable apparmor snapd snapd.apparmor
-			
 			# update locale (only needed for GIS)
 			cp /etc/locale.gen /etc/locale.gen.bak
 			cat /etc/locale.gen.bak | grep -v "# " | grep ".UTF-8" | sed 's/#//g' > /etc/locale.gen
@@ -107,8 +106,7 @@ EOF
 			cp /etc/locale.gen.bak /etc/locale.gen
 			sed -i 's|^#de_DE.UTF-8|de_DE.UTF-8|' /etc/locale.gen
 			sed -i 's|^#en_US.UTF-8|en_US.UTF-8|' /etc/locale.gen
-			
-			echo 'Hidden=true' >> "$WORK/etc/skel/.config/autostart/manjaro-hello.desktop"
+			printf '\nHidden=true' >> "$WORK/etc/skel/.config/autostart/manjaro-hello.desktop"
 			cat >"$WORK/etc/environment" <<EOF
 #
 # This file is parsed by pam_env module
@@ -148,6 +146,9 @@ EOF
 			exit 1
 			;;
 	esac
+
+	# Don't disable login for failed login attemps, it's difficult with stuck keys
+	echo -e "\ndeny = 0" >> "$WORK/etc/security/faillock.conf"
 
 	# remove ssh key files if any
 	rm -f "$WORK/etc/ssh"/ssh_host_* || true
