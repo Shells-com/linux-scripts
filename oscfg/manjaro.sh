@@ -85,7 +85,7 @@ EOF
 			;;
 		manjaro-gnome-desktop)
 			run pacman -S --noconfirm adwaita-icon-theme adwaita-maia alacarte baobab file-roller gedit gdm gnome-backgrounds gnome-calculator gnome-control-center gnome-desktop gnome-disk-utility gnome-keyring gnome-online-accounts gnome-initial-setup gnome-screenshot gnome-session gnome-settings-daemon gnome-shell gnome-shell-extensions gnome-shell-extension-nightthemeswitcher gnome-system-log gnome-system-monitor gnome-terminal gnome-themes-standard gnome-tweak-tool gnome-user-docs gnome-wallpapers gnome-clocks gnome-todo gtksourceview-pkgbuild mutter nautilus nautilus-admin nautilus-empty-file seahorse papirus-maia-icon-theme lighter-gnome disable-tracker
-			run pacman -S --noconfirm manjaro-gnome-settings-shells manjaro-gnome-extension-settings-shells manjaro-gnome-assets manjaro-gnome-postinstall manjaro-gnome-tour manjaro-gdm-theme manjaro-release manjaro-system manjaro-hello manjaro-application-utility manjaro-documentation-en nano inxi illyria-wallpaper wallpapers-juhraya wallpapers-2018 manjaro-wallpapers-18.0 manjaro-zsh-config
+			run pacman -S --noconfirm manjaro-gnome-settings-shells manjaro-gnome-extension-settings-shells manjaro-gnome-assets manjaro-gnome-tour manjaro-gdm-theme manjaro-release manjaro-system manjaro-hello manjaro-application-utility manjaro-documentation-en nano inxi illyria-wallpaper wallpapers-juhraya wallpapers-2018 manjaro-wallpapers-18.0 manjaro-zsh-config
 			run pacman -S --noconfirm firefox firefox-gnome-theme-maia 
 			run pacman -S --noconfirm onlyoffice-desktopeditors
 			run pacman -S --noconfirm pulseaudio pavucontrol 
@@ -93,6 +93,21 @@ EOF
 			run pacman -S --noconfirm pamac-gtk pamac-flatpak-plugin pamac-gnome-integration polkit-gnome xdg-desktop-portal xdg-desktop-portal-gtk
 			run systemctl enable gdm
 			# run systemctl enable apparmor snapd snapd.apparmor
+			
+			# update locale (only needed for GIS)
+			cp /etc/locale.gen /etc/locale.gen.bak
+			cat /etc/locale.gen.bak | grep -v "# " | grep ".UTF-8" | sed 's/#//g' > /etc/locale.gen
+			cd /usr/share/i18n/charmaps
+			# locale-gen can't spawn gzip when running under qemu-user, so ungzip charmap before running it
+			# and then gzip it back
+			gzip -d UTF-8.gz
+			locale-gen
+			gzip UTF-8
+			# restore backup
+			cp /etc/locale.gen.bak /etc/locale.gen
+			sed -i 's|^#de_DE.UTF-8|de_DE.UTF-8|' /etc/locale.gen
+			sed -i 's|^#en_US.UTF-8|en_US.UTF-8|' /etc/locale.gen
+			
 			echo 'Hidden=true' >> "$WORK/etc/skel/.config/autostart/manjaro-hello.desktop"
 			cat >"$WORK/etc/environment" <<EOF
 #
