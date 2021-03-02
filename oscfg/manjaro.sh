@@ -93,7 +93,7 @@ EOF
 			run pacman -S --noconfirm pamac-gtk pamac-flatpak-plugin pamac-gnome-integration polkit-gnome xdg-desktop-portal xdg-desktop-portal-gtk
 			run systemctl enable gdm
 			# run systemctl enable apparmor snapd snapd.apparmor
-			echo 'Hidden=true' >> "$WORK/etc/skel/.config/autostart/manjaro-hello.desktop"
+			printf '\nHidden=true' >> "$WORK/etc/skel/.config/autostart/manjaro-hello.desktop"
 			cat >"$WORK/etc/environment" <<EOF
 #
 # This file is parsed by pam_env module
