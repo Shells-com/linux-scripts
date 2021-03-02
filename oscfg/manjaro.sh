@@ -135,7 +135,7 @@ EOF
 	esac
 
 	# Don't disable login for failed login attemps, it's difficult with stuck keys
-	echo -e "\ndeny = 0" >> /etc/security/faillock.conf
+	echo -e "\ndeny = 0" >> "$WORK/etc/security/faillock.conf"
 
 	# remove ssh key files if any
 	rm -f "$WORK/etc/ssh"/ssh_host_* || true
