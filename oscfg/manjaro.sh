@@ -76,11 +76,15 @@ EOF
 			printf "[super-user-command]\nsuper-user-command=sudo" > "$WORK/etc/skel/.config/kdesurc"
 			printf "\n[Daemon]\nAutolock=false\n" >> "$WORK/etc/skel/.config/kscreenlockerrc"
 			cat >> "$WORK/etc/skel/.config/kdeglobals" <<EOF
-[KDE Action Restrictions][$i]
+[KDE Action Restrictions]
 action/lock_screen=false
 logout=false
 action/start_new_session=false
 action/switch_user=false
+EOF
+			cat >"$WORK/etc/skel/.config/kscreenlockerrc" <<EOF
+[Daemon]
+Autolock=false
 EOF
 			;;
 		manjaro-gnome-desktop)
