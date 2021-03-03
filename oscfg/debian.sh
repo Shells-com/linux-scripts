@@ -67,6 +67,7 @@ debian_cfg() {
 	case "$1" in
 		*desktop)
 			DEBIAN_FRONTEND=noninteractive run apt-get install -y xserver-xorg-video-qxl spice-vdagent spice-webdavd cryptsetup wine64 wine32 git bash-completion
+			run sysmtectl mask sleep.target suspend.target hibernate.target hybrid-sleep.target
 			;;
 	esac
 
@@ -74,6 +75,7 @@ debian_cfg() {
 	case "$1" in
 		debian-*-desktop)
 			DEBIAN_FRONTEND=noninteractive run apt-get install -y gnome-software guake dconf-cli
+			run systemctl mask sleep.target suspend.target hibernate.target hybrid-sleep.target
 			;;
 	esac
 
