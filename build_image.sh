@@ -4,6 +4,7 @@ set -e
 . scripts/base.sh
 . scripts/getfile.sh
 . scripts/docker.sh
+. scripts/linux.sh
 . oscfg/debian.sh
 . oscfg/ubuntu.sh
 . oscfg/manjaro.sh
