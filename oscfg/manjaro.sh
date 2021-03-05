@@ -171,6 +171,7 @@ EOF
 	fi
 
 	add_firstrun NetworkManager-wait-online.service
+	do_linux_config
 
 	# ensure networkmanager is enabled and not systemd-networkd
 	run systemctl enable NetworkManager NetworkManager-wait-online

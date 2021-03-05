@@ -71,36 +71,9 @@ if [ x"$SHELLS_USERNAME" != x ]; then
 	id >/dev/null 2>&1 "$SHELLS_USERNAME" || useradd --shell /bin/bash --password "$SHELLS_SHADOW" --create-home "$SHELLS_USERNAME"
 
 	# not all distros have the same groups, let's try to add our user to various groups that make sense, some may fail so ignore failure
-	for group in sudo audio video plugdev games users lp network storage wheel audio admin sys; do
+	for group in sudo audio video plugdev games users lp network storage wheel audio admin sys shellsuser; do
 		usermod -G "$group" -a "${SHELLS_USERNAME}" || true
 	done
-	if [ -d /etc/polkit-1/localauthority/50-local.d/ ]; then
-		# create polkit password skip option (see https://askubuntu.com/questions/614534/disable-authentication-prompts-in-15-04/614537#614537 )
-		cat >/etc/polkit-1/localauthority/50-local.d/99-nopassword.pkla <<EOF
-[No password prompt]
-Identity=unix-group:sudo
-Action=*
-ResultActive=yes
-EOF
-	elif [ x"$SHELLS_IMAGE_DISTRO" = x"debian" ]; then
-		cat >/etc/polkit-1/rules.d/49-nopasswd_global.rules <<EOF
-#nasty hack for debian
-polkit.addRule(function(action, subject) {
-    if (subject.isInGroup("sudo")) {
-        return polkit.Result.YES;
-    }
-});
-EOF
-	elif [ -d /etc/polkit-1/rules.d/ ]; then
-		cat >/etc/polkit-1/rules.d/49-nopasswd_global.rules <<EOF
-#rules for wheel based distros
-polkit.addRule(function(action, subject) {
-    if (subject.isInGroup("wheel")) {
-        return polkit.Result.YES;
-    }
-});
-EOF
-	fi
 
 	if [ x"$SHELLS_SSH" != x ]; then
 		mkdir -p "/home/$SHELLS_USERNAME/.ssh"

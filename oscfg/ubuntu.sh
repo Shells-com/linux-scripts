@@ -165,6 +165,7 @@ EOF
 
 	# add firstrun
 	add_firstrun NetworkManager-wait-online.service
+	do_linux_config
 
 	case "$1" in
 		*-desktop)

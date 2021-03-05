@@ -120,6 +120,7 @@ EOF
 
 	# add firstrun
 	add_firstrun NetworkManager-wait-online.service
+	do_linux_config
 
 	# create script to disable gnome screensaver stuff
 	if [ -f "$WORK/usr/bin/gsettings" ]; then
