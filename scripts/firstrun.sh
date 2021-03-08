@@ -149,3 +149,8 @@ fi
 if [ x"$SHELLS_CMD" != x ]; then
 	eval "$SHELLS_CMD"
 fi
+
+# FIXME: currently Manjaro shells stuck after firstrun. As a workaround we reboot
+if [ -e /etc/manjaro-release ]; then
+	reboot
+fi	
