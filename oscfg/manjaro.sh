@@ -66,6 +66,17 @@ EOF
 			run systemctl enable sddm
 			run systemctl enable apparmor snapd snapd.apparmor
 
+			sed -i -e 's|show-command-switchuser=true|show-command-switchuser=false|g' $WORK/etc/skel/.config/xfce4/panel/whiskermenu*.rc
+			sed -i -e 's|show-command-logout=true|show-command-logout=false|g' $WORK/etc/skel/.config/xfce4/panel/whiskermenu*.rc
+			sed -i -e 's|show-command-shutdown=false|show-command-shutdown=true|g' $WORK/etc/skel/.config/xfce4/panel/whiskermenu*.rc
+			sed -i -e 's|show-command-restart=false|show-command-restart=true|g' $WORK/etc/skel/.config/xfce4/panel/whiskermenu*.rc
+			
+			xfconf-query -c xfce4-session -np '/shutdown/ShowHibernate' -t 'bool' -s 'false'
+			xfconf-query -c xfce4-session -np '/shutdown/ShowSuspend' -t 'bool' -s 'false'
+			xfconf-query -c xfce4-session -np '/shutdown/ShowHybridSleep' -t 'bool' -s 'false'
+			xfconf-query -c xfce4-session -np '/shutdown/ShowSwitchUser' -t 'bool' -s 'false'
+			xfconf-query -c xfce4-session -np '/xfce4-power-manager/dpms-enabled' -t 'bool' -s 'false'
+
 			cat > "$WORK/etc/sddm.conf.d/manjaro-theme.conf" <<EOF
 [Theme]
 # Current theme name
