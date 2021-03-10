@@ -109,8 +109,8 @@ EOF
 			run systemctl enable gdm
 			# run systemctl enable apparmor snapd snapd.apparmor
 			# update locale (only needed for GIS)
-			run cp /etc/locale.gen /etc/locale.gen.bak
-			run cat /etc/locale.gen.bak | grep -v "# " | grep ".UTF-8" | sed 's/#//g' > /etc/locale.gen
+			cp "$WORK/etc/locale.gen" "$WORK/etc/locale.gen.bak"
+			cat "$WORK/etc/locale.gen.bak" | grep -v "# " | grep ".UTF-8" | sed 's/#//g' > "$WORK/etc/locale.gen"
 			cd "$WORK/usr/share/i18n/charmaps"
 			# locale-gen can't spawn gzip when running under qemu-user, so ungzip charmap before running it
 			# and then gzip it back
@@ -118,7 +118,7 @@ EOF
 			run locale-gen
 			run gzip UTF-8
 			# restore backup
-			run cp /etc/locale.gen.bak /etc/locale.gen
+			cp "$WORK/etc/locale.gen.bak" "$WORK/etc/locale.gen"
 			sed -i 's|^#de_DE.UTF-8|de_DE.UTF-8|' "$WORK/etc/locale.gen"
 			sed -i 's|^#en_US.UTF-8|en_US.UTF-8|' "$WORK/etc/locale.gen"
 			printf '\nHidden=true' >> "$WORK/etc/skel/.config/autostart/manjaro-hello.desktop"
