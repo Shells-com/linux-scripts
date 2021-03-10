@@ -66,6 +66,17 @@ EOF
 			run systemctl enable sddm
 			run systemctl enable apparmor snapd snapd.apparmor
 
+			sed -i -e 's|show-command-switchuser=true|show-command-switchuser=false|g' $WORK/etc/skel/.config/xfce4/panel/whiskermenu*.rc
+			sed -i -e 's|show-command-logout=true|show-command-logout=false|g' $WORK/etc/skel/.config/xfce4/panel/whiskermenu*.rc
+			sed -i -e 's|show-command-shutdown=false|show-command-shutdown=true|g' $WORK/etc/skel/.config/xfce4/panel/whiskermenu*.rc
+			sed -i -e 's|show-command-restart=false|show-command-restart=true|g' $WORK/etc/skel/.config/xfce4/panel/whiskermenu*.rc
+			
+			run xfconf-query -c xfce4-session -np '/shutdown/ShowHibernate' -t 'bool' -s 'false'
+			run xfconf-query -c xfce4-session -np '/shutdown/ShowSuspend' -t 'bool' -s 'false'
+			run xfconf-query -c xfce4-session -np '/shutdown/ShowHybridSleep' -t 'bool' -s 'false'
+			run xfconf-query -c xfce4-session -np '/shutdown/ShowSwitchUser' -t 'bool' -s 'false'
+			run xfconf-query -c xfce4-session -np '/xfce4-power-manager/dpms-enabled' -t 'bool' -s 'false'
+
 			cat > "$WORK/etc/sddm.conf.d/manjaro-theme.conf" <<EOF
 [Theme]
 # Current theme name
@@ -98,18 +109,18 @@ EOF
 			run systemctl enable gdm
 			# run systemctl enable apparmor snapd snapd.apparmor
 			# update locale (only needed for GIS)
-			cp /etc/locale.gen /etc/locale.gen.bak
-			cat /etc/locale.gen.bak | grep -v "# " | grep ".UTF-8" | sed 's/#//g' > /etc/locale.gen
-			cd /usr/share/i18n/charmaps
+			cp "$WORK/etc/locale.gen" "$WORK/etc/locale.gen.bak"
+			cat "$WORK/etc/locale.gen.bak" | grep -v "# " | grep ".UTF-8" | sed 's/#//g' > "$WORK/etc/locale.gen"
+			cd "$WORK/usr/share/i18n/charmaps"
 			# locale-gen can't spawn gzip when running under qemu-user, so ungzip charmap before running it
 			# and then gzip it back
-			gzip -d UTF-8.gz
-			locale-gen
-			gzip UTF-8
+			run gzip -d UTF-8.gz
+			run locale-gen
+			run gzip UTF-8
 			# restore backup
-			cp /etc/locale.gen.bak /etc/locale.gen
-			sed -i 's|^#de_DE.UTF-8|de_DE.UTF-8|' /etc/locale.gen
-			sed -i 's|^#en_US.UTF-8|en_US.UTF-8|' /etc/locale.gen
+			cp "$WORK/etc/locale.gen.bak" "$WORK/etc/locale.gen"
+			sed -i 's|^#de_DE.UTF-8|de_DE.UTF-8|' "$WORK/etc/locale.gen"
+			sed -i 's|^#en_US.UTF-8|en_US.UTF-8|' "$WORK/etc/locale.gen"
 			printf '\nHidden=true' >> "$WORK/etc/skel/.config/autostart/manjaro-hello.desktop"
 			cat >"$WORK/etc/environment" <<EOF
 #
