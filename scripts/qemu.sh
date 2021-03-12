@@ -33,6 +33,7 @@ doqemu() {
 		-blockdev '{"node-name":"libvirt-1-format","read-only":false,"driver":"qcow2","file":"libvirt-1-storage"}'
 		-device virtio-blk-pci,bus=pci.6,addr=0x0,drive=libvirt-1-format,id=virtio-disk0,bootindex=1
 		-netdev user,id=hostnet0,hostfwd=tcp::10022-:22
+		#-netdev socket,id=hostnet0,connect=:4221
 		-device virtio-net-pci,netdev=hostnet0,id=net0,mac=d2:89:f4:90:ee:76,bus=pci.3,addr=0x0
 		-chardev stdio,id=charserial0
 		-device isa-serial,chardev=charserial0,id=serial0
@@ -71,8 +72,8 @@ qemukernel() {
 
 	# ensure we have a kernel
 	if [ ! -f shells-kernel/guest-linux-x86_64/release.txt ]; then
-		getfile shells-kernel-5.10.17-1bc8925.tar.bz2 1bc8925ad16e98b58e27fe4d1772ee52ebe2b5492a40be3e3b635906c0320a4c
-		tar xjf shells-kernel-5.10.17-1bc8925.tar.bz2
+		getfile shells-kernel-5.10.23-4128a20.tar.bz2 4128a20d14e8522894c78c8372eed113e620cf95678b2f993baaee37dd5587a5
+		tar xjf shells-kernel-5.10.23-4128a20.tar.bz2
 	fi
 
 	local KVER="$(cat shells-kernel/guest-linux-x86_64/release.txt)"
