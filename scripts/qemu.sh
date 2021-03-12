@@ -1,16 +1,44 @@
 #!/bin/sh
 
-QEMUSYS="$(which qemu-system-x86_64)"
-
 doqemu() {
 	local DISK="$1"
 	shift
 
+	if [ x"$ARCH" = x ]; then
+		ARCH=x86_64
+	fi
+	local MACHINE="q35"
+	local CPU="max"
+	local VIDEO="cirrus-vga" # "virtio-gpu-pci"
+
+	case "$ARCH" in
+		x86_64)
+			MACHINE="q35,accel=kvm,usb=off,dump-guest-core=off"
+			CPU="qemu64,svm=off"
+			VIDEO="qxl-vga,ram_size=67108864,vram_size=16777216,vram64_size_mb=0,vgamem_mb=16,max_outputs=1"
+			;;
+		aarch64)
+			MACHINE="virt"
+			;;
+		arm64)
+			ARCH="aarch64"
+			MACHINE="virt"
+			;;
+		ppc64)
+			MACHINE="pseries"
+			;;
+		*)
+			echo "unsupported value for ARCH; $ARCH"
+			exit 1
+	esac
+
+	local QEMUSYS="$(which "qemu-system-$ARCH")"
+
 	OPTS=(
 		-name guest=shell-xxxxxx-xxxx-xxxx-xxxx-xxxxxxxx,debug-threads=on
 		# -object secret,id=masterKey0,format=raw,file=.../master-key.aes
-		-machine q35,accel=kvm,usb=off,dump-guest-core=off
-		-cpu qemu64,svm=off
+		-machine "$MACHINE"
+		-cpu "$CPU"
 		-m 8192 -overcommit mem-lock=off
 		-smp 4,sockets=1,dies=1,cores=4,threads=1
 		-uuid bdef7bde-f7bd-ef7b-def7-bdef7bdef7bd
@@ -35,8 +63,9 @@ doqemu() {
 		-netdev user,id=hostnet0,hostfwd=tcp::10022-:22
 		#-netdev socket,id=hostnet0,connect=:4221
 		-device virtio-net-pci,netdev=hostnet0,id=net0,mac=d2:89:f4:90:ee:76,bus=pci.3,addr=0x0
-		-chardev stdio,id=charserial0
-		-device isa-serial,chardev=charserial0,id=serial0
+		#-chardev stdio,id=charserial0
+		#-device isa-serial,chardev=charserial0,id=serial0
+		-serial stdio
 		#-chardev socket,id=charchannel0,fd=34,server,nowait
 		#-device virtserialport,bus=virtio-serial0.0,nr=1,chardev=charchannel0,id=channel0,name=org.qemu.guest_agent.0
 		-chardev spicevmc,id=charchannel1,name=vdagent
@@ -47,7 +76,7 @@ doqemu() {
 		-device virtserialport,bus=virtio-serial0.0,nr=4,chardev=charchannel3,id=channel3,name=org.spice-space.webdav.0
 		-device usb-tablet,id=input2,bus=usb.0,port=1
 		-spice port=19308,addr=127.0.0.1,image-compression=auto_glz,jpeg-wan-compression=always,zlib-glz-wan-compression=always,playback-compression=on,seamless-migration=on
-		-device qxl-vga,id=video0,ram_size=67108864,vram_size=16777216,vram64_size_mb=0,vgamem_mb=16,max_outputs=1,bus=pcie.0,addr=0x1
+		-device "$VIDEO,id=video0,bus=pcie.0,addr=0x1"
 		-device intel-hda,id=sound0,bus=pci.2,addr=0x1
 		-device hda-duplex,id=sound0-codec0,bus=sound0.0,cad=0
 		#-chardev spicevmc,id=charredir0,name=usbredir
@@ -76,12 +105,27 @@ qemukernel() {
 		tar xjf shells-kernel-5.10.23-4128a20.tar.bz2
 	fi
 
-	local KVER="$(cat shells-kernel/guest-linux-x86_64/release.txt)"
+	if [ x"$ARCH" = x ]; then
+		ARCH=x86_64
+	fi
+
+	local KARCH="x86_64"
+
+	case $ARCH in
+		aarch64)
+			KARCH="arm64"
+			;;
+		*)
+			KARCH="$ARCH"
+			;;
+	esac
+
+	local KVER="$(cat shells-kernel/guest-linux-$KARCH/release.txt)"
 	echo "Running linux $KVER"
 
-	local KERNEL="shells-kernel/guest-linux-x86_64/linux-${KVER}.img"
-	local INITRD="shells-kernel/guest-linux-x86_64/initrd-${KVER}.img"
-	local MODULES="shells-kernel/guest-linux-x86_64/modules-${KVER}.squashfs"
+	local KERNEL="shells-kernel/guest-linux-$KARCH/linux-${KVER}.img"
+	local INITRD="shells-kernel/guest-linux-$KARCH/initrd-${KVER}.img"
+	local MODULES="shells-kernel/guest-linux-$KARCH/modules-${KVER}.squashfs"
 
 	OPTS=(
 		-device pcie-root-port,port=0x15,chassis=8,id=pci.8,bus=pcie.0,addr=0x2.0x5
