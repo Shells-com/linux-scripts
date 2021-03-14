@@ -114,9 +114,9 @@ EOF
 			cd "$WORK/usr/share/i18n/charmaps"
 			# locale-gen can't spawn gzip when running under qemu-user, so ungzip charmap before running it
 			# and then gzip it back
-			run gzip -d UTF-8.gz
+			gzip -d UTF-8.gz
 			run locale-gen
-			run gzip UTF-8
+			gzip UTF-8
 			# restore backup
 			cp "$WORK/etc/locale.gen.bak" "$WORK/etc/locale.gen"
 			sed -i 's|^#de_DE.UTF-8|de_DE.UTF-8|' "$WORK/etc/locale.gen"
