@@ -35,7 +35,15 @@ manjaro_cfg() {
 			run pacman -S --noconfirm pamac-gtk pamac-snap-plugin pamac-flatpak-plugin
 			run systemctl enable lightdm
 			run systemctl enable apparmor snapd snapd.apparmor
-
+			sed -i -e 's|show-command-switchuser=true|show-command-switchuser=false|g' $WORK/etc/skel/.config/xfce4/panel/whiskermenu*.rc
+			sed -i -e 's|show-command-logout=true|show-command-logout=false|g' $WORK/etc/skel/.config/xfce4/panel/whiskermenu*.rc
+			sed -i -e 's|show-command-shutdown=false|show-command-shutdown=true|g' $WORK/etc/skel/.config/xfce4/panel/whiskermenu*.rc
+			sed -i -e 's|show-command-restart=false|show-command-restart=true|g' $WORK/etc/skel/.config/xfce4/panel/whiskermenu*.rc
+			run xfconf-query -c xfce4-session -np '/shutdown/ShowHibernate' -t 'bool' -s 'false'
+			run xfconf-query -c xfce4-session -np '/shutdown/ShowSuspend' -t 'bool' -s 'false'
+			run xfconf-query -c xfce4-session -np '/shutdown/ShowHybridSleep' -t 'bool' -s 'false'
+			run xfconf-query -c xfce4-session -np '/shutdown/ShowSwitchUser' -t 'bool' -s 'false'
+			run xfconf-query -c xfce4-session -np '/xfce4-power-manager/dpms-enabled' -t 'bool' -s 'false'
 			cat >"$WORK/etc/lightdm/lightdm-gtk-greeter.conf" <<EOF
 [greeter]
 background = /usr/share/backgrounds/illyria-default-lockscreen.jpg
@@ -65,18 +73,6 @@ EOF
 			run pacman -S --noconfirm pamac-gtk pamac-snap-plugin pamac-flatpak-plugin pamac-tray-icon-plasma xdg-desktop-portal xdg-desktop-portal-kde
 			run systemctl enable sddm
 			run systemctl enable apparmor snapd snapd.apparmor
-
-			sed -i -e 's|show-command-switchuser=true|show-command-switchuser=false|g' $WORK/etc/skel/.config/xfce4/panel/whiskermenu*.rc
-			sed -i -e 's|show-command-logout=true|show-command-logout=false|g' $WORK/etc/skel/.config/xfce4/panel/whiskermenu*.rc
-			sed -i -e 's|show-command-shutdown=false|show-command-shutdown=true|g' $WORK/etc/skel/.config/xfce4/panel/whiskermenu*.rc
-			sed -i -e 's|show-command-restart=false|show-command-restart=true|g' $WORK/etc/skel/.config/xfce4/panel/whiskermenu*.rc
-			
-			run xfconf-query -c xfce4-session -np '/shutdown/ShowHibernate' -t 'bool' -s 'false'
-			run xfconf-query -c xfce4-session -np '/shutdown/ShowSuspend' -t 'bool' -s 'false'
-			run xfconf-query -c xfce4-session -np '/shutdown/ShowHybridSleep' -t 'bool' -s 'false'
-			run xfconf-query -c xfce4-session -np '/shutdown/ShowSwitchUser' -t 'bool' -s 'false'
-			run xfconf-query -c xfce4-session -np '/xfce4-power-manager/dpms-enabled' -t 'bool' -s 'false'
-
 			cat > "$WORK/etc/sddm.conf.d/manjaro-theme.conf" <<EOF
 [Theme]
 # Current theme name
