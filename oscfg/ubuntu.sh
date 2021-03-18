@@ -85,7 +85,9 @@ EOF
 			echo "deb http://packages.linuxmint.com ulyssa main upstream import backport" >"$WORK/etc/apt/sources.list.d/linux-mint.list"
 			run apt-get update
 			DEBIAN_FRONTEND=noninteractive run apt-get install -y cinnamon-session cinnamon nemo mint-info-cinnamon mintmenu mint-x-icons mintsystem mintwelcome
-			DEBIAN_FRONTEND=noninteractive run apt-get install -y firefox lightdm
+			DEBIAN_FRONTEND=noninteractive run apt-get install -y firefox lightdm gdisk gdebi fwupd friendly-recovery gnome-terminal cinnamon-control-center
+			DEBIAN_FRONTEND=noninteractive run apt-get install -y mint-mirrors mint-artwork mint-backgrounds-ulyana mint-themes mintbackup mintdrivers mintinstall
+			DEBIAN_FRONTEND=noninteractive run apt-get install -y mintupdate nemo libreoffice flatpak rhythmbox redshift p7zip-full openvpn
 			DEBIAN_FRONTEND=noninteractive run apt purge -y gdm3
 			;;
 	esac
