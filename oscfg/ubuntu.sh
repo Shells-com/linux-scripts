@@ -59,15 +59,53 @@ ubuntu_cfg() {
 
 	case "$TASKSEL" in
 		kde-neon-desktop)
-			run apt-get install gnupg
+			DEBIAN_FRONTEND=noninteractive run apt-get install -y gnupg
 			curl -s https://archive.neon.kde.org/public.key | run apt-key add -
 			echo "deb http://archive.neon.kde.org/user focal main" >"$WORK/etc/apt/sources.list.d/kde-neon.list"
 			run apt-get update
 			DEBIAN_FRONTEND=noninteractive run apt-get install -y neon-desktop
+			mkdir -p "$WORK/etc/skel/.config"
+			cat >> "$WORK/etc/skel/.config/kdeglobals" <<EOF
+[KDE Action Restrictions]
+action/lock_screen=false
+logout=false
+action/start_new_session=false
+action/switch_user=false
+EOF
+
+			cat >"$WORK/etc/skel/.config/kscreenlockerrc" <<EOF
+[Daemon]
+Autolock=false
+EOF
+
 			;;
-		*)
-			DEBIAN_FRONTEND=noninteractive run apt-get install -y "$TASKSEL"^
+		mint-cinnamon-desktop)
+			DEBIAN_FRONTEND=noninteractive run apt-get install -y gnupg
+			run apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 302F0738F465C1535761F965A6616109451BBBF2
+			echo "deb http://packages.linuxmint.com ulyssa main upstream import backport" >"$WORK/etc/apt/sources.list.d/linux-mint.list"
+			run apt-get update
+			DEBIAN_FRONTEND=noninteractive run apt-get install -y cinnamon-session cinnamon nemo mint-info-cinnamon mintmenu mint-x-icons mintsystem mintwelcome
+			DEBIAN_FRONTEND=noninteractive run apt-get install -y firefox lightdm
+			DEBIAN_FRONTEND=noninteractive run apt purge -y gdm3
 			;;
+	esac
+	
+	case "$1" in
+		ubuntu-*-kubuntu-desktop)
+			mkdir -p "$WORK/etc/skel/.config"
+			cat >> "$WORK/etc/skel/.config/kdeglobals" <<EOF
+[KDE Action Restrictions]
+action/lock_screen=false
+logout=false
+action/start_new_session=false
+action/switch_user=false
+EOF
+
+			cat >"$WORK/etc/skel/.config/kscreenlockerrc" <<EOF
+[Daemon]
+Autolock=false
+EOF
+
 	esac
 
 	# ensure guest tools
@@ -84,11 +122,13 @@ ubuntu_cfg() {
 			;;
 	esac
 
+	DEBIAN_FRONTEND=noninteractive run apt-get install -y network-manager
+
 	# fix network config
 	cat >"$WORK/etc/netplan/config.yaml" <<EOF
 network:
   version: 2
-  renderer: networkd
+  renderer: NetworkManager
   ethernets:
     eth0:
       match:
@@ -130,23 +170,26 @@ EOF
 	fi
 
 	# add firstrun
-	add_firstrun systemd-networkd-wait-online.service
+	add_firstrun NetworkManager-wait-online.service
+	do_linux_config
 
-	# create script to disable gnome screensaver stuff
-	if [ -f "$WORK/usr/bin/gsettings" ]; then
-		if [ -d "$WORK/usr/share/backgrounds" ]; then
-			# install wallpaper
-			cp "$RESDIR/shells_bg.png" "$WORK/usr/share/backgrounds/shells_bg.png"
-		fi
+	case "$1" in
+		*-desktop)
 
-		if [ -d "$WORK/usr/share/themes/" ]; then
-			# download theme
-			unzip -o "$RESDIR/Material-Black-Blueberry-3.36_1.8.9.zip" -d "$WORK/usr/share/themes/"
-		fi
+			# create script to disable gnome screensaver stuff
+			if [ -d "$WORK/usr/share/backgrounds" ]; then
+				# install wallpaper
+				cp "$RESDIR/shells_bg.png" "$WORK/usr/share/backgrounds/shells_bg.png"
+			fi
 
-		# setup wine mime type
-		mkdir -p "$WORK/etc/skel/.local/share/applications"
-		cat >"$WORK/etc/skel/.local/share/applications/wine.desktop" <<EOF
+			if [ -d "$WORK/usr/share/themes/" ]; then
+				# download theme
+				unzip -o "$RESDIR/Material-Black-Blueberry-3.36_1.8.9.zip" -d "$WORK/usr/share/themes/"
+			fi
+
+			# setup wine mime type
+			mkdir -p "$WORK/etc/skel/.local/share/applications"
+			cat >"$WORK/etc/skel/.local/share/applications/wine.desktop" <<EOF
 [Desktop Entry]
 Name=Wine
 Comment=Run Windows Applications
@@ -157,16 +200,21 @@ Type=Application
 Categories=Utility;
 NoDisplay=true
 EOF
-		cat >"$WORK/etc/skel/.local/share/applications/mimeapps.list" <<EOF
+			cat >"$WORK/etc/skel/.local/share/applications/mimeapps.list" <<EOF
 [Default Applications]
 application/x-ms-dos-executable=wine.desktop
 EOF
+			;;
+	esac
 
-		cat >>"$WORK/etc/skel/.xprofile" <<EOF
+	case "$1" in
+		ubuntu-*-ubuntu-desktop)
+			cat >>"$WORK/etc/skel/.xprofile" <<EOF
 # disable gnome screen blanking & power management
 gsettings set org.gnome.desktop.screensaver lock-enabled false
 gsettings set org.gnome.desktop.screensaver idle-activation-enabled false
 gsettings set org.gnome.desktop.lockdown disable-lock-screen true
+gsettings set org.gnome.desktop.lockdown disable-log-out true
 gsettings set org.gnome.desktop.session idle-delay 0
 gsettings set org.gnome.settings-daemon.plugins.power active false
 
@@ -178,7 +226,9 @@ gsettings set org.gnome.desktop.interface gtk-theme "Material-Black-Blueberry-3.
 gsettings set org.gnome.desktop.interface icon-theme "Material-Black-Blueberry-3.36"
 
 EOF
-	fi
+			;;
+	esac
+
 
 	# cleanup apt
 	run apt-get clean

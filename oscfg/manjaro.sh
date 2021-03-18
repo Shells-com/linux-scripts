@@ -27,7 +27,7 @@ manjaro_cfg() {
 	case "$1" in
 		manjaro-desktop)
 			run pacman -S --noconfirm xfce4 ttf-dejavu lightdm-gtk-greeter-settings accountsservice xfce4-goodies xfce4-pulseaudio-plugin mugshot engrampa catfish screenfetch network-manager-applet noto-fonts noto-fonts-cjk
-			run pacman -S --noconfirm manjaro-xfce-settings manjaro-release manjaro-firmware manjaro-system manjaro-hello manjaro-application-utility manjaro-settings-manager-notifier manjaro-documentation-en manjaro-browser-settings nano inxi
+			run pacman -S --noconfirm manjaro-xfce-settings manjaro-release manjaro-firmware manjaro-system manjaro-hello manjaro-application-utility manjaro-documentation-en manjaro-browser-settings nano inxi
 			run pacman -S --noconfirm firefox thunderbird
 			run pacman -S --noconfirm onlyoffice-desktopeditors
 			run pacman -S --noconfirm pulseaudio pavucontrol 
@@ -35,7 +35,26 @@ manjaro_cfg() {
 			run pacman -S --noconfirm pamac-gtk pamac-snap-plugin pamac-flatpak-plugin
 			run systemctl enable lightdm
 			run systemctl enable apparmor snapd snapd.apparmor
+			sed -i -e 's|show-command-switchuser=true|show-command-switchuser=false|g' $WORK/etc/skel/.config/xfce4/panel/whiskermenu*.rc
+			sed -i -e 's|show-command-logout=true|show-command-logout=false|g' $WORK/etc/skel/.config/xfce4/panel/whiskermenu*.rc
+			sed -i -e 's|show-command-shutdown=false|show-command-shutdown=true|g' $WORK/etc/skel/.config/xfce4/panel/whiskermenu*.rc
+			sed -i -e 's|show-command-restart=false|show-command-restart=true|g' $WORK/etc/skel/.config/xfce4/panel/whiskermenu*.rc
+			mkdir -p "$WORK/etc/skel/.config/xfce4/xfconf/xfce-perchannel-xml/"
+			cat >"$WORK/etc/skel/.config/xfce4/xfconf/xfce-perchannel-xml/xfce4-session.xml" <<EOF
+<?xml version="1.0" encoding="UTF-8"?>
 
+<channel name="xfce4-session" version="1.0">
+  <property name="shutdown" type="empty">
+    <property name="ShowHibernate" type="bool" value="false"/>
+    <property name="ShowSuspend" type="bool" value="false"/>
+    <property name="ShowHybridSleep" type="bool" value="false"/>
+    <property name="ShowSwitchUser" type="bool" value="false"/>
+  </property>
+  <property name="xfce4-power-manager" type="empty">
+    <property name="dpms-enabled" type="bool" value="false"/>
+  </property>
+</channel>
+EOF
 			cat >"$WORK/etc/lightdm/lightdm-gtk-greeter.conf" <<EOF
 [greeter]
 background = /usr/share/backgrounds/illyria-default-lockscreen.jpg
@@ -57,7 +76,7 @@ EOF
 			;;
 		manjaro-kde-desktop)
 			run pacman -S --noconfirm plasma-meta ark dolphin dolphin-plugins kate kcalc kfind okular kget libktorrent kdenetwork-filesharing kio-extras konsole konversation ksystemlog kwalletmanager gwenview spectacle kdegraphics-thumbnailers ffmpegthumbs ruby kimageformats qt5-imageformats systemd-kcm yakuake vlc oxygen-icons kaccounts-providers
-			run pacman -S --noconfirm manjaro-kde-settings manjaro-release manjaro-firmware manjaro-system manjaro-hello manjaro-application-utility manjaro-documentation-en manjaro-browser-settings manjaro-settings-manager-kcm manjaro-settings-manager-knotifier sddm-breath2-theme nano inxi illyria-wallpaper wallpapers-juhraya wallpapers-2018 manjaro-wallpapers-18.0
+			run pacman -S --noconfirm manjaro-kde-settings manjaro-release manjaro-firmware manjaro-system manjaro-hello manjaro-application-utility manjaro-documentation-en manjaro-browser-settings sddm-breath2-theme nano inxi illyria-wallpaper wallpapers-juhraya wallpapers-2018 manjaro-wallpapers-18.0
 			run pacman -S --noconfirm firefox thunderbird
 			run pacman -S --noconfirm onlyoffice-desktopeditors
 			run pacman -S --noconfirm pulseaudio pavucontrol 
@@ -65,13 +84,30 @@ EOF
 			run pacman -S --noconfirm pamac-gtk pamac-snap-plugin pamac-flatpak-plugin pamac-tray-icon-plasma xdg-desktop-portal xdg-desktop-portal-kde
 			run systemctl enable sddm
 			run systemctl enable apparmor snapd snapd.apparmor
-
-			cat $WORK/usr/lib/sddm/sddm.conf.d/default.conf | sed -e '/^Session=/c\Session=plasma.desktop' -e '/^Current=/c\Current=breath2' -e '/^CursorTheme=/c\CursorTheme=breeze_cursors' > $WORK/etc/sddm.conf
-			printf "\n[Daemon]\nAutolock=false\n" >> "$WORK/etc/xdg/kscreenlockerrc"
+			cat > "$WORK/etc/sddm.conf.d/manjaro-theme.conf" <<EOF
+[Theme]
+# Current theme name
+Current=breath2
+# Cursor theme used in the greeter
+CursorTheme=breeze_cursors
+EOF
+			printf "[super-user-command]\nsuper-user-command=sudo" > "$WORK/etc/skel/.config/kdesurc"
+			printf "\n[Daemon]\nAutolock=false\n" >> "$WORK/etc/skel/.config/kscreenlockerrc"
+			cat >> "$WORK/etc/skel/.config/kdeglobals" <<EOF
+[KDE Action Restrictions]
+action/lock_screen=false
+logout=false
+action/start_new_session=false
+action/switch_user=false
+EOF
+			cat >"$WORK/etc/skel/.config/kscreenlockerrc" <<EOF
+[Daemon]
+Autolock=false
+EOF
 			;;
 		manjaro-gnome-desktop)
 			run pacman -S --noconfirm adwaita-icon-theme adwaita-maia alacarte baobab file-roller gedit gdm gnome-backgrounds gnome-calculator gnome-control-center gnome-desktop gnome-disk-utility gnome-keyring gnome-online-accounts gnome-initial-setup gnome-screenshot gnome-session gnome-settings-daemon gnome-shell gnome-shell-extensions gnome-shell-extension-nightthemeswitcher gnome-system-log gnome-system-monitor gnome-terminal gnome-themes-standard gnome-tweak-tool gnome-user-docs gnome-wallpapers gnome-clocks gnome-todo gtksourceview-pkgbuild mutter nautilus nautilus-admin nautilus-empty-file seahorse papirus-maia-icon-theme lighter-gnome disable-tracker
-			run pacman -S --noconfirm manjaro-gnome-settings-shells manjaro-gnome-assets manjaro-gnome-postinstall manjaro-gnome-tour manjaro-gdm-theme manjaro-release manjaro-system manjaro-hello manjaro-application-utility manjaro-documentation-en nano inxi illyria-wallpaper wallpapers-juhraya wallpapers-2018 manjaro-wallpapers-18.0 manjaro-zsh-config
+			run pacman -S --noconfirm manjaro-gnome-settings-shells manjaro-gnome-extension-settings-shells manjaro-gnome-assets manjaro-gnome-tour manjaro-gdm-theme manjaro-release manjaro-system manjaro-hello manjaro-application-utility manjaro-documentation-en nano inxi illyria-wallpaper wallpapers-juhraya wallpapers-2018 manjaro-wallpapers-18.0 manjaro-zsh-config
 			run pacman -S --noconfirm firefox firefox-gnome-theme-maia 
 			run pacman -S --noconfirm onlyoffice-desktopeditors
 			run pacman -S --noconfirm pulseaudio pavucontrol 
@@ -79,7 +115,19 @@ EOF
 			run pacman -S --noconfirm pamac-gtk pamac-flatpak-plugin pamac-gnome-integration polkit-gnome xdg-desktop-portal xdg-desktop-portal-gtk
 			run systemctl enable gdm
 			# run systemctl enable apparmor snapd snapd.apparmor
-
+			# update locale (only needed for GIS)
+			cp "$WORK/etc/locale.gen" "$WORK/etc/locale.gen.bak"
+			cat "$WORK/etc/locale.gen.bak" | grep -v "# " | grep ".UTF-8" | sed 's/#//g' > "$WORK/etc/locale.gen"
+			# locale-gen can't spawn gzip when running under qemu-user, so ungzip charmap before running it
+			# and then gzip it back
+			gzip -d "$WORK/usr/share/i18n/charmaps/UTF-8.gz"
+			run locale-gen
+			gzip "$WORK/usr/share/i18n/charmaps/UTF-8"
+			# restore backup
+			cp "$WORK/etc/locale.gen.bak" "$WORK/etc/locale.gen"
+			sed -i 's|^#de_DE.UTF-8|de_DE.UTF-8|' "$WORK/etc/locale.gen"
+			sed -i 's|^#en_US.UTF-8|en_US.UTF-8|' "$WORK/etc/locale.gen"
+			printf '\nHidden=true' >> "$WORK/etc/skel/.config/autostart/manjaro-hello.desktop"
 			cat >"$WORK/etc/environment" <<EOF
 #
 # This file is parsed by pam_env module
@@ -120,6 +168,9 @@ EOF
 			;;
 	esac
 
+	# Don't disable login for failed login attemps, it's difficult with stuck keys
+	echo -e "\ndeny = 0" >> "$WORK/etc/security/faillock.conf"
+
 	# remove ssh key files if any
 	rm -f "$WORK/etc/ssh"/ssh_host_* || true
 
@@ -137,6 +188,7 @@ EOF
 	fi
 
 	add_firstrun NetworkManager-wait-online.service
+	do_linux_config
 
 	# ensure networkmanager is enabled and not systemd-networkd
 	run systemctl enable NetworkManager NetworkManager-wait-online
@@ -148,6 +200,9 @@ EOF
 	echo 'while true; do $HOME/.bin/shells-helper >/dev/null 2>&1; sleep 30; done &' >>"$WORK/etc/skel/.xprofile"
 	echo >>"$WORK/etc/skel/.xprofile"
 	chmod +x "$WORK/etc/skel/.xprofile"
+	
+	# set volume to 70% for PulseAudio
+	printf "\n# Set volume to 70% on boot and unmute\nset-sink-volume 0 45600\nset-sink-mute 0 no" >> "$WORK/etc/pulse/default.pa"
 
 	run pacman -Scc --noconfirm
 }

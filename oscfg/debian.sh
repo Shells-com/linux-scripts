@@ -66,14 +66,16 @@ debian_cfg() {
 	# ensure guest tools
 	case "$1" in
 		*desktop)
-			DEBIAN_FRONTEND=noninteractive run apt-get install -y xserver-xorg-video-qxl spice-vdagent spice-webdavd cryptsetup wine64 wine32 git
+			DEBIAN_FRONTEND=noninteractive run apt-get install -y xserver-xorg-video-qxl spice-vdagent spice-webdavd cryptsetup wine64 wine32 git bash-completion
+			run systemctl mask sleep.target suspend.target hibernate.target hybrid-sleep.target
 			;;
 	esac
 
 	# if gnome
 	case "$1" in
 		debian-*-desktop)
-			DEBIAN_FRONTEND=noninteractive run apt-get install -y gnome-software guake
+			DEBIAN_FRONTEND=noninteractive run apt-get install -y gnome-software guake dconf-cli
+			run systemctl mask sleep.target suspend.target hibernate.target hybrid-sleep.target
 			;;
 	esac
 
@@ -84,7 +86,7 @@ debian_cfg() {
 	cat >"$WORK/etc/netplan/config.yaml" <<EOF
 network:
   version: 2
-  renderer: networkd
+  renderer: NetworkManager
   ethernets:
     eth0:
       match:
@@ -109,15 +111,16 @@ EOF
 		cd "$O"
 	fi
 
-	# new .xprofile file
-	echo "#!/bin/sh" >"$WORK/etc/skel/.xprofile"
-	echo "xset s off" >>"$WORK/etc/skel/.xprofile"
-	echo 'while true; do $HOME/.bin/shells-helper >/dev/null 2>&1; sleep 30; done &' >>"$WORK/etc/skel/.xprofile"
-	echo >>"$WORK/etc/skel/.xprofile"
-	chmod +x "$WORK/etc/skel/.xprofile"
+	# new .profile file
+	echo "#!/bin/sh" >"$WORK/etc/skel/.profile"
+	echo "xset s off" >>"$WORK/etc/skel/.profile"
+	echo 'while true; do $HOME/.bin/shells-helper >/dev/null 2>&1; sleep 30; done &' >>"$WORK/etc/skel/.profile"
+	echo >>"$WORK/etc/skel/.profile"
+	chmod +x "$WORK/etc/skel/.profile"
 
 	# add firstrun
-	add_firstrun systemd-networkd-wait-online.service
+	add_firstrun NetworkManager-wait-online.service
+	do_linux_config
 
 	# create script to disable gnome screensaver stuff
 	if [ -f "$WORK/usr/bin/gsettings" ]; then
@@ -149,20 +152,35 @@ EOF
 application/x-ms-dos-executable=wine.desktop
 EOF
 
-		cat >>"$WORK/etc/skel/.xprofile" <<EOF
-# disable gnome screen blanking & power management
-gsettings set org.gnome.desktop.screensaver lock-enabled false
-gsettings set org.gnome.desktop.screensaver idle-activation-enabled false
-gsettings set org.gnome.desktop.lockdown disable-lock-screen true
-gsettings set org.gnome.desktop.session idle-delay 0
-gsettings set org.gnome.settings-daemon.plugins.power active false
+		mkdir -p "$WORK/etc/dconf/profile"
 
-# set wallpaper
-gsettings set org.gnome.desktop.background picture-uri file:////usr/share/backgrounds/shells_bg.png
+		cat >>"$WORK/etc/dconf/profile/user" <<EOF
+service-db:keyfile/user
 
-# set theme
-gsettings set org.gnome.desktop.interface gtk-theme "Material-Black-Blueberry-3.36"
-gsettings set org.gnome.desktop.interface icon-theme "Material-Black-Blueberry-3.36"
+EOF
+
+		mkdir -p "$WORK/etc/skel/.config/dconf"
+		run dconf dump / > "$WORK/etc/skel/.config/dconf/user.txt"
+		
+		cat >>"$WORK/etc/skel/.config/dconf/user.txt" <<EOF
+# disable gnome screen blanking, logout & power management
+[org/gnome/desktop/screensaver]
+lock-enabled=false
+idle-activation-enabled=false
+
+[org/gnome/desktop/lockdown]
+disable-lock-screen=true
+disable-log-out=true
+
+[org/gnome/desktop/session]
+idle-delay=uint32 0
+
+[org/gnome/desktop/background]
+picture-uri='file:////usr/share/backgrounds/shells_bg.png'
+
+[org/gnome/desktop/interface]
+gtk-theme='Material-Black-Blueberry-3.36'
+icon-theme='Material-Black-Blueberry-3.36'
 
 EOF
 	fi

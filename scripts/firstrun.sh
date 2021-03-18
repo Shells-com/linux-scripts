@@ -1,30 +1,49 @@
 #!/bin/bash
 set -e
 
+# load /etc/shells-release, will set SHELLS_IMAGE_CODE & SHELLS_IMAGE_TAG
+# shellcheck disable=SC1091
+. /etc/shells-release
+SHELLS_IMAGE_DISTRO="${SHELLS_IMAGE_CODE/-*}"
+
 # sometimes PATH doesn't have all paths, let's make sure we do
 PATH="/usr/sbin:/sbin:/usr/bin:/bin"
 
 # Script to perform initial configuration on linux for Shells™
 # To be saved in /.firstrun.sh
 
+SYSTEM_UUID="$(cat /sys/class/dmi/id/product_uuid)"
+
 # force regen of machine-id
-rm -f /etc/machine-id
-/usr/bin/dbus-uuidgen --ensure=/etc/machine-id
+rm -f /etc/machine-id /var/lib/dbus/machine-id || true
+/usr/bin/dbus-uuidgen --ensure
 
 # ensure ssh host keys if ssh is installed
 if [ -f /usr/bin/ssh-keygen ]; then
 	/usr/bin/ssh-keygen -A
 fi
 
-# get internal API token
-TOKEN="$(curl -s -X PUT "http://169.254.169.254/latest/api/token" -H "X-shells-metadata-token-ttl-seconds: 300")"
+if [ x"$SYSTEM_UUID" = x"bdef7bde-f7bd-ef7b-def7-bdef7bdef7bd" ]; then
+	# test mode
+	SHELLS_HS="localhost"
+	SHELLS_USERNAME="test"
+	SHELLS_SSH=""
+	SHELLS_TZ="UTC"
+	# shellcheck disable=SC2016
+	SHELLS_SHADOW='$6$m6x66dqWClittWFo$oY7sYQAZAwPELORe6HOKuxxlrZ1QBP7RvCaMG3tAIoGXC5Bbp.IeIssMEXLIupvBIpXa1NyeWmgXJeggiuWO91' # "test"
+	SHELLS_CMD=""
+else
+	# get internal API token
+	TOKEN="$(curl -s -X PUT "http://169.254.169.254/latest/api/token" -H "X-shells-metadata-token-ttl-seconds: 300")"
 
-# get various values from the API
-SHELLS_HS="$(curl -s -H "X-shells-metadata-token: $TOKEN" "http://169.254.169.254/latest/meta-data/hostname")"
-SHELLS_USERNAME="$(curl -s -H "X-shells-metadata-token: $TOKEN" "http://169.254.169.254/latest/meta-data/username")"
-SHELLS_SSH="$(curl -s -H "X-shells-metadata-token: $TOKEN" "http://169.254.169.254/latest/meta-data/public-keys/*/openssh-key")"
-SHELLS_TZ="$(curl -s -H "X-shells-metadata-token: $TOKEN" "http://169.254.169.254/latest/meta-data/timezone")"
-SHELLS_CMD="$(curl -s -H "X-shells-metadata-token: $TOKEN" "http://169.254.169.254/latest/meta-data/firstrun")"
+	# get various values from the API
+	SHELLS_HS="$(curl -s -H "X-shells-metadata-token: $TOKEN" "http://169.254.169.254/latest/meta-data/hostname")"
+	SHELLS_USERNAME="$(curl -s -H "X-shells-metadata-token: $TOKEN" "http://169.254.169.254/latest/meta-data/username")"
+	SHELLS_SSH="$(curl -s -H "X-shells-metadata-token: $TOKEN" "http://169.254.169.254/latest/meta-data/public-keys/*/openssh-key")"
+	SHELLS_TZ="$(curl -s -H "X-shells-metadata-token: $TOKEN" "http://169.254.169.254/latest/meta-data/timezone")"
+	SHELLS_SHADOW=''
+	SHELLS_CMD="$(curl -s -H "X-shells-metadata-token: $TOKEN" "http://169.254.169.254/latest/meta-data/firstrun")"
+fi
 
 # create /etc/hostname & /etc/hosts based on $SHELLS_HS
 if [ x"$SHELLS_HS" != x ]; then
@@ -49,21 +68,12 @@ fi
 # create passwordless user
 if [ x"$SHELLS_USERNAME" != x ]; then
 	# only create user if not existing yet
-	id >/dev/null 2>&1 "$SHELLS_USERNAME" || useradd --shell /bin/bash --create-home "$SHELLS_USERNAME"
+	id >/dev/null 2>&1 "$SHELLS_USERNAME" || useradd --shell /bin/bash --password "$SHELLS_SHADOW" --create-home "$SHELLS_USERNAME"
 
 	# not all distros have the same groups, let's try to add our user to various groups that make sense, some may fail so ignore failure
-	for group in sudo audio video plugdev games users lp network storage wheel audio; do
+	for group in sudo audio video plugdev games users lp network storage wheel audio admin sys shellsuser; do
 		usermod -G "$group" -a "${SHELLS_USERNAME}" || true
 	done
-	if [ -d /etc/polkit-1/localauthority/50-local.d/ ]; then
-		# create polkit password skip option (see https://askubuntu.com/questions/614534/disable-authentication-prompts-in-15-04/614537#614537 )
-		cat >/etc/polkit-1/localauthority/50-local.d/99-nopassword.pkla <<EOF
-[No password prompt]
-Identity=unix-group:sudo
-Action=*
-ResultActive=yes
-EOF
-	fi
 
 	if [ x"$SHELLS_SSH" != x ]; then
 		mkdir -p "/home/$SHELLS_USERNAME/.ssh"
@@ -91,6 +101,18 @@ EOF
 		echo "auth        sufficient  pam_succeed_if.so user ingroup nopasswdlogin" >> /etc/pam.d/lightdm
 		groupadd -r nopasswdlogin
 		gpasswd -a "${SHELLS_USERNAME}" nopasswdlogin
+	elif [ -f /etc/lightdm/lightdm.conf.d/70-linuxmint.conf ]; then
+		groupadd -r autologin
+		[[ -d /run/openrc ]] && sed -i -e 's/^.*minimum-vt=.*/minimum-vt=7/' /etc/lightdm/lightdm.conf.d/70-linuxmint.conf
+		gpasswd -a "${SHELLS_USERNAME}" autologin
+		echo [SeatDefaults] > /etc/lightdm/lightdm.conf.d/70-linuxmint.conf
+		echo autologin-user=${SHELLS_USERNAME} >> /etc/lightdm/lightdm.conf.d/70-linuxmint.conf
+		echo autologin-user-timeout=0 >> /etc/lightdm/lightdm.conf.d/70-linuxmint.conf
+		echo user-session=cinnamon >> /etc/lightdm/lightdm.conf.d/70-linuxmint.conf
+		echo pam-autologin-service=lightdm-autologin >> /etc/lightdm/lightdm.conf.d/70-linuxmint.conf
+		echo "auth        sufficient  pam_succeed_if.so user ingroup nopasswdlogin" >> /etc/pam.d/lightdm
+		groupadd -r nopasswdlogin
+		gpasswd -a "${SHELLS_USERNAME}" nopasswdlogin	
 	fi
 	if [ -f /etc/gdm3/custom.conf ]; then
 		# append the config

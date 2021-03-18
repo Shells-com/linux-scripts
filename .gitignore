@@ -1,0 +1,6 @@
+/shells-kernel/
+/shells-kernel-*.tar.bz2
+*_test.qcow2
+*.shells
+*.qcow2
+/rbdconv/

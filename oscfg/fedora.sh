@@ -90,6 +90,7 @@ fedora_cfg() {
 
 	# add firstrun
 	add_firstrun NetworkManager-wait-online.service
+	do_linux_config
 
 	run dnf clean all
 }
