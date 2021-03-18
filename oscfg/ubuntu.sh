@@ -81,13 +81,12 @@ EOF
 			;;
 		mint-cinnamon-desktop)
 			DEBIAN_FRONTEND=noninteractive run apt-get install -y gnupg
-			run apt-key adv keyserver.ubuntu.com:80 --recv 302F0738F465C1535761F965A6616109451BBBF2
+			run apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 302F0738F465C1535761F965A6616109451BBBF2
 			echo "deb http://packages.linuxmint.com ulyssa main upstream import backport" >"$WORK/etc/apt/sources.list.d/linux-mint.list"
 			run apt-get update
-			DEBIAN_FRONTEND=noninteractive run apt-get install -y mint-meta-cinnamon mint-meta-core
-			;;
-		*)
-			DEBIAN_FRONTEND=noninteractive run apt-get install -y "$TASKSEL"^
+			DEBIAN_FRONTEND=noninteractive run apt-get install -y cinnamon-session cinnamon nemo mint-info-cinnamon mintmenu mint-x-icons mintsystem mintwelcome
+			DEBIAN_FRONTEND=noninteractive run apt-get install -y firefox lightdm
+			DEBIAN_FRONTEND=noninteractive run apt purge -y gdm3
 			;;
 	esac
 	
