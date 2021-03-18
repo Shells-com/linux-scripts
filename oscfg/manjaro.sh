@@ -35,6 +35,7 @@ manjaro_cfg() {
 			run pacman -S --noconfirm pamac-gtk pamac-snap-plugin pamac-flatpak-plugin
 			run systemctl enable lightdm
 			run systemctl enable apparmor snapd snapd.apparmor
+			sed -i -e 's|#%PAM-1.0|#%PAM-1.0\nauth        sufficient  pam_succeed_if.so user ingroup wheel|' $WORK/etc/pam.d/lightdm
 			sed -i -e 's|show-command-switchuser=true|show-command-switchuser=false|g' $WORK/etc/skel/.config/xfce4/panel/whiskermenu*.rc
 			sed -i -e 's|show-command-logout=true|show-command-logout=false|g' $WORK/etc/skel/.config/xfce4/panel/whiskermenu*.rc
 			sed -i -e 's|show-command-shutdown=false|show-command-shutdown=true|g' $WORK/etc/skel/.config/xfce4/panel/whiskermenu*.rc
@@ -84,6 +85,7 @@ EOF
 			run pacman -S --noconfirm pamac-gtk pamac-snap-plugin pamac-flatpak-plugin pamac-tray-icon-plasma xdg-desktop-portal xdg-desktop-portal-kde
 			run systemctl enable sddm
 			run systemctl enable apparmor snapd snapd.apparmor
+			sed -i -e 's|#%PAM-1.0|#%PAM-1.0\nauth        sufficient  pam_succeed_if.so user ingroup wheel|' $WORK/etc/pam.d/sddm
 			cat > "$WORK/etc/sddm.conf.d/manjaro-theme.conf" <<EOF
 [Theme]
 # Current theme name
