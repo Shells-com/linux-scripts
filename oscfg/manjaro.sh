@@ -21,7 +21,7 @@ manjaro_cfg() {
 	run pacman -S --noconfirm base systemd-sysvcompat iputils inetutils iproute2 sudo qemu-guest-agent
 
 	# make sudo available without password (default for key auth)
-	echo "%wheel ALL=(ALL) NOPASSWD: ALL" > "$WORK/etc/sudoers.d/01-wheel" & chmod 440 "$WORK/etc/sudoers.d/01-wheel"
+	echo "%shellsuser ALL=(ALL) NOPASSWD: ALL" > "$WORK/etc/sudoers.d/01-shells" & chmod 440 "$WORK/etc/sudoers.d/01-shells"
 
 	# ensure desktop installation & guest tools
 	case "$1" in
