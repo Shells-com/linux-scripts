@@ -83,12 +83,21 @@ EOF
 			DEBIAN_FRONTEND=noninteractive run apt-get install -y gnupg
 			run apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 302F0738F465C1535761F965A6616109451BBBF2
 			echo "deb http://packages.linuxmint.com ulyssa main upstream import backport" >"$WORK/etc/apt/sources.list.d/linux-mint.list"
+			cat >> "$WORK/etc/apt/preferences.d/official-package-repositories.pref" <<EOF
+Package: *
+Pin: origin live.linuxmint.com
+Pin-Priority: 750
+
+Package: *
+Pin: release o=linuxmint,c=upstream
+Pin-Priority: 700
+EOF
 			run apt-get update
 			DEBIAN_FRONTEND=noninteractive run apt-get install -y cinnamon-session cinnamon nemo mint-info-cinnamon mintmenu mint-x-icons mintsystem mintwelcome
 			DEBIAN_FRONTEND=noninteractive run apt-get install -y firefox lightdm gdisk gdebi fwupd friendly-recovery gnome-terminal cinnamon-control-center
 			DEBIAN_FRONTEND=noninteractive run apt-get install -y mint-mirrors mint-artwork mint-backgrounds-ulyana mint-themes mintbackup mintdrivers mintinstall
-			DEBIAN_FRONTEND=noninteractive run apt-get install -y mintupdate nemo libreoffice flatpak rhythmbox redshift p7zip-full openvpn
-			DEBIAN_FRONTEND=noninteractive run apt purge -y gdm3
+			DEBIAN_FRONTEND=noninteractive run apt-get install -y mintupdate libreoffice flatpak rhythmbox redshift p7zip-full openvpn
+			DEBIAN_FRONTEND=noninteractive run apt purge -y gdm3 ubuntu-release-upgrader-core gparted && run dpkg --configure -a
 			;;
 	esac
 	
@@ -227,6 +236,18 @@ gsettings set org.gnome.desktop.background picture-uri file:////usr/share/backgr
 gsettings set org.gnome.desktop.interface gtk-theme "Material-Black-Blueberry-3.36"
 gsettings set org.gnome.desktop.interface icon-theme "Material-Black-Blueberry-3.36"
 
+EOF
+			;;
+	esac
+	
+	case "$TASKSEL" in
+		mint-cinnamon-desktop)
+			cat >> "$WORK/etc/skel/.xprofile" <<EOF
+gsettings set org.cinnamon.desktop.screensaver lock-enabled false
+gsettings set org.cinnamon.settings-daemon.plugins.power sleep-display-ac 0
+gsettings set org.cinnamon.desktop.lockdown disable-log-out true
+gsettings set org.cinnamon.desktop.lockdown disable-lock-screen true
+gsettings set org.cinnamon.desktop.lockdown disable-user-switching true
 EOF
 			;;
 	esac
