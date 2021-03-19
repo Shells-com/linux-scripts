@@ -27,7 +27,7 @@ manjaro_cfg() {
 	case "$1" in
 		manjaro-desktop)
 			run pacman -S --noconfirm xfce4 ttf-dejavu lightdm-gtk-greeter-settings accountsservice xfce4-goodies xfce4-pulseaudio-plugin mugshot engrampa catfish screenfetch network-manager-applet noto-fonts noto-fonts-cjk
-			run pacman -S --noconfirm manjaro-xfce-settings manjaro-release manjaro-firmware manjaro-system manjaro-hello manjaro-application-utility manjaro-documentation-en manjaro-browser-settings nano inxi
+			run pacman -S --noconfirm manjaro-xfce-settings manjaro-release manjaro-firmware manjaro-system manjaro-hello manjaro-application-utility manjaro-documentation-en manjaro-browser-settings nano inxi wallpaper-manjaro-shells
 			run pacman -S --noconfirm firefox thunderbird
 			run pacman -S --noconfirm onlyoffice-desktopeditors
 			run pacman -S --noconfirm pulseaudio pavucontrol 
@@ -76,7 +76,7 @@ EOF
 			;;
 		manjaro-kde-desktop)
 			run pacman -S --noconfirm plasma-meta ark dolphin dolphin-plugins kate kcalc kfind okular kget libktorrent kdenetwork-filesharing kio-extras konsole konversation ksystemlog kwalletmanager gwenview spectacle kdegraphics-thumbnailers ffmpegthumbs ruby kimageformats qt5-imageformats systemd-kcm yakuake vlc oxygen-icons kaccounts-providers
-			run pacman -S --noconfirm manjaro-kde-settings manjaro-release manjaro-firmware manjaro-system manjaro-hello manjaro-application-utility manjaro-documentation-en manjaro-browser-settings sddm-breath2-theme nano inxi illyria-wallpaper wallpapers-juhraya wallpapers-2018 manjaro-wallpapers-18.0
+			run pacman -S --noconfirm manjaro-kde-settings manjaro-release manjaro-firmware manjaro-system manjaro-hello manjaro-application-utility manjaro-documentation-en manjaro-browser-settings sddm-breath2-theme nano inxi illyria-wallpaper wallpapers-juhraya wallpapers-2018 manjaro-wallpapers-18.0 wallpaper-manjaro-shells
 			run pacman -S --noconfirm firefox thunderbird
 			run pacman -S --noconfirm onlyoffice-desktopeditors
 			run pacman -S --noconfirm pulseaudio pavucontrol 
@@ -107,7 +107,7 @@ EOF
 			;;
 		manjaro-gnome-desktop)
 			run pacman -S --noconfirm adwaita-icon-theme adwaita-maia alacarte baobab file-roller gedit gdm gnome-backgrounds gnome-calculator gnome-control-center gnome-desktop gnome-disk-utility gnome-keyring gnome-online-accounts gnome-initial-setup gnome-screenshot gnome-session gnome-settings-daemon gnome-shell gnome-shell-extensions gnome-shell-extension-nightthemeswitcher gnome-system-log gnome-system-monitor gnome-terminal gnome-themes-standard gnome-tweak-tool gnome-user-docs gnome-wallpapers gnome-clocks gnome-todo gtksourceview-pkgbuild mutter nautilus nautilus-admin nautilus-empty-file seahorse papirus-maia-icon-theme lighter-gnome disable-tracker
-			run pacman -S --noconfirm manjaro-gnome-settings-shells manjaro-gnome-extension-settings-shells manjaro-gnome-assets manjaro-gnome-tour manjaro-gdm-theme manjaro-release manjaro-system manjaro-hello manjaro-application-utility manjaro-documentation-en nano inxi illyria-wallpaper wallpapers-juhraya wallpapers-2018 manjaro-wallpapers-18.0 manjaro-zsh-config
+			run pacman -S --noconfirm manjaro-gnome-settings-shells manjaro-gnome-extension-settings-shells manjaro-gnome-assets manjaro-gnome-tour manjaro-gdm-theme manjaro-release manjaro-system manjaro-hello manjaro-application-utility manjaro-documentation-en nano inxi illyria-wallpaper wallpapers-juhraya wallpapers-2018 manjaro-wallpapers-18.0 manjaro-zsh-config wallpaper-manjaro-shells
 			run pacman -S --noconfirm firefox firefox-gnome-theme-maia 
 			run pacman -S --noconfirm onlyoffice-desktopeditors
 			run pacman -S --noconfirm pulseaudio pavucontrol 
