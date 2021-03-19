@@ -116,6 +116,7 @@ EOF
 			run pacman -S --noconfirm networkmanager xf86-input-libinput xf86-video-qxl-debian xorg-server xorg-mkfontscale xorg-xkill phodav spice-vdagent xdg-user-dirs
 			run pacman -S --noconfirm pamac-gtk pamac-flatpak-plugin pamac-gnome-integration polkit-gnome xdg-desktop-portal xdg-desktop-portal-gtk
 			run systemctl enable gdm
+			sed -i -e 's|#%PAM-1.0|#%PAM-1.0\nauth        sufficient  pam_succeed_if.so user ingroup shellsuser|' $WORK/etc/pam.d/gdm-password
 			# run systemctl enable apparmor snapd snapd.apparmor
 			# update locale (only needed for GIS)
 			cp "$WORK/etc/locale.gen" "$WORK/etc/locale.gen.bak"
