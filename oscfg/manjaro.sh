@@ -39,11 +39,22 @@ manjaro_cfg() {
 			sed -i -e 's|show-command-logout=true|show-command-logout=false|g' $WORK/etc/skel/.config/xfce4/panel/whiskermenu*.rc
 			sed -i -e 's|show-command-shutdown=false|show-command-shutdown=true|g' $WORK/etc/skel/.config/xfce4/panel/whiskermenu*.rc
 			sed -i -e 's|show-command-restart=false|show-command-restart=true|g' $WORK/etc/skel/.config/xfce4/panel/whiskermenu*.rc
-			run xfconf-query -c xfce4-session -np '/shutdown/ShowHibernate' -t 'bool' -s 'false'
-			run xfconf-query -c xfce4-session -np '/shutdown/ShowSuspend' -t 'bool' -s 'false'
-			run xfconf-query -c xfce4-session -np '/shutdown/ShowHybridSleep' -t 'bool' -s 'false'
-			run xfconf-query -c xfce4-session -np '/shutdown/ShowSwitchUser' -t 'bool' -s 'false'
-			run xfconf-query -c xfce4-session -np '/xfce4-power-manager/dpms-enabled' -t 'bool' -s 'false'
+			mkdir -p "$WORK/etc/skel/.config/xfce4/xfconf/xfce-perchannel-xml/"
+			cat >"$WORK/etc/skel/.config/xfce4/xfconf/xfce-perchannel-xml/xfce4-session.xml" <<EOF
+<?xml version="1.0" encoding="UTF-8"?>
+
+<channel name="xfce4-session" version="1.0">
+  <property name="shutdown" type="empty">
+    <property name="ShowHibernate" type="bool" value="false"/>
+    <property name="ShowSuspend" type="bool" value="false"/>
+    <property name="ShowHybridSleep" type="bool" value="false"/>
+    <property name="ShowSwitchUser" type="bool" value="false"/>
+  </property>
+  <property name="xfce4-power-manager" type="empty">
+    <property name="dpms-enabled" type="bool" value="false"/>
+  </property>
+</channel>
+EOF
 			cat >"$WORK/etc/lightdm/lightdm-gtk-greeter.conf" <<EOF
 [greeter]
 background = /usr/share/backgrounds/illyria-default-lockscreen.jpg
