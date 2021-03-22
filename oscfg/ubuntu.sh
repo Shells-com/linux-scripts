@@ -99,6 +99,11 @@ EOF
 			DEBIAN_FRONTEND=noninteractive run apt-get install -y mintupdate libreoffice flatpak rhythmbox redshift p7zip-full openvpn
 			DEBIAN_FRONTEND=noninteractive run apt purge -y gdm3 ubuntu-release-upgrader-core gparted && run dpkg --configure -a
 			;;
+		rescue)
+			# special case of ubuntu install, non gfx
+			run apt-get update
+			DEBIAN_FRONTEND=noninteractive run apt-get install -y e2fsprogs fdisk build-essential vim mtr openssh-server parted ntpdate lvm2 gddrescue testdisk debootstrap xfsprogs mingetty
+			;;
 	esac
 	
 	case "$1" in
@@ -186,7 +191,6 @@ EOF
 
 	case "$1" in
 		*-desktop)
-
 			# create script to disable gnome screensaver stuff
 			if [ -d "$WORK/usr/share/backgrounds" ]; then
 				# install wallpaper
@@ -255,4 +259,18 @@ EOF
 
 	# cleanup apt
 	run apt-get clean
+
+	if [ x"$TASKSEL" = x"rescue" ]; then
+		# make root autologin
+		mkdir -p "$WORK/etc/systemd/system/getty@tty1.service.d"
+		cat >"$WORK/etc/systemd/system/getty@tty1.service.d/override.conf" <<EOF
+[Service]
+ExecStart=
+ExecStart=-/sbin/agetty --noissue --autologin root --noclear %I
+Type=idle
+EOF
+
+		# build squashfs image
+		mksquashfs "$WORK" "$1-$DATE.squashfs" -comp xz -noappend -progress
+	fi
 }
