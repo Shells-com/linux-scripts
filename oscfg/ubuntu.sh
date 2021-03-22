@@ -269,8 +269,5 @@ ExecStart=
 ExecStart=-/sbin/agetty --noissue --autologin root --noclear %I
 Type=idle
 EOF
-
-		# build squashfs image
-		mksquashfs "$WORK" "$1-$DATE.squashfs" -comp xz -noappend -progress
 	fi
 }

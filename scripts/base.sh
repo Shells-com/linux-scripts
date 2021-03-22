@@ -117,6 +117,11 @@ EOF
 
 	umount "$WORK/proc" "$WORK/sys" "$WORK/dev" || umount -l "$WORK/proc" "$WORK/sys" "$WORK/dev" || true
 
+	# build squashfs image if requested NOW
+	if [ x"$MKSQUASHFS" != x ]; then
+		mksquashfs "$WORK" "$1-$DATE.squashfs" -comp xz -noappend -progress
+	fi
+
 	echo "Syncing..."
 	umount "$WORK"
 	"$QEMUNBD" -d "$NBD"
