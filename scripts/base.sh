@@ -154,9 +154,9 @@ add_firstrun() {
 		AFTER="systemd-networkd-wait-online.service"
 	fi
 
-	if [ -d "$WORK/lib/systemd/system" ]; then
+	if [ -d "$WORK/usr/lib/systemd/system" ]; then
 		# systemd method
-		cat >"$WORK/lib/systemd/system/cloud-firstrun.service" <<EOF
+		cat >"$WORK/usr/lib/systemd/system/cloud-firstrun.service" <<EOF
 [Unit]
 Description=Cloud firstrun handler
 ConditionFileIsExecutable=/.firstrun.sh
