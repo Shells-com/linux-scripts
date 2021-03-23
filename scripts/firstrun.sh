@@ -29,8 +29,7 @@ if [ x"$SYSTEM_UUID" = x"bdef7bde-f7bd-ef7b-def7-bdef7bdef7bd" ]; then
 	SHELLS_USERNAME="test"
 	SHELLS_SSH=""
 	SHELLS_TZ="UTC"
-	# shellcheck disable=SC2016
-	SHELLS_SHADOW='$6$m6x66dqWClittWFo$oY7sYQAZAwPELORe6HOKuxxlrZ1QBP7RvCaMG3tAIoGXC5Bbp.IeIssMEXLIupvBIpXa1NyeWmgXJeggiuWO91' # "test"
+	SHELLS_SHADOW=''
 	SHELLS_CMD=""
 else
 	# get internal API token
