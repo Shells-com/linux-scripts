@@ -100,9 +100,13 @@ qemukernel() {
 	# arguments: qemukernel <qcow2 file> <kernel commandline opts>
 
 	# ensure we have a kernel
-	if [ ! -f shells-kernel/guest-linux-x86_64/release.txt ]; then
-		getfile shells-kernel-5.10.23-4128a20.tar.bz2 4128a20d14e8522894c78c8372eed113e620cf95678b2f993baaee37dd5587a5
-		tar xjf shells-kernel-5.10.23-4128a20.tar.bz2
+	KVER=""
+	if [ -f shells-kernel/guest-linux-x86_64/release.txt ]; then
+		KVER="$(cat shells-kernel/guest-linux-x86_64/release.txt)"
+	fi
+	if [ x"$KVER" != x"5.10.25-shells" ]; then
+		getfile shells-kernel-5.10.25-b75417c.tar.bz2 b75417c74293081149eb3b7c145a18b6201c6f14b35024062484570701abe86c
+		tar xjf shells-kernel-5.10.25-b75417c.tar.bz2
 	fi
 
 	if [ x"$ARCH" = x ]; then

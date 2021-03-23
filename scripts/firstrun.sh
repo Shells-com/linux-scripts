@@ -29,8 +29,7 @@ if [ x"$SYSTEM_UUID" = x"bdef7bde-f7bd-ef7b-def7-bdef7bdef7bd" ]; then
 	SHELLS_USERNAME="test"
 	SHELLS_SSH=""
 	SHELLS_TZ="UTC"
-	# shellcheck disable=SC2016
-	SHELLS_SHADOW='$6$m6x66dqWClittWFo$oY7sYQAZAwPELORe6HOKuxxlrZ1QBP7RvCaMG3tAIoGXC5Bbp.IeIssMEXLIupvBIpXa1NyeWmgXJeggiuWO91' # "test"
+	SHELLS_SHADOW=''
 	SHELLS_CMD=""
 else
 	# get internal API token
@@ -97,7 +96,7 @@ if [ x"$SHELLS_USERNAME" != x ]; then
 		gpasswd -a "${SHELLS_USERNAME}" autologin
 		sed -i -e "s/^.*autologin-user=.*/autologin-user=${SHELLS_USERNAME}/" /etc/lightdm/lightdm.conf
 		sed -i -e "s/^.*autologin-user-timeout=.*/autologin-user-timeout=0/" /etc/lightdm/lightdm.conf
-		sed -i -e "s/^.*pam-autologin-service=.*/pam-autologin-service=lightdm-autologin/" /etc/lightdm/lightdm.conf
+#		sed -i -e "s/^.*pam-autologin-service=.*/pam-autologin-service=lightdm-autologin/" /etc/lightdm/lightdm.conf
 		echo "auth        sufficient  pam_succeed_if.so user ingroup nopasswdlogin" >> /etc/pam.d/lightdm
 		groupadd -r nopasswdlogin
 		gpasswd -a "${SHELLS_USERNAME}" nopasswdlogin

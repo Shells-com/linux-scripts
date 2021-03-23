@@ -117,6 +117,11 @@ EOF
 
 	umount "$WORK/proc" "$WORK/sys" "$WORK/dev" || umount -l "$WORK/proc" "$WORK/sys" "$WORK/dev" || true
 
+	# build squashfs image if requested NOW
+	if [ x"$MKSQUASHFS" != x ]; then
+		mksquashfs "$WORK" "$1-$DATE.squashfs" -comp xz -noappend -progress
+	fi
+
 	echo "Syncing..."
 	umount "$WORK"
 	"$QEMUNBD" -d "$NBD"
@@ -131,7 +136,7 @@ EOF
 		# grab rbdconv
 		git clone https://github.com/Shells-com/rbdconv.git
 	fi
-	php rbdconv/raw-to-rbd.php "$1-$DATE.raw" | xz -z -9 -T $(nproc --ignore=2) -v >"$1-$DATE.shells"
+	php rbdconv/raw-to-rbd.php "$1-$DATE.raw" | xz -z -9 -T $(nproc --ignore=4) -v >"$1-$DATE.shells"
 	rm -f "$1-$DATE.raw"
 
 	# complete, list the file

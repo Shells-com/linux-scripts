@@ -5,3 +5,4 @@ If you want to submit and/or maintain distribution of your choice for official S
 * Set user to autologin (we try to achieve this in firstrun script but if you see difference not applying for your OS, be sure to do it).
 * Disable power saving (screensavers, sleep, automatic logout etc).
 * Disable logout option.
+* Shells images are running on our Shells kernel, if you want your images to be ran by your distro kernel, you will need to supply that kernel, a way to resize the disk, a bootloader, the kernel parameters etc.

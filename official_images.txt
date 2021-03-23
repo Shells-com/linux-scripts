@@ -11,3 +11,4 @@ ubuntu-focal-lubuntu-desktop
 ubuntu-focal-openssh-server
 ubuntu-focal-ubuntu-desktop
 ubuntu-focal-xubuntu-desktop
+ubuntu-focal-rescue
