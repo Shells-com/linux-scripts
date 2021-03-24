@@ -10,6 +10,7 @@ set -e
 . oscfg/manjaro.sh
 . oscfg/gentoo.sh
 . oscfg/fedora.sh
+. oscfg/opensuse.sh
 
 dodistro() {
 	if [ -f "$1-$DATE.qcow2" ]; then
@@ -32,6 +33,9 @@ dodistro() {
 		fedora-*)
 			fedora_distro "$1"
 			;;
+                opensuse-*)
+                        opensuse_distro "$1"
+                        ;;
 		*)
 			echo "unsupported distro $1"
 			;;
