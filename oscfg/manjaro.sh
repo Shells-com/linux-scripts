@@ -18,7 +18,7 @@ manjaro_cfg() {
 	run pacman -Syu --noconfirm
 	run pacman-mirrors -f 15
 
-	run pacman -S --noconfirm base systemd-sysvcompat iputils inetutils iproute2 sudo qemu-guest-agent
+	run pacman -Syy --noconfirm base systemd-sysvcompat iputils inetutils iproute2 sudo qemu-guest-agent
 
 	# make sudo available without password (default for key auth)
 	echo "%shellsuser ALL=(ALL) NOPASSWD: ALL" > "$WORK/etc/sudoers.d/01-shells" & chmod 440 "$WORK/etc/sudoers.d/01-shells"
