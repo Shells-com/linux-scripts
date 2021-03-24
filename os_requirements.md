@@ -5,6 +5,7 @@ If you want to submit and/or maintain distribution of your choice for official S
 * Set user to autologin (we try to achieve this in firstrun script but if you see difference not applying for your OS, be sure to do it).
 * Disable power saving (screensavers, sleep, automatic logout etc).
 * Disable logout option.
+* Be sure to have in your image spice-vdagent and qemu-guest-agent.
 
 ## Naming
 
