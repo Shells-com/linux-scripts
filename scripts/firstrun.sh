@@ -134,6 +134,12 @@ if [ x"$SHELLS_USERNAME" != x ]; then
 		echo "User=$SHELLS_USERNAME" >>/etc/sddm.conf.d/autologin.conf
 		echo "Session=plasma.desktop" >>/etc/sddm.conf.d/autologin.conf
 	fi
+
+	# openSUSE configures gdm/sddm/lightdm centrally via /etc/sysconfig/displaymanager
+	if [ -f /etc/sysconfig/displaymanager ]; then
+		sed -i "s/^DISPLAYMANAGER_AUTOLOGIN=\".*\"/DISPLAYMANAGER_AUTOLOGIN=\"$SHELLS_USERNAME\"/" /etc/sysconfig/displaymanager
+		test -f /etc/sddm.conf.d/autologin.conf && rm /etc/sddm.conf.d/autologin.conf
+	fi
 else
 	# no user creation, let's at least setup root
 	if [ x"$SHELLS_SHADOW" != x ]; then

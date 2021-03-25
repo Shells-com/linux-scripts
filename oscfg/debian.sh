@@ -75,6 +75,9 @@ debian_cfg() {
 	case "$1" in
 		debian-*-desktop)
 			DEBIAN_FRONTEND=noninteractive run apt-get install -y gnome-software guake dconf-cli
+			DEBIAN_FRONTEND=noninteractive run apt-get install -y flatpak gnome-software-plugin-flatpak
+			run flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+			run appstreamcli refresh --force
 			run systemctl mask sleep.target suspend.target hibernate.target hybrid-sleep.target
 			;;
 	esac
