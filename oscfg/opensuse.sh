@@ -28,8 +28,8 @@ opensuse_distro() {
 		echo "Unsupported openSUSE distro ($DISTRO). Supported are tumbleweed and leap!"
 		exit 1
 	fi
-	$ZYPPCMD ar -r $DLURL$REPO repo-oss
-	$ZYPPCMD ar -r $DLURL$UPDATEREPO repo-oss-update
+	$ZYPPCMD ar -f $DLURL$REPO repo-oss
+	$ZYPPCMD ar -f $DLURL$UPDATEREPO repo-oss-update
 	$ZYPPCMD --gpg-auto-import-keys ref
 	$ZYPPCMD install --download in-advance -t pattern enhanced_base x11
 	$ZYPPCMD install --download in-advance NetworkManager spice-vdagent
