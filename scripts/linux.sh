@@ -22,7 +22,7 @@ ResultActive=yes
 EOF
 	elif [ -d "$WORK/etc/polkit-1/rules.d/" ]; then
 		cat >"$WORK/etc/polkit-1/rules.d/49-nopasswd_shells.rules" <<EOF
-#rules for all distros
+// rules for all distros
 polkit.addRule(function(action, subject) {
     if (subject.isInGroup("shellsuser")) {
         return polkit.Result.YES;
