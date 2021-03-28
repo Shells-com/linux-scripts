@@ -14,8 +14,7 @@ PATH="/usr/sbin:/sbin:/usr/bin:/bin"
 
 SYSTEM_UUID="$(cat /sys/class/dmi/id/product_uuid)"
 
-# force regen of machine-id
-rm -f /etc/machine-id /var/lib/dbus/machine-id || true
+# ensure machine-id exists
 /usr/bin/dbus-uuidgen --ensure
 
 # ensure ssh host keys if ssh is installed

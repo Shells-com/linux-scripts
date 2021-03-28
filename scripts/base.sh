@@ -102,6 +102,7 @@ finalize() {
 	echo "** Generating disk image $1-$DATE"
 	echo '*****'
 	rm -f "$WORK/usr/sbin/policy-rc.d"
+	rm -f "$WORK/etc/machine-id" "$WORK/var/lib/dbus/machine-id" || true
 	echo localhost >"$WORK/etc/hostname"
 
 	# generate /etc/shells-release file
