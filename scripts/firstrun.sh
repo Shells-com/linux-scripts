@@ -15,6 +15,7 @@ PATH="/usr/sbin:/sbin:/usr/bin:/bin"
 SYSTEM_UUID="$(cat /sys/class/dmi/id/product_uuid)"
 
 # ensure machine-id exists
+/usr/bin/dbus-uuidgen --ensure=/etc/machine-id || true
 /usr/bin/dbus-uuidgen --ensure
 
 # ensure ssh host keys if ssh is installed
