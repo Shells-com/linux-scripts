@@ -105,7 +105,7 @@ finalize() {
 
 	# erase those files only if not symlinks
 	for foo in /etc/machine-id /var/lib/dbus/machine-id; do
-		if [ -f "$WORK$foo" -a ! -L "$WORK$foo" ]; then
+		if [ -f "$WORK$foo" ] && [ ! -L "$WORK$foo" ]; then
 			rm -f "$WORK$foo"
 		fi
 	done
