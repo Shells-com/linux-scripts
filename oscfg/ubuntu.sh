@@ -102,7 +102,7 @@ EOF
 		rescue)
 			# special case of ubuntu install, non gfx
 			run apt-get update
-			DEBIAN_FRONTEND=noninteractive run apt-get install -y e2fsprogs fdisk build-essential vim mtr openssh-server parted ntpdate lvm2 gddrescue testdisk debootstrap xfsprogs mingetty
+			DEBIAN_FRONTEND=noninteractive run apt-get install -y e2fsprogs fdisk build-essential vim mtr openssh-server parted ntpdate lvm2 gddrescue testdisk debootstrap xfsprogs mingetty btrfs-progs
 			;;
 	esac
 	
