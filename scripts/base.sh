@@ -102,6 +102,13 @@ finalize() {
 	echo "** Generating disk image $1-$DATE"
 	echo '*****'
 	rm -f "$WORK/usr/sbin/policy-rc.d"
+
+	# erase those files only if not symlinks
+	for foo in /etc/machine-id /var/lib/dbus/machine-id; do
+		if [ -f "$WORK$foo" ] && [ ! -L "$WORK$foo" ]; then
+			rm -f "$WORK$foo"
+		fi
+	done
 	echo localhost >"$WORK/etc/hostname"
 
 	# generate /etc/shells-release file
