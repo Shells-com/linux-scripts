@@ -150,7 +150,6 @@ if [ x"$SHELLS_CMD" != x ]; then
 	eval "$SHELLS_CMD"
 fi
 
-# FIXME: currently Manjaro shells stuck after firstrun. As a workaround we reboot
-if [ -e /etc/manjaro-release ]; then
-	reboot
-fi	
+# FIXME: on first boot LightDM doesn't autologin. User has to select user and click on login.
+# For now we reboot to avoid that, until we find the reason.
+[[ -e /etc/manjaro-release && -e /usr/bin/startxfce4 ]] && reboot
