@@ -44,8 +44,8 @@ doqemu() {
 		-uuid bdef7bde-f7bd-ef7b-def7-bdef7bdef7bd
 		-no-user-config -nodefaults
 
-		#-chardev socket,id=charmonitor,fd=30,server,nowait
-		#-mon chardev=charmonitor,id=monitor,mode=control
+		-chardev vc,id=charmonitor
+		-mon chardev=charmonitor,id=monitor
 		-rtc base=utc
 		-boot strict=on
 		-device i82801b11-bridge,id=pci.1,bus=pcie.0,addr=0x1e
@@ -63,9 +63,21 @@ doqemu() {
 		-netdev user,id=hostnet0,hostfwd=tcp::10022-:22
 		#-netdev socket,id=hostnet0,connect=:4221
 		-device virtio-net-pci,netdev=hostnet0,id=net0,mac=d2:89:f4:90:ee:76,bus=pci.3,addr=0x0
-		#-chardev stdio,id=charserial0
-		#-device isa-serial,chardev=charserial0,id=serial0
-		-serial stdio
+		-chardev vc,id=ttyS0
+		-device pci-serial,chardev=ttyS0,id=serial0,bus=pcie.0,addr=0x2.0x5
+		-chardev vc,id=ttyS1
+		-device pci-serial,chardev=ttyS1,id=serial1,bus=pcie.0,addr=0x2.0x6
+		-chardev vc,id=ttyS2
+		-device pci-serial,chardev=ttyS2,id=serial2,bus=pcie.0,addr=0x2.0x7
+		-chardev vc,id=ttyUSB0
+		-device usb-serial,chardev=ttyUSB0,id=serialu0,bus=usb.0,port=2
+		-chardev vc,id=ttyUSB1
+		-device usb-serial,chardev=ttyUSB1,id=serialu1,bus=usb.0,port=3
+		-chardev vc,id=ttyUSB2
+		-device usb-serial,chardev=ttyUSB2,id=serialu2,bus=usb.0,port=4
+		-chardev vc,id=ttyUSB3
+		-device usb-serial,chardev=ttyUSB3,id=serialu3,bus=usb.0,port=5
+
 		#-chardev socket,id=charchannel0,fd=34,server,nowait
 		#-device virtserialport,bus=virtio-serial0.0,nr=1,chardev=charchannel0,id=channel0,name=org.qemu.guest_agent.0
 		-chardev spicevmc,id=charchannel1,name=vdagent
