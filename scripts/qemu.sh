@@ -55,6 +55,7 @@ doqemu() {
 		-device pcie-root-port,port=0x12,chassis=5,id=pci.5,bus=pcie.0,addr=0x2.0x2
 		-device pcie-root-port,port=0x13,chassis=6,id=pci.6,bus=pcie.0,addr=0x2.0x3
 		-device pcie-root-port,port=0x14,chassis=7,id=pci.7,bus=pcie.0,addr=0x2.0x4
+		-device pcie-root-port,port=0x15,chassis=2,id=pci3.1,bus=pcie.0,multifunction=on,addr=0x3
 		-device qemu-xhci,p2=8,p3=8,id=usb,bus=pci.4,addr=0x0
 		-device virtio-serial-pci,id=virtio-serial0,bus=pci.5,addr=0x0
 		-blockdev "{\"driver\":\"file\",\"filename\":\"$DISK\",\"node-name\":\"libvirt-1-storage\",\"auto-read-only\":true,\"discard\":\"unmap\"}"
@@ -64,11 +65,11 @@ doqemu() {
 		#-netdev socket,id=hostnet0,connect=:4221
 		-device virtio-net-pci,netdev=hostnet0,id=net0,mac=d2:89:f4:90:ee:76,bus=pci.3,addr=0x0
 		-chardev vc,id=ttyS0
-		-device pci-serial,chardev=ttyS0,id=serial0,bus=pcie.0,addr=0x2.0x5
+		-device pci-serial,chardev=ttyS0,id=serial0,bus=pcie.0,addr=0x3.0x1
 		-chardev vc,id=ttyS1
-		-device pci-serial,chardev=ttyS1,id=serial1,bus=pcie.0,addr=0x2.0x6
+		-device pci-serial,chardev=ttyS1,id=serial1,bus=pcie.0,addr=0x3.0x2
 		-chardev vc,id=ttyS2
-		-device pci-serial,chardev=ttyS2,id=serial2,bus=pcie.0,addr=0x2.0x7
+		-device pci-serial,chardev=ttyS2,id=serial2,bus=pcie.0,addr=0x3.0x3
 		-chardev vc,id=ttyUSB0
 		-device usb-serial,chardev=ttyUSB0,id=serialu0,bus=usb.0,port=2
 		-chardev vc,id=ttyUSB1
