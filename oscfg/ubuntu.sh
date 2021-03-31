@@ -99,6 +99,13 @@ EOF
 			DEBIAN_FRONTEND=noninteractive run apt-get install -y mintupdate libreoffice flatpak rhythmbox redshift p7zip-full openvpn
 			DEBIAN_FRONTEND=noninteractive run apt purge -y gdm3 ubuntu-release-upgrader-core gparted && run dpkg --configure -a
 			;;
+		code-school-desktop)
+			DEBIAN_FRONTEND=noninteractive run apt-get install -y gnome-software guake psmisc wget
+			wget -q https://packages.microsoft.com/keys/microsoft.asc -O- | run apt-key add -
+			run add-apt-repository "deb [arch=amd64] https://packages.microsoft.com/repos/vscode stable main"
+			run appstreamcli refresh --force && run apt update
+			run apt install -y build-essential gnome-builder idle3 qtcreator scratch arduino code
+			;;
 		rescue)
 			# special case of ubuntu install, non gfx
 			run apt-get update
