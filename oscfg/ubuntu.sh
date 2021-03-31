@@ -100,7 +100,7 @@ EOF
 			DEBIAN_FRONTEND=noninteractive run apt purge -y gdm3 ubuntu-release-upgrader-core gparted && run dpkg --configure -a
 			;;
 		code-school-desktop)
-			DEBIAN_FRONTEND=noninteractive run apt-get install -y gnome-software guake psmisc wget
+			DEBIAN_FRONTEND=noninteractive run apt-get install -y gnome-software guake psmisc wget ubuntu-desktop
 			wget -q https://packages.microsoft.com/keys/microsoft.asc -O- | run apt-key add -
 			run add-apt-repository "deb [arch=amd64] https://packages.microsoft.com/repos/vscode stable main"
 			run appstreamcli refresh --force && run apt update
@@ -141,8 +141,8 @@ EOF
 	# if gnome
 	case "$1" in
 		ubuntu-*-ubuntu-desktop)
-			DEBIAN_FRONTEND=noninteractive run apt-get install -y gnome-software guake
-			run killall gnome-software && run appstreamcli refresh --force && run apt update
+			DEBIAN_FRONTEND=noninteractive run apt-get install -y gnome-software guake ubuntu-desktop
+			run appstreamcli refresh --force && run apt update
 			;;
 	esac
 
