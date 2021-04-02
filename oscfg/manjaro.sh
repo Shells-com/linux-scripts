@@ -26,16 +26,14 @@ manjaro_cfg() {
 	# ensure desktop installation & guest tools
 	case "$1" in
 		manjaro-desktop)
-			run pacman -S --noconfirm xfce4 ttf-dejavu lightdm-gtk-greeter-settings accountsservice xfce4-goodies xfce4-pulseaudio-plugin mugshot engrampa catfish screenfetch network-manager-applet noto-fonts noto-fonts-cjk
+			run pacman -S --noconfirm xfce4 ttf-dejavu accountsservice xfce4-goodies xfce4-pulseaudio-plugin mugshot engrampa catfish screenfetch network-manager-applet noto-fonts noto-fonts-cjk
 			run pacman -S --noconfirm manjaro-xfce-settings-shells manjaro-release manjaro-firmware manjaro-system manjaro-hello manjaro-application-utility manjaro-documentation-en manjaro-browser-settings nano inxi wallpaper-manjaro-shells
 			run pacman -S --noconfirm firefox thunderbird
 			run pacman -S --noconfirm onlyoffice-desktopeditors
 			run pacman -S --noconfirm pulseaudio pavucontrol 
 			run pacman -S --noconfirm xf86-input-libinput xf86-video-qxl-debian xorg-server xorg-mkfontscale xorg-xkill phodav spice-vdagent
 			run pacman -S --noconfirm pamac-gtk pamac-snap-plugin pamac-flatpak-plugin
-			run systemctl enable lightdm
 			run systemctl enable apparmor snapd snapd.apparmor
-			sed -i -e 's|#%PAM-1.0|#%PAM-1.0\nauth        sufficient  pam_succeed_if.so user ingroup shellsuser|' $WORK/etc/pam.d/lightdm
 			sed -i -e 's|show-command-switchuser=true|show-command-switchuser=false|g' $WORK/etc/skel/.config/xfce4/panel/whiskermenu*.rc
 			sed -i -e 's|show-command-logout=true|show-command-logout=false|g' $WORK/etc/skel/.config/xfce4/panel/whiskermenu*.rc
 			sed -i -e 's|show-command-shutdown=false|show-command-shutdown=true|g' $WORK/etc/skel/.config/xfce4/panel/whiskermenu*.rc
@@ -56,24 +54,20 @@ manjaro_cfg() {
   </property>
 </channel>
 EOF
-			cat >"$WORK/etc/lightdm/lightdm-gtk-greeter.conf" <<EOF
-[greeter]
-background = /usr/share/backgrounds/illyria-default-lockscreen.jpg
-user-background = false
-font-name = Cantarell Bold 12
-xft-antialias = true
-icon-theme-name = Adapta-Papirus-Maia
-screensaver-timeout = 60
-theme-name = Matcha-sea
-cursor-theme-name = xcursor-breeze
-show-clock = false
-default-user-image = #manjaro
-xft-hintstyle = hintfull
-position = 50%,center 57%,center
-clock-format =
-panel-position = bottom
-indicators = ~host;~spacer;~clock;~spacer;~language;~session;~a11y;~power
+			mkdir -p "$WORK/etc/systemd/system/getty@.service.d/"
+			cat >"$WORK/etc/systemd/system/getty@.service.d/override.conf" <<EOF
+[Service]
+ExecStart=
+ExecStart=-/bin/sh -c '/usr/bin/agetty --skip-login --nonewline --noissue --autologin \$(id -nu 1000) --noclear %I \$TERM'
 EOF
+			mkdir -p "$WORK/etc/profile.d/"
+			cat >"$WORK/etc/profile.d/startx.sh" <<EOF
+#!/bin/bash
+if [[ \$(fgconsole 2>/dev/null) == 1 ]]; then
+	exec startxfce4
+fi
+EOF
+			chmod +x "$WORK/etc/profile.d/startx.sh"
 			;;
 		manjaro-kde-desktop)
 			run pacman -S --noconfirm plasma-meta ark dolphin dolphin-plugins kate kcalc kfind okular kget libktorrent kdenetwork-filesharing kio-extras konsole konversation ksystemlog kwalletmanager gwenview spectacle kdegraphics-thumbnailers ffmpegthumbs ruby kimageformats qt5-imageformats systemd-kcm yakuake vlc oxygen-icons kaccounts-providers
