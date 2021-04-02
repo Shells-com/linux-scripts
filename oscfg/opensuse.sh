@@ -39,12 +39,17 @@ opensuse_distro() {
 			esac
 			run zypper -n --root /new-root ar -f $DLURL$REPO repo-oss
 			run zypper -n --root /new-root ar -f $DLURL$UPDATEREPO repo-oss-update
-			mkdir "$WORK/new-root/dev"
+			mkdir "$WORK/new-root/dev" "$WORK/new-root/proc"
 			mknod -m 600 "$WORK/new-root/dev/console" c 5 1
 			mknod -m 666 "$WORK/new-root/dev/null" c 1 3
 			mknod -m 666 "$WORK/new-root/dev/zero" c 1 5
-			run zypper -n --root /new-root --gpg-auto-import-keys refresh
-			run zypper -n --root /new-root install rpm zypper wget
+			# following 2 lines needed for tumbleweed ca-certificates
+			ln -s /proc/self/fd "$WORK/new-root/dev/fd"
+			mount -t proc proc "$WORK/new-root/proc"
+			run zypper -n --root /new-root --gpg-auto-import-keys ref
+			run zypper -n --root /new-root install --download in-advance -t pattern base basesystem enhanced_base
+			run zypper -n --root /new-root install --download in-advance ca-certificates ca-certificates-mozilla
+			umount "$WORK/new-root/proc"
 
 			echo "Generating opensuse-$DISTRO-dockerbase.tar.xz"
 			tar cJf "opensuse-$DISTRO-dockerbase-$DATE.tar.xz" -C "$WORK/new-root" .
@@ -79,6 +84,27 @@ opensuse_distro() {
 			# make sudo available without password (default for key auth)
 			echo "%shellsuser ALL=(ALL) NOPASSWD: ALL" > "$WORK/etc/sudoers.d/01-shells" && chmod 440 "$WORK/etc/sudoers.d/01-shells"
 			;;
+		*-desktop)
+			# for example: opensuse-leap-gnome-desktop
+			opensuse_prepare "$DISTRO"
+
+			# install what we need
+			run zypper -n install --download in-advance --auto-agree-with-licenses -t pattern fonts x11 imaging multimedia sw_management $PATTERN
+			run zypper -n install --download in-advance NetworkManager spice-vdagent
+
+			# we get a cloud-firstboot
+			run systemctl mask systemd-firstboot
+
+			# ensure networkmanager is enabled and not systemd-networkd
+			run systemctl disable wicked
+			run systemctl enable NetworkManager NetworkManager-wait-online
+			run systemctl enable sshd
+
+			# make sudo available without password (default for key auth)
+			echo "%shellsuser ALL=(ALL) NOPASSWD: ALL" > "$WORK/etc/sudoers.d/01-shells" && chmod 440 "$WORK/etc/sudoers.d/01-shells"
+
+			opensuse_cfg "$DISTRO" "$PATTERN"
+			;;
 		*)
 			# start from base
 			if [ ! -f "opensuse-$DISTRO-base.qcow2" ]; then
@@ -93,6 +119,32 @@ opensuse_distro() {
 			opensuse_cfg "$DISTRO" "$PATTERN"
 			;;
 	esac
+}
+
+opensuse_prepare() {
+	# download opensuse image, either tumbleweed or leap
+	case "$1" in
+		tumbleweed)
+			getfile opensuse-tumbleweed-dockerbase-20210403.tar.xz e06f5971b490b50e70ffbdef94ce7dc4a3e4c0076fbd9b098900a9b30caa3cef
+			prepare opensuse-tumbleweed-dockerbase-20210403.tar.xz
+			;;
+		leap)
+			getfile opensuse-leap-dockerbase-20210403.tar.xz 3660e147c0b786247e60395596f1460574c08b2ed410a8a01b93cbea7c5767df
+			prepare opensuse-leap-dockerbase-20210403.tar.xz
+			;;
+		*)
+			echo "Unsupported openSUSE distro ($DISTRO). Supported are tumbleweed and leap!"
+			exit 1
+			;;
+	esac
+
+	# configure resolver
+	echo 'nameserver 8.8.8.8' >"$WORK/run/netconfig/resolv.conf"
+	echo 'nameserver 8.8.4.4' >>"$WORK/run/netconfig/resolv.conf"
+
+	# refresh/update
+	run zypper -n ref
+	run zypper -n dup
 }
 
 opensuse_cfg() {
