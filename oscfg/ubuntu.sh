@@ -146,7 +146,6 @@ EOF
     <property name="ShowSuspend" type="bool" value="false"/>
     <property name="ShowHybridSleep" type="bool" value="false"/>
     <property name="ShowSwitchUser" type="bool" value="false"/>
-    <property name="ShowLogout" type="bool" value="false"/>
   </property>
   <property name="xfce4-power-manager" type="empty">
     <property name="dpms-enabled" type="bool" value="false"/>
