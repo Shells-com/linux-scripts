@@ -166,7 +166,20 @@ idle-delay=uint32 0
 EOF
 		run /usr/bin/glib-compile-schemas /usr/share/glib-2.0/schemas
 	elif [ "$DESKTOP" == "kde" ]; then
-		true # nothing to be done yet
+		mkdir -p "$WORK/etc/skel/.config"
+		cat >> "$WORK/etc/skel/.config/kdeglobals" <<EOF
+[KDE Action Restrictions]
+action/lock_screen=false
+logout=false
+action/start_new_session=false
+action/switch_user=false
+EOF
+
+		cat >"$WORK/etc/skel/.config/kscreenlockerrc" <<EOF
+[Daemon]
+Autolock=false
+EOF
+
 	fi
 
 	# add firstrun
