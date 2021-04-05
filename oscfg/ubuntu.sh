@@ -134,6 +134,27 @@ Autolock=false
 EOF
 
 	esac
+	
+	case "$1" in
+		ubuntu-*-xubuntu-desktop)
+			mkdir -p "$WORK/etc/skel/.config/xfce4/xfconf/xfce-perchannel-xml/"
+			cat >"$WORK/etc/skel/.config/xfce4/xfconf/xfce-perchannel-xml/xfce4-session.xml" <<EOF
+<?xml version="1.0" encoding="UTF-8"?>
+<channel name="xfce4-session" version="1.0">
+  <property name="shutdown" type="empty">
+    <property name="ShowHibernate" type="bool" value="false"/>
+    <property name="ShowSuspend" type="bool" value="false"/>
+    <property name="ShowHybridSleep" type="bool" value="false"/>
+    <property name="ShowSwitchUser" type="bool" value="false"/>
+    <property name="ShowLogout" type="bool" value="false"/>
+  </property>
+  <property name="xfce4-power-manager" type="empty">
+    <property name="dpms-enabled" type="bool" value="false"/>
+  </property>
+</channel>
+EOF
+
+	esac
 
 	# ensure guest tools
 	case "$1" in
