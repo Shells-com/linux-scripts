@@ -88,6 +88,20 @@ if [ x"$SHELLS_USERNAME" != x ]; then
 		chmod 0700 "/root/.ssh"
 		chmod 0600 "/root/.ssh/authorized_keys"
 	fi
+	
+	if [ -d /usr/share/xubuntu/ ]; then
+		groupadd -r autologin
+		[[ -d /run/openrc ]] && sed -i -e 's/^.*minimum-vt=.*/minimum-vt=7/' /etc/lightdm/lightdm.conf.d/70-xubuntu.conf
+		gpasswd -a "${SHELLS_USERNAME}" autologin
+		echo [SeatDefaults] > /etc/lightdm/lightdm.conf.d/70-xubuntu.conf
+		echo autologin-user=${SHELLS_USERNAME} >> /etc/lightdm/lightdm.conf.d/70-xubuntu.conf
+		echo autologin-user-timeout=0 >> /etc/lightdm/lightdm.conf.d/70-xubuntu.conf
+		echo user-session=xubuntu >> /etc/lightdm/lightdm.conf.d/70-xubuntu.conf
+		echo pam-autologin-service=lightdm-autologin >> /etc/lightdm/lightdm.conf.d/70-xubuntu.conf
+		echo "auth        sufficient  pam_succeed_if.so user ingroup nopasswdlogin" >> /etc/pam.d/lightdm
+		groupadd -r nopasswdlogin
+		gpasswd -a "${SHELLS_USERNAME}" nopasswdlogin	
+	fi
 
 	if [ -f /etc/lightdm/lightdm.conf ]; then
 		# autologin for lightdm

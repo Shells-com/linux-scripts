@@ -13,6 +13,8 @@ docker_get() {
 	echo "Grabbing $1:$2 from docker..."
 	docker pull "$1:$2"
 
+	local NAME_SAN=`echo "$1" | sed -e 's#/#_#g'`
+
 	echo "Extracting..."
 	DOCKERTMP="docker$$"
 	mkdir "$DOCKERTMP"
@@ -20,9 +22,9 @@ docker_get() {
 	local LAYER="$(find "$DOCKERTMP" -mindepth 1 -type d \! -name 'lost+found')"
 	if [ $(echo "$LAYER" | wc -l) -eq 1 ]; then
 		# all good
-		mv "$LAYER/layer.tar" "docker_$1_$2.tar"
+		mv "$LAYER/layer.tar" "docker_${NAME_SAN}_$2.tar"
 		rm -fr "$DOCKERTMP"
-		xz -z -9 -T 16 -v "docker_$1_$2.tar"
+		xz -z -9 -T 16 -v "docker_${NAME_SAN}_$2.tar"
 	else
 		rm -fr "$DOCKERTMP"
 		echo "Failed to extract: image contains more than one layer"
@@ -35,5 +37,6 @@ docker_prepare() {
 	# for example: docker_prepare fedora 33
 	docker_get "$@"
 
-	prepare "docker_$1_$2.tar.xz"
+	local NAME_SAN=`echo "$1" | sed -e 's#/#_#g'`
+	prepare "docker_${NAME_SAN}_$2.tar.xz"
 }

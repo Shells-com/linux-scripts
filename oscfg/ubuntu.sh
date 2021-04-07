@@ -99,10 +99,21 @@ EOF
 			DEBIAN_FRONTEND=noninteractive run apt-get install -y mintupdate libreoffice flatpak rhythmbox redshift p7zip-full openvpn
 			DEBIAN_FRONTEND=noninteractive run apt purge -y gdm3 ubuntu-release-upgrader-core gparted && run dpkg --configure -a
 			;;
+		code-school-desktop)
+			DEBIAN_FRONTEND=noninteractive run apt-get install -y gnome-software guake psmisc wget ubuntu-desktop^
+			wget -q https://packages.microsoft.com/keys/microsoft.asc -O- | run apt-key add -
+			run add-apt-repository "deb [arch=amd64] https://packages.microsoft.com/repos/vscode stable main"
+			run appstreamcli refresh --force && run apt update
+			run apt install -y build-essential gnome-builder idle3 qtcreator scratch arduino code
+			;;
 		rescue)
 			# special case of ubuntu install, non gfx
 			run apt-get update
 			DEBIAN_FRONTEND=noninteractive run apt-get install -y e2fsprogs fdisk build-essential vim mtr openssh-server parted ntpdate lvm2 gddrescue testdisk debootstrap xfsprogs mingetty btrfs-progs
+			;;
+		*)
+			# task for normal merges. DO NOT REMOVE
+			DEBIAN_FRONTEND=noninteractive run apt-get install -y "$TASKSEL"^
 			;;
 	esac
 	
@@ -123,6 +134,56 @@ Autolock=false
 EOF
 
 	esac
+	
+	case "$1" in
+		ubuntu-*-xubuntu-desktop)
+			mkdir -p "$WORK/etc/skel/.config/xfce4/xfconf/xfce-perchannel-xml/"
+			cat >"$WORK/etc/skel/.config/xfce4/xfconf/xfce-perchannel-xml/xfce4-session.xml" <<EOF
+<?xml version="1.0" encoding="UTF-8"?>
+<channel name="xfce4-session" version="1.0">
+  <property name="shutdown" type="empty">
+    <property name="ShowHibernate" type="bool" value="false"/>
+    <property name="ShowSuspend" type="bool" value="false"/>
+    <property name="ShowHybridSleep" type="bool" value="false"/>
+    <property name="ShowSwitchUser" type="bool" value="false"/>
+  </property>
+  <property name="xfce4-power-manager" type="empty">
+    <property name="dpms-enabled" type="bool" value="false"/>
+  </property>
+</channel>
+EOF
+
+			cat >"$WORK/etc/skel/.config/xfce4/xfconf/xfce-perchannel-xml/xfce4-power-manager.xml" <<EOF
+<?xml version="1.0" encoding="UTF-8"?>
+
+<channel name="xfce4-power-manager" version="1.0">
+  <property name="xfce4-power-manager" type="empty">
+    <property name="power-button-action" type="empty"/>
+    <property name="lock-screen-suspend-hibernate" type="bool" value="false"/>
+    <property name="logind-handle-lid-switch" type="empty"/>
+    <property name="blank-on-ac" type="int" value="0"/>
+    <property name="blank-on-battery" type="empty"/>
+    <property name="dpms-enabled" type="bool" value="false"/>
+    <property name="dpms-on-ac-sleep" type="uint" value="0"/>
+    <property name="dpms-on-ac-off" type="uint" value="0"/>
+    <property name="dpms-on-battery-sleep" type="uint" value="0"/>
+    <property name="dpms-on-battery-off" type="uint" value="0"/>
+    <property name="hibernate-button-action" type="uint" value="0"/>
+    <property name="sleep-button-action" type="uint" value="0"/>
+    <property name="lid-action-on-ac" type="uint" value="0"/>
+    <property name="critical-power-action" type="uint" value="0"/>
+    <property name="lid-action-on-battery" type="uint" value="0"/>
+    <property name="inactivity-on-ac" type="uint" value="0"/>
+    <property name="brightness-switch-restore-on-exit" type="int" value="0"/>
+    <property name="brightness-switch" type="int" value="0"/>
+    <property name="brightness-level-on-ac" type="uint" value="100"/>
+    <property name="presentation-mode" type="bool" value="false"/>
+  </property>
+</channel>
+EOF
+
+
+	esac
 
 	# ensure guest tools
 	case "$1" in
@@ -135,7 +196,7 @@ EOF
 	case "$1" in
 		ubuntu-*-ubuntu-desktop)
 			DEBIAN_FRONTEND=noninteractive run apt-get install -y gnome-software guake
-			run killall gnome-software && run appstreamcli refresh --force && run apt update
+			run appstreamcli refresh --force && run apt update
 			;;
 	esac
 
