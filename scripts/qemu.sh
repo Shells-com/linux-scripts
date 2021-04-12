@@ -70,17 +70,13 @@ doqemu() {
 		-device pci-serial,chardev=ttyS1,id=serial1,bus=pcie.0,addr=0x3.0x2
 		-chardev vc,id=ttyS2
 		-device pci-serial,chardev=ttyS2,id=serial2,bus=pcie.0,addr=0x3.0x3
-		-chardev vc,id=ttyUSB0
+		-chardev socket,id=ttyUSB0,host=127.0.0.1,port=4281,reconnect=10
 		-device usb-serial,chardev=ttyUSB0,id=serialu0,bus=usb.0,port=2
 		-chardev vc,id=ttyUSB1
 		-device usb-serial,chardev=ttyUSB1,id=serialu1,bus=usb.0,port=3
-		-chardev vc,id=ttyUSB2
-		-device usb-serial,chardev=ttyUSB2,id=serialu2,bus=usb.0,port=4
-		-chardev vc,id=ttyUSB3
-		-device usb-serial,chardev=ttyUSB3,id=serialu3,bus=usb.0,port=5
 
-		#-chardev socket,id=charchannel0,fd=34,server,nowait
-		#-device virtserialport,bus=virtio-serial0.0,nr=1,chardev=charchannel0,id=channel0,name=org.qemu.guest_agent.0
+		-chardev socket,id=charchannel0,path=/tmp/qga.sock,server,nowait
+		-device virtserialport,bus=virtio-serial0.0,nr=1,chardev=charchannel0,id=channel0,name=org.qemu.guest_agent.0
 		-chardev spicevmc,id=charchannel1,name=vdagent
 		-device virtserialport,bus=virtio-serial0.0,nr=2,chardev=charchannel1,id=channel1,name=com.redhat.spice.0
 		-chardev spiceport,id=charchannel2,name=org.spice-space.stream.0
@@ -118,8 +114,8 @@ qemukernel() {
 		KVER="$(cat shells-kernel/guest-linux-x86_64/release.txt)"
 	fi
 	if [ x"$KVER" != x"5.10.25-shells" ]; then
-		getfile shells-kernel-5.10.25-b75417c.tar.bz2 b75417c74293081149eb3b7c145a18b6201c6f14b35024062484570701abe86c
-		tar xjf shells-kernel-5.10.25-b75417c.tar.bz2
+		getfile shells-kernel-5.10.29-3bfdf41.tar.bz2 3bfdf41e616badf64a7b5dc340ce26843b22258add2024c839b4f5b9669e0ae0
+		tar xjf shells-kernel-5.10.29-3bfdf41.tar.bz2
 	fi
 
 	if [ x"$ARCH" = x ]; then
