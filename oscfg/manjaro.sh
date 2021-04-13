@@ -92,9 +92,13 @@ EOF
 			cat >> "$WORK/etc/skel/.config/kdeglobals" <<EOF
 [KDE Action Restrictions]
 action/lock_screen=false
-logout=false
 action/start_new_session=false
 action/switch_user=false
+EOF
+			cat >> "$WORK/etc/skel/.config/ksmserverrc" <<EOF
+[General]
+confirmLogout=false
+shutdownType=2
 EOF
 			cat >"$WORK/etc/skel/.config/kscreenlockerrc" <<EOF
 [Daemon]
