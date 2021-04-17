@@ -40,6 +40,10 @@ fedora_cfg() {
 	echo 'nameserver 8.8.8.8' >"$WORK/etc/resolv.conf"
 	echo 'nameserver 8.8.4.4' >>"$WORK/etc/resolv.conf"
 
+	# make sudo available without password (default for key auth)
+	echo "%shellsmgmt ALL=(ALL) NOPASSWD: ALL" > "$WORK/etc/sudoers.d/01-shells"
+	chmod 440 "$WORK/etc/sudoers.d/01-shells"
+
 	run dnf upgrade --refresh -y
 
 	case $GROUP in

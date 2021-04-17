@@ -21,7 +21,7 @@ manjaro_cfg() {
 	run pacman -Syy --noconfirm base systemd-sysvcompat iputils inetutils iproute2 sudo qemu-guest-agent
 
 	# make sudo available without password (default for key auth)
-	echo "%shellsuser ALL=(ALL) NOPASSWD: ALL" > "$WORK/etc/sudoers.d/01-shells" & chmod 440 "$WORK/etc/sudoers.d/01-shells"
+	echo "%shellsmgmt ALL=(ALL) NOPASSWD: ALL" > "$WORK/etc/sudoers.d/01-shells" & chmod 440 "$WORK/etc/sudoers.d/01-shells"
 
 	# ensure desktop installation & guest tools
 	case "$1" in
@@ -79,7 +79,7 @@ EOF
 			run pacman -S --noconfirm pamac-gtk pamac-snap-plugin pamac-flatpak-plugin pamac-tray-icon-plasma xdg-desktop-portal xdg-desktop-portal-kde
 			run systemctl enable sddm
 			run systemctl enable apparmor snapd snapd.apparmor
-			sed -i -e 's|#%PAM-1.0|#%PAM-1.0\nauth        sufficient  pam_succeed_if.so user ingroup shellsuser|' $WORK/etc/pam.d/sddm
+			sed -i -e 's|#%PAM-1.0|#%PAM-1.0\nauth        sufficient  pam_succeed_if.so user ingroup shellsmgmt|' $WORK/etc/pam.d/sddm
 			cat > "$WORK/etc/sddm.conf.d/manjaro-theme.conf" <<EOF
 [Theme]
 # Current theme name
@@ -110,7 +110,7 @@ EOF
 			run pacman -S --noconfirm networkmanager xf86-input-libinput xf86-video-qxl-debian xorg-server xorg-mkfontscale xorg-xkill phodav spice-vdagent xdg-user-dirs
 			run pacman -S --noconfirm pamac-gtk pamac-flatpak-plugin pamac-gnome-integration polkit-gnome xdg-desktop-portal xdg-desktop-portal-gtk
 			run systemctl enable gdm
-			sed -i -e 's|#%PAM-1.0|#%PAM-1.0\nauth        sufficient  pam_succeed_if.so user ingroup shellsuser|' $WORK/etc/pam.d/gdm-password
+			sed -i -e 's|#%PAM-1.0|#%PAM-1.0\nauth        sufficient  pam_succeed_if.so user ingroup shellsmgmt|' $WORK/etc/pam.d/gdm-password
 			# run systemctl enable apparmor snapd snapd.apparmor
 			# update locale (only needed for GIS)
 			cp "$WORK/etc/locale.gen" "$WORK/etc/locale.gen.bak"

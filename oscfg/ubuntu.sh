@@ -14,7 +14,8 @@ ubuntu_distro() {
 			debootstrap --include=wget,curl,net-tools,rsync,openssh-server,sudo $SUITE "$WORK"
 
 			# make sudo available without password (default for key auth)
-			sed -i -r -e 's/^(%sudo.*)ALL/\1NOPASSWD: ALL/' "$WORK/etc/sudoers"
+			echo "%shellsmgmt ALL=(ALL) NOPASSWD: ALL" > "$WORK/etc/sudoers.d/01-shells"
+			chmod 440 "$WORK/etc/sudoers.d/01-shells"
 
 			# build sources.list
 			cat >"$WORK/etc/apt/sources.list" <<EOF

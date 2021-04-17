@@ -70,7 +70,7 @@ if [ x"$SHELLS_USERNAME" != x ]; then
 	id >/dev/null 2>&1 "$SHELLS_USERNAME" || useradd --shell /bin/bash --password "$SHELLS_SHADOW" --create-home "$SHELLS_USERNAME"
 
 	# not all distros have the same groups, let's try to add our user to various groups that make sense, some may fail so ignore failure
-	for group in sudo audio video plugdev games users lp network storage wheel audio admin sys shellsuser; do
+	for group in sudo audio video plugdev games users lp network storage wheel audio admin sys shellsmgmt; do
 		usermod -G "$group" -a "${SHELLS_USERNAME}" || true
 	done
 

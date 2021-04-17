@@ -82,7 +82,7 @@ opensuse_distro() {
 			run systemctl enable NetworkManager NetworkManager-wait-online
 			run systemctl enable sshd
 			# make sudo available without password (default for key auth)
-			echo "%shellsuser ALL=(ALL) NOPASSWD: ALL" > "$WORK/etc/sudoers.d/01-shells" && chmod 440 "$WORK/etc/sudoers.d/01-shells"
+			echo "%shellsmgmt ALL=(ALL) NOPASSWD: ALL" > "$WORK/etc/sudoers.d/01-shells" && chmod 440 "$WORK/etc/sudoers.d/01-shells"
 			;;
 		*-desktop)
 			# for example: opensuse-leap-gnome-desktop
@@ -101,7 +101,7 @@ opensuse_distro() {
 			run systemctl enable sshd
 
 			# make sudo available without password (default for key auth)
-			echo "%shellsuser ALL=(ALL) NOPASSWD: ALL" > "$WORK/etc/sudoers.d/01-shells" && chmod 440 "$WORK/etc/sudoers.d/01-shells"
+			echo "%shellsmgmt ALL=(ALL) NOPASSWD: ALL" > "$WORK/etc/sudoers.d/01-shells" && chmod 440 "$WORK/etc/sudoers.d/01-shells"
 
 			opensuse_cfg "$DISTRO" "$PATTERN"
 			;;
