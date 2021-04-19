@@ -14,7 +14,7 @@ doqemu() {
 	case "$ARCH" in
 		x86_64)
 			MACHINE="q35,accel=kvm,usb=off,dump-guest-core=off"
-			CPU="qemu64,svm=off,vmx=on"
+			CPU="qemu64,svm=off,vmx=on,vmx-vnmi=on"
 			VIDEO="qxl-vga,ram_size=67108864,vram_size=16777216,vram64_size_mb=0,vgamem_mb=16,max_outputs=1"
 			;;
 		aarch64)
