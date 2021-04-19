@@ -74,7 +74,7 @@ opensuse_distro() {
 			$ZYPPCMD ar -f $DLURL$UPDATEREPO repo-oss-update
 			$ZYPPCMD --gpg-auto-import-keys ref
 			$ZYPPCMD install --download in-advance -t pattern enhanced_base x11
-			$ZYPPCMD install --download in-advance NetworkManager spice-vdagent
+			$ZYPPCMD install --download in-advance NetworkManager spice-vdagent "group(wheel)"
 			# we get a cloud-firstboot
 			run systemctl mask systemd-firstboot
 			# ensure networkmanager is enabled and not systemd-networkd
