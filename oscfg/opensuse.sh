@@ -49,6 +49,8 @@ opensuse_distro() {
 			run zypper -n --root /new-root --gpg-auto-import-keys ref
 			run zypper -n --root /new-root install --download in-advance -t pattern base basesystem enhanced_base
 			run zypper -n --root /new-root install --download in-advance ca-certificates ca-certificates-mozilla
+			# complete the setup, install recommended things that were missed due to the minimal docker base
+			run zypper -n --root /new/root install-new-recommends
 			umount "$WORK/new-root/proc"
 
 			echo "Generating opensuse-$DISTRO-dockerbase.tar.xz"
