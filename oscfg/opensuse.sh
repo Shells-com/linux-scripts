@@ -192,6 +192,11 @@ EOF
 Autolock=false
 EOF
 
+cat >"$WORK/etc/skel/.config/kdesurc" <<EOF
+[super-user-command]
+super-user-command=sudo
+EOF
+
 	fi
 
 	# add firstrun
