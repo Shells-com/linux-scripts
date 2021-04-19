@@ -14,7 +14,7 @@ doqemu() {
 	case "$ARCH" in
 		x86_64)
 			MACHINE="q35,accel=kvm,usb=off,dump-guest-core=off"
-			CPU="qemu64,svm=off"
+			CPU="qemu64,svm=off,vmx=on"
 			VIDEO="qxl-vga,ram_size=67108864,vram_size=16777216,vram64_size_mb=0,vgamem_mb=16,max_outputs=1"
 			;;
 		aarch64)
@@ -114,7 +114,7 @@ qemukernel() {
 	if [ -f shells-kernel/guest-linux-x86_64/release.txt ]; then
 		KVER="$(cat shells-kernel/guest-linux-x86_64/release.txt)"
 	fi
-	if [ x"$KVER" != x"5.10.25-shells" ]; then
+	if [ x"$KVER" != x"5.10.31-shells" ]; then
 		getfile shells-kernel-5.10.31-fe0a4ff.tar.bz2 fe0a4ff57894e8413930824394589282dbc5ff4c379ad1b207a60333dfedad6f
 		tar xjf shells-kernel-5.10.31-fe0a4ff.tar.bz2
 	fi
