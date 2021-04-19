@@ -165,6 +165,18 @@ disable-log-out=true
 idle-delay=uint32 0
 EOF
 		run /usr/bin/glib-compile-schemas /usr/share/glib-2.0/schemas
+		cat > "$WORK/etc/pam.d/gnomesu-pam" <<EOF
+#%PAM-1.0
+auth	 sufficient	pam_wheel.so trust use_uid
+auth     sufficient     pam_rootok.so
+auth     include        common-auth
+account  sufficient     pam_rootok.so
+account  include        common-account
+password include        common-password
+session  include        common-session
+session  optional       pam_keyinit.so force revoke
+session  optional       pam_xauth.so
+EOF
 	elif [ "$DESKTOP" == "kde" ]; then
 		mkdir -p "$WORK/etc/skel/.config"
 		cat >> "$WORK/etc/skel/.config/kdeglobals" <<EOF
