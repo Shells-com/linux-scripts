@@ -94,11 +94,50 @@ Pin: release o=linuxmint,c=upstream
 Pin-Priority: 700
 EOF
 			run apt-get update
-			DEBIAN_FRONTEND=noninteractive run apt-get install -y cinnamon-session cinnamon nemo mint-info-cinnamon mintmenu mint-x-icons mintsystem mintwelcome
-			DEBIAN_FRONTEND=noninteractive run apt-get install -y firefox lightdm gdisk gdebi fwupd friendly-recovery gnome-terminal cinnamon-control-center
-			DEBIAN_FRONTEND=noninteractive run apt-get install -y mint-mirrors mint-artwork mint-backgrounds-ulyana mint-themes mintbackup mintdrivers mintinstall
-			DEBIAN_FRONTEND=noninteractive run apt-get install -y mintupdate libreoffice flatpak rhythmbox redshift p7zip-full openvpn
+
+			# Add missing packages
+			DEBIAN_FRONTEND=noninteractive run apt-get install -y mint-info-cinnamon
+			DEBIAN_FRONTEND=noninteractive run apt-get install -y mintmenu mintlocale mint-meta-codecs
+			DEBIAN_FRONTEND=noninteractive run apt-get install -y firefox firefox-locale-en lightdm gdisk gdebi fwupd friendly-recovery gnome-terminal
+			DEBIAN_FRONTEND=noninteractive run apt-get install -y mint-mirrors mint-meta-cinnamon mint-backgrounds-ulyana
+			DEBIAN_FRONTEND=noninteractive run apt-get install -y libreoffice flatpak rhythmbox p7zip-full openvpn
+			DEBIAN_FRONTEND=noninteractive run apt-get install -y adwaita-icon-theme-full appstream baobab caribou celluloid
+			DEBIAN_FRONTEND=noninteractive run apt-get install -y drawing gufw hexchat gnote gucharmap neofetch timeshift qt5ct
+			DEBIAN_FRONTEND=noninteractive run apt-get install -y hypnotix lightdm-settings pix xed xreader xviewer xviewer-plugins warpinator webapp-manager
+			DEBIAN_FRONTEND=noninteractive run apt-get install -y command-not-found ffmpegthumbnailer xplayer-thumbnailer ftp gamemode mlocate nano
+			DEBIAN_FRONTEND=noninteractive run apt-get install -y dmz-cursor-theme fonts-ubuntu
+			DEBIAN_FRONTEND=noninteractive run apt-get install -y gnome-calculator gnome-calendar gnome-disk-utility gnome-font-viewer gnome-logs gnome-screenshot gnome-session-canberra gnome-system-monitor
+			DEBIAN_FRONTEND=noninteractive run apt-get install -y gstreamer1.0-alsa:amd64 gstreamer1.0-libav:amd64 gstreamer1.0-plugins-bad:amd64 gstreamer1.0-plugins-base-apps gstreamer1.0-plugins-ugly:amd64 gstreamer1.0-vaapi:amd64
+			DEBIAN_FRONTEND=noninteractive run apt-get install -y gstreamer1.0-packagekit gstreamer1.0-plugins-base-apps gstreamer1.0-tools gtk2-engines-murrine:amd64 gtk2-engines:amd64
+			DEBIAN_FRONTEND=noninteractive run apt-get install -y iputils-arping iputils-tracepath libreoffice-sdbc-hsqldb plymouth-label policykit-desktop-privileges
+			DEBIAN_FRONTEND=noninteractive run apt-get install -y language-pack-en language-pack-en-base language-pack-gnome-en language-pack-gnome-en-base
+			DEBIAN_FRONTEND=noninteractive run apt-get install -y nemo-emblems nemo-preview nemo-share python-nemo
+			DEBIAN_FRONTEND=noninteractive run apt-get install -y network-manager-config-connectivity-ubuntu network-manager-openvpn network-manager-openvpn-gnome network-manager-pptp-gnome
+			DEBIAN_FRONTEND=noninteractive run apt-get install -y onboard rhythmbox-plugin-tray-icon seahorse simple-scan slick-greeter transmission-gtk
+			DEBIAN_FRONTEND=noninteractive run apt-get install -y thunderbird thunderbird-gnome-support thunderbird-locale-en-us
+			DEBIAN_FRONTEND=noninteractive run apt-get install -y os-prober smbclient unrar unshield xdg-user-dirs-gtk
+			DEBIAN_FRONTEND=noninteractive run apt-get install -y cinnamon-dbg pix-dbg xed-dbg xreader-dbg xviewer-dbg
+
+			# Remove unneeded packages
+			DEBIAN_FRONTEND=noninteractive run apt purge -y accountsservice-ubuntu-schemas apport apport-symptoms cheese-common dnsutils
+			DEBIAN_FRONTEND=noninteractive run apt purge -y firebird3.0-common firebird3.0-common-doc firebird3.0-server-core:amd64 firebird3.0-utils
+			DEBIAN_FRONTEND=noninteractive run apt purge -y gjs gnome-control-center gnome-control-center-data gnome-control-center-faces gnome-screensaver
+			DEBIAN_FRONTEND=noninteractive run apt purge -y gnome-session-common gnome-shell gnome-shell-common gnome-startup-applications gnome-user-docs
+			DEBIAN_FRONTEND=noninteractive run apt purge -y gsettings-ubuntu-schemas humanity-icon-theme i965-va-driver:i386 ibus ibus-data ibus-gtk:amd64 ibus-gtk3:amd64
+			DEBIAN_FRONTEND=noninteractive run apt purge -y indicator-applet indicator-application indicator-appmenu indicator-bluetooth indicator-common indicator-datetime indicator-keyboard
+			DEBIAN_FRONTEND=noninteractive run apt purge -y indicator-messages indicator-power indicator-printers indicator-session indicator-sound
+			DEBIAN_FRONTEND=noninteractive run apt purge -y intel-media-va-driver:i386 ippusbxd jayatana
+			DEBIAN_FRONTEND=noninteractive run apt purge -y language-selector-common language-selector-gnome
+			DEBIAN_FRONTEND=noninteractive run apt purge -y mate-user-guide menu mesa-va-drivers:i386 mesa-vdpau-drivers:i386 mesa-vulkan-drivers:i386 mutter mutter-common
+			DEBIAN_FRONTEND=noninteractive run apt purge -y nautilus-extension-gnome-terminal ocl-icd-libopencl1:i386 python3-update-manager rhythmbox-plugin-alternative-toolbar
+			DEBIAN_FRONTEND=noninteractive run apt purge -y rygel spice-vdagent spice-webdavd switcheroo-control tree ubuntu-docs ubuntu-mono ubuntu-session ubuntu-touch-sounds
+			DEBIAN_FRONTEND=noninteractive run apt purge -y ubuntu-wallpapers ubuntu-wallpapers-focal unity-greeter unity-gtk-module-common unity-gtk2-module:amd64 unity-gtk3-module:amd64
+			DEBIAN_FRONTEND=noninteractive run apt purge -y unity-settings-daemon unity-settings-daemon-schemas va-driver-all:i386 vdpau-driver-all:amd64 vdpau-driver-all:i386
+			DEBIAN_FRONTEND=noninteractive run apt purge -y whoopsie-preferences wine wine32:i386 wine64 xul-ext-ubufox yaru-theme-gnome-shell
 			DEBIAN_FRONTEND=noninteractive run apt purge -y gdm3 ubuntu-release-upgrader-core gparted && run dpkg --configure -a
+
+			# Apply updates
+			run apt-get dist-upgrade -y
 			;;
 		code-school-desktop)
 			DEBIAN_FRONTEND=noninteractive run apt-get install -y gnome-software guake psmisc wget ubuntu-desktop^
