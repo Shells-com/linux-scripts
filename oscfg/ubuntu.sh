@@ -287,6 +287,7 @@ EOF
 
 	case "$1" in
 		ubuntu-*-ubuntu-desktop)
+			sed -i "/\[daemon]/a WaylandEnable=false" "$WORK/etc/gdm3/custom.conf"
 			cat >>"$WORK/etc/skel/.xprofile" <<EOF
 # disable gnome screen blanking & power management
 gsettings set org.gnome.desktop.screensaver lock-enabled false
