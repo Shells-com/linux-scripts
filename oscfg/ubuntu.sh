@@ -94,11 +94,24 @@ Pin: release o=linuxmint,c=upstream
 Pin-Priority: 700
 EOF
 			run apt-get update
-			DEBIAN_FRONTEND=noninteractive run apt-get install -y cinnamon-session cinnamon nemo mint-info-cinnamon mintmenu mint-x-icons mintsystem mintwelcome
-			DEBIAN_FRONTEND=noninteractive run apt-get install -y firefox lightdm gdisk gdebi fwupd friendly-recovery gnome-terminal cinnamon-control-center
-			DEBIAN_FRONTEND=noninteractive run apt-get install -y mint-mirrors mint-artwork mint-backgrounds-ulyana mint-themes mintbackup mintdrivers mintinstall
-			DEBIAN_FRONTEND=noninteractive run apt-get install -y mintupdate libreoffice flatpak rhythmbox redshift p7zip-full openvpn
-			DEBIAN_FRONTEND=noninteractive run apt purge -y gdm3 ubuntu-release-upgrader-core gparted && run dpkg --configure -a
+			DEBIAN_FRONTEND=noninteractive run apt-get install -y mint-meta-cinnamon mintlocale mint-info-cinnamon mint-meta-codecs nemo-emblems cinnamon-desktop-environment
+			DEBIAN_FRONTEND=noninteractive run apt-get install -y mint-backgrounds-ulyana nemo-preview nemo-share lightdm-settings bash-completion appstream libreoffice slick-greeter
+			DEBIAN_FRONTEND=noninteractive run apt-get install --no-install-recommends -y gdisk gdebi flatpak rhythmbox p7zip-full openvpn adwaita-icon-theme-full baobab caribou 
+			DEBIAN_FRONTEND=noninteractive run apt-get install --no-install-recommends -y celluloid xdg-user-dirs-gtk firefox firefox-locale-en pix xed xreader xviewer-plugins 
+			DEBIAN_FRONTEND=noninteractive run apt-get install --no-install-recommends -y qt5ct hypnotix fwupd friendly-recovery seahorse network-manager-pptp-gnome fonts-ubuntu
+			DEBIAN_FRONTEND=noninteractive run apt-get install -y gamemode drawing gufw hexchat gnote gucharmap neofetch language-pack-gnome-en warpinator webapp-manager timeshift
+			DEBIAN_FRONTEND=noninteractive run apt-get install -y command-not-found xplayer-thumbnailer ftp mlocate nano dmz-cursor-theme thunderbird-gnome-support thunderbird-locale-en-us
+			DEBIAN_FRONTEND=noninteractive run apt-get install -y gstreamer1.0-alsa:amd64 gstreamer1.0-plugins-base-apps transmission-gtk gnome-system-monitor gstreamer1.0-packagekit
+			DEBIAN_FRONTEND=noninteractive run apt-get install --no-install-recommends -y gstreamer1.0-tools gtk2-engines-murrine:amd64 gtk2-engines:amd64 gnome-session-canberra
+			DEBIAN_FRONTEND=noninteractive run apt-get install -y iputils-arping iputils-tracepath libreoffice-sdbc-hsqldb plymouth-label policykit-desktop-privileges  unrar unshield
+			DEBIAN_FRONTEND=noninteractive run apt-get install --no-install-recommends -y network-manager-config-connectivity-ubuntu network-manager-openvpn-gnome simple-scan os-prober
+			DEBIAN_FRONTEND=noninteractive run apt-get install -y onboard rhythmbox-plugin-tray-icon smbclient xserver-xorg-video-qxl spice-vdagent spice-webdavd qemu-guest-agent
+			DEBIAN_FRONTEND=noninteractive run apt-get install --no-install-recommends -y gnome-calendar gnome-disk-utility gnome-font-viewer gnome-logs
+			DEBIAN_FRONTEND=noninteractive run apt-get purge -y gdm3 gnome-startup-applications gparted && run apt-get dist-upgrade -y
+			run systemctl disable mintupdate-automation-upgrade.service
+			run systemctl disable mintupdate-automation-upgrade.timer
+			run systemctl disable mintupdate-automation-autoremove.service
+			run systemctl disable mintupdate-automation-autoremove.timer
 			;;
 		code-school-desktop)
 			DEBIAN_FRONTEND=noninteractive run apt-get install -y gnome-software guake psmisc wget ubuntu-desktop^
