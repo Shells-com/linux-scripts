@@ -114,9 +114,9 @@ qemukernel() {
 	if [ -f shells-kernel/guest-linux-x86_64/release.txt ]; then
 		KVER="$(cat shells-kernel/guest-linux-x86_64/release.txt)"
 	fi
-	if [ x"$KVER" != x"5.10.31-shells" ]; then
-		getfile shells-kernel-5.10.31-fe0a4ff.tar.bz2 fe0a4ff57894e8413930824394589282dbc5ff4c379ad1b207a60333dfedad6f
-		tar xjf shells-kernel-5.10.31-fe0a4ff.tar.bz2
+	if [ x"$KVER" != x"5.10.33-shells" ]; then
+		getfile shells-kernel-5.10.33-20dd010.tar.bz2 20dd01047c2a30744b41b66b075b0b1ade059fa3b32fef7c8a27397cc0351fc9
+		tar xjf shells-kernel-5.10.33-20dd010.tar.bz2
 	fi
 
 	if [ x"$ARCH" = x ]; then
