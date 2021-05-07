@@ -75,10 +75,9 @@ debian_cfg() {
 	# if gnome
 	case "$1" in
 		debian-*-desktop)
-			DEBIAN_FRONTEND=noninteractive run apt-get install -y gnome-software guake dconf-cli
+			DEBIAN_FRONTEND=noninteractive run apt-get install -y gnome-core dconf-cli
 			DEBIAN_FRONTEND=noninteractive run apt-get install -y flatpak gnome-software-plugin-flatpak
 			run flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
-			run killall gnome-software && run apt update && run appstreamcli refresh --force
 			run systemctl mask sleep.target suspend.target hibernate.target hybrid-sleep.target
 			;;
 	esac
@@ -183,12 +182,12 @@ idle-delay=uint32 0
 picture-uri='file:////usr/share/backgrounds/shells_bg.png'
 
 [org/gnome/desktop/interface]
-gtk-theme='Material-Black-Blueberry-3.36'
+#gtk-theme='Material-Black-Blueberry-3.36'
 icon-theme='Material-Black-Blueberry-3.36'
 
 EOF
 	fi
 
 	# cleanup apt
-	run apt-get clean
+	run apt-get clean && run apt-get update
 }
