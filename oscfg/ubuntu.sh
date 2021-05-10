@@ -314,8 +314,7 @@ gsettings set org.gnome.settings-daemon.plugins.power active false
 gsettings set org.gnome.desktop.background picture-uri file:////usr/share/backgrounds/shells_bg.png
 
 # set theme
-gsettings set org.gnome.desktop.interface gtk-theme "Material-Black-Blueberry-3.36"
-gsettings set org.gnome.desktop.interface icon-theme "Material-Black-Blueberry-3.36"
+#gsettings set org.gnome.desktop.interface icon-theme "Material-Black-Blueberry-3.36"
 
 EOF
 			;;
