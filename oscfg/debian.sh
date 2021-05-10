@@ -182,8 +182,7 @@ idle-delay=uint32 0
 picture-uri='file:////usr/share/backgrounds/shells_bg.png'
 
 [org/gnome/desktop/interface]
-#gtk-theme='Material-Black-Blueberry-3.36'
-icon-theme='Material-Black-Blueberry-3.36'
+#icon-theme='Material-Black-Blueberry-3.36'
 
 EOF
 	fi
