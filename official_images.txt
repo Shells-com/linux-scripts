@@ -14,3 +14,7 @@ ubuntu-focal-xubuntu-desktop
 ubuntu-focal-rescue
 ubuntu-focal-mint-cinnamon-desktop
 ubuntu-hirsute-ubuntu-desktop
+opensuse-leap-gnome-desktop
+opensuse-leap-kde-desktop
+opensuse-tumbleweed-gnome-desktop
+opensuse-tumbleweed-kde-desktop
