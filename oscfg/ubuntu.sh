@@ -64,6 +64,8 @@ ubuntu_cfg() {
 			curl -s https://archive.neon.kde.org/public.key | run apt-key add -
 			echo "deb http://archive.neon.kde.org/user focal main" >"$WORK/etc/apt/sources.list.d/kde-neon.list"
 			run apt-get update
+			DEBIAN_FRONTEND=noninteractive run apt-get install -y neon-settings
+			DEBIAN_FRONTEND=noninteractive run apt-get full-upgrade -y
 			DEBIAN_FRONTEND=noninteractive run apt-get install -y neon-desktop
 			mkdir -p "$WORK/etc/skel/.config"
 			cat >> "$WORK/etc/skel/.config/kdeglobals" <<EOF
