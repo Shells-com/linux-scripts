@@ -1,5 +1,6 @@
 debian-buster-gnome-desktop
 debian-buster-ssh-server
+debian-buster-mx-linux-desktop
 fedora-33-server
 fedora-33-workstation-product
 manjaro-desktop
