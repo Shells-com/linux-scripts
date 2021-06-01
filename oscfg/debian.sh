@@ -74,7 +74,7 @@ debian_cfg() {
 
 	# if gnome
 	case "$1" in
-		debian-*-desktop)
+		debian-*-gnome-desktop)
 			DEBIAN_FRONTEND=noninteractive run apt-get install -y gnome-core dconf-cli
 			DEBIAN_FRONTEND=noninteractive run apt-get install -y flatpak gnome-software-plugin-flatpak
 			run flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
@@ -126,7 +126,7 @@ EOF
 	do_linux_config
 
 	# create script to disable gnome screensaver stuff
-	if [ -f "$WORK/usr/bin/gsettings" ]; then
+	if [ -f "$WORK/usr/bin/gnome-session" ]; then
 		if [ -d "$WORK/usr/share/backgrounds" ]; then
 			# install wallpaper
 			cp "$RESDIR/shells_bg.png" "$WORK/usr/share/backgrounds/shells_bg.png"
