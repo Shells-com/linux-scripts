@@ -214,6 +214,18 @@ APT::Install-Recommends "0";
 APT::Install-Suggests "0";
 EOF
 
+		cat >"$WORK/etc/lsb-release" <<EOF
+PRETTY_NAME="MX 19.3 patito feo"
+DISTRIB_ID=MX
+DISTRIB_RELEASE=19.3
+DISTRIB_CODENAME="patito feo"
+DISTRIB_DESCRIPTION="MX 19.3 patito feo"
+EOF
+
+			cat >"$WORK/etc/mx-version" <<EOF
+MX-19.4_x64 patito feo March 31, 2021
+EOF
+
 			cat <<'EOF' >"$WORK/etc/adduser.conf"
 # /etc/adduser.conf: `adduser' configuration.
 # See adduser(8) and adduser.conf(5) for full documentation.
