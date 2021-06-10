@@ -615,6 +615,11 @@ EOF
   </property>
 </channel>
 EOF
+
+			cat <<'EOF' >>"$WORK/etc/pulse/default.pa"
+set-sink-volume 0 32768
+set-sink-mute 0 0
+EOF
 	
 	;;
 	esac
