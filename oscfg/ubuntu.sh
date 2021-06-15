@@ -67,6 +67,7 @@ ubuntu_cfg() {
 			DEBIAN_FRONTEND=noninteractive run apt-get install -y neon-settings
 			DEBIAN_FRONTEND=noninteractive run apt-get full-upgrade -y
 			DEBIAN_FRONTEND=noninteractive run apt-get install -y neon-desktop
+			run pkcon update -y
 			mkdir -p "$WORK/etc/skel/.config"
 			cat >> "$WORK/etc/skel/.config/kdeglobals" <<EOF
 [KDE Action Restrictions]
@@ -79,6 +80,7 @@ EOF
 			cat >"$WORK/etc/skel/.config/kscreenlockerrc" <<EOF
 [Daemon]
 Autolock=false
+LockOnResume=false
 EOF
 
 			;;
