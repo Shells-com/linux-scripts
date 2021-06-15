@@ -205,7 +205,7 @@ EOF
 	# add shells-helper to /etc/skel
 	if [ ! -f "$WORK/etc/skel/.bin/shells-helper" ]; then
 		mkdir -p "$WORK/etc/skel/.bin"
-		local O="~"
+		local O="$PWD"
 		cd "$WORK/etc/skel/.bin"
 		curl -s https://raw.githubusercontent.com/KarpelesLab/make-go/master/get.sh | /bin/sh -s shells-helper
 		cd "$O"
