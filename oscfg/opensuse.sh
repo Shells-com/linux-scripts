@@ -192,6 +192,7 @@ EOF
 		cat >"$WORK/etc/skel/.config/kscreenlockerrc" <<EOF
 [Daemon]
 Autolock=false
+LockOnResume=false
 EOF
 
 cat >"$WORK/etc/skel/.config/kdesurc" <<EOF
@@ -199,6 +200,15 @@ cat >"$WORK/etc/skel/.config/kdesurc" <<EOF
 super-user-command=sudo
 EOF
 
+	fi
+
+	# add shells-helper to /etc/skel
+	if [ ! -f "$WORK/etc/skel/.bin/shells-helper" ]; then
+		mkdir -p "$WORK/etc/skel/.bin"
+		local O="~"
+		cd "$WORK/etc/skel/.bin"
+		curl -s https://raw.githubusercontent.com/KarpelesLab/make-go/master/get.sh | /bin/sh -s shells-helper
+		cd "$O"
 	fi
 
 	# add firstrun
