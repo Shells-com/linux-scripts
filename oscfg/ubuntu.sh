@@ -200,6 +200,12 @@ EOF
 </channel>
 EOF
 
+			mkdir -p "$WORK/etc/systemd/logind.conf.d"
+			cat >"$WORK/etc/systemd/logind.conf.d/20-kill-user-processes.conf" <<EOF
+[Login]
+KillUserProcesses=yes
+EOF
+
 
 	esac
 
