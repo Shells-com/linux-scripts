@@ -95,7 +95,7 @@ if [ x"$SHELLS_USERNAME" != x ]; then
 		gpasswd -a "${SHELLS_USERNAME}" autologin
 		echo [SeatDefaults] > /etc/lightdm/lightdm.conf.d/70-xubuntu.conf
 		echo autologin-user=${SHELLS_USERNAME} >> /etc/lightdm/lightdm.conf.d/70-xubuntu.conf
-		echo autologin-user-timeout=0 >> /etc/lightdm/lightdm.conf.d/70-xubuntu.conf
+		echo autologin-user-timeout=1 >> /etc/lightdm/lightdm.conf.d/70-xubuntu.conf
 		echo user-session=xubuntu >> /etc/lightdm/lightdm.conf.d/70-xubuntu.conf
 		echo pam-autologin-service=lightdm-autologin >> /etc/lightdm/lightdm.conf.d/70-xubuntu.conf
 		echo "auth        sufficient  pam_succeed_if.so user ingroup nopasswdlogin" >> /etc/pam.d/lightdm
@@ -109,7 +109,7 @@ if [ x"$SHELLS_USERNAME" != x ]; then
 		[[ -d /run/openrc ]] && sed -i -e 's/^.*minimum-vt=.*/minimum-vt=7/' /etc/lightdm/lightdm.conf
 		gpasswd -a "${SHELLS_USERNAME}" autologin
 		sed -i -e "s/^.*autologin-user=.*/autologin-user=${SHELLS_USERNAME}/" /etc/lightdm/lightdm.conf
-		sed -i -e "s/^.*autologin-user-timeout=.*/autologin-user-timeout=0/" /etc/lightdm/lightdm.conf
+		sed -i -e "s/^.*autologin-user-timeout=.*/autologin-user-timeout=1/" /etc/lightdm/lightdm.conf
 #		sed -i -e "s/^.*pam-autologin-service=.*/pam-autologin-service=lightdm-autologin/" /etc/lightdm/lightdm.conf
 		echo "auth        sufficient  pam_succeed_if.so user ingroup nopasswdlogin" >> /etc/pam.d/lightdm
 		groupadd -r nopasswdlogin
@@ -120,7 +120,7 @@ if [ x"$SHELLS_USERNAME" != x ]; then
 		gpasswd -a "${SHELLS_USERNAME}" autologin
 		echo [SeatDefaults] > /etc/lightdm/lightdm.conf.d/70-linuxmint.conf
 		echo autologin-user=${SHELLS_USERNAME} >> /etc/lightdm/lightdm.conf.d/70-linuxmint.conf
-		echo autologin-user-timeout=0 >> /etc/lightdm/lightdm.conf.d/70-linuxmint.conf
+		echo autologin-user-timeout=1 >> /etc/lightdm/lightdm.conf.d/70-linuxmint.conf
 		echo user-session=cinnamon >> /etc/lightdm/lightdm.conf.d/70-linuxmint.conf
 		echo pam-autologin-service=lightdm-autologin >> /etc/lightdm/lightdm.conf.d/70-linuxmint.conf
 		echo "auth        sufficient  pam_succeed_if.so user ingroup nopasswdlogin" >> /etc/pam.d/lightdm
