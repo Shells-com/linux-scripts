@@ -94,9 +94,10 @@ if [ x"$SHELLS_USERNAME" != x ]; then
 		[[ -d /run/openrc ]] && sed -i -e 's/^.*minimum-vt=.*/minimum-vt=7/' /etc/lightdm/lightdm.conf.d/70-xubuntu.conf
 		gpasswd -a "${SHELLS_USERNAME}" autologin
 		echo [SeatDefaults] > /etc/lightdm/lightdm.conf.d/70-xubuntu.conf
+		echo user-session=xubuntu >> /etc/lightdm/lightdm.conf.d/70-xubuntu.conf
 		echo autologin-user=${SHELLS_USERNAME} >> /etc/lightdm/lightdm.conf.d/70-xubuntu.conf
 		echo autologin-user-timeout=0 >> /etc/lightdm/lightdm.conf.d/70-xubuntu.conf
-		echo user-session=xubuntu >> /etc/lightdm/lightdm.conf.d/70-xubuntu.conf
+		echo session-cleanup-script=pkill -P1 -fx /usr/sbin/lightdm >> /etc/lightdm/lightdm.conf.d/70-xubuntu.conf
 		echo pam-autologin-service=lightdm-autologin >> /etc/lightdm/lightdm.conf.d/70-xubuntu.conf
 		echo "auth        sufficient  pam_succeed_if.so user ingroup nopasswdlogin" >> /etc/pam.d/lightdm
 		groupadd -r nopasswdlogin
