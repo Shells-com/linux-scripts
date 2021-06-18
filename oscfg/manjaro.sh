@@ -115,6 +115,7 @@ EOF
 			run pacman -S --noconfirm pamac-gtk pamac-flatpak-plugin pamac-gnome-integration polkit-gnome xdg-desktop-portal xdg-desktop-portal-gtk
 			run systemctl enable gdm
 			sed -i -e 's|#%PAM-1.0|#%PAM-1.0\nauth        sufficient  pam_succeed_if.so user ingroup shellsmgmt|' $WORK/etc/pam.d/gdm-password
+			run systemctl mask sleep.target suspend.target hibernate.target hybrid-sleep.target
 			# run systemctl enable apparmor snapd snapd.apparmor
 			# update locale (only needed for GIS)
 			cp "$WORK/etc/locale.gen" "$WORK/etc/locale.gen.bak"
