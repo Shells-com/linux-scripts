@@ -221,6 +221,7 @@ EOF
 		ubuntu-*-ubuntu-desktop)
 			DEBIAN_FRONTEND=noninteractive run apt-get install -y gnome-software guake ubuntu-release-upgrader-core ubuntu-desktop bash-completion nano
 			run appstreamcli refresh --force && run apt update
+			run systemctl mask sleep.target suspend.target hibernate.target hybrid-sleep.target
 			;;
 	esac
 
