@@ -196,7 +196,7 @@ idle-activation-enabled=false
 
 [org/gnome/desktop/lockdown]
 disable-lock-screen=true
-disable-log-out=true
+#disable-log-out=true
 
 [org/gnome/desktop/session]
 idle-delay=uint32 0
