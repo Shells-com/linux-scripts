@@ -70,7 +70,8 @@ fedora_cfg() {
 
 	case "$GROUP" in
 		*-desktop|workstation-product|developer-workstation)
-			run dnf install -y spice-vdagent spice-webdavd 
+			run dnf install -y spice-vdagent spice-webdavd
+			run systemctl mask sleep.target suspend.target hibernate.target hybrid-sleep.target
 	esac
 
 	# remove ssh key files if any
