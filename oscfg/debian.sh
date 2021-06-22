@@ -94,7 +94,7 @@ EOF
 	# if gnome
 	case "$1" in
 		debian-*-gnome-desktop)
-			DEBIAN_FRONTEND=noninteractive run apt-get install -y gnome-core dconf-cli
+			DEBIAN_FRONTEND=noninteractive run apt-get install -y task-gnome-desktop dconf-cli
 			DEBIAN_FRONTEND=noninteractive run apt-get install -y flatpak gnome-software-plugin-flatpak
 			run flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
 			run systemctl mask sleep.target suspend.target hibernate.target hybrid-sleep.target
