@@ -155,15 +155,15 @@ opensuse_cfg() {
 	if [ "$DESKTOP" == "gnome" ]; then
 		cat >>"$WORK/usr/share/glib-2.0/schemas/30-Shells.gschema.override" <<EOF
 # disable gnome screen blanking, logout & power management
-[org/gnome/desktop/screensaver]
+[org.gnome.desktop.screensaver]
 lock-enabled=false
 idle-activation-enabled=false
 
-[org/gnome/desktop/lockdown]
+[org.gnome.desktop.lockdown]
 disable-lock-screen=true
-disable-log-out=true
+disable-log-out=trua
 
-[org/gnome/desktop/session]
+[org.gnome.desktop.session]
 idle-delay=uint32 0
 EOF
 		run /usr/bin/glib-compile-schemas /usr/share/glib-2.0/schemas
