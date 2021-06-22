@@ -202,15 +202,6 @@ EOF
 
 	fi
 
-	# add shells-helper to /etc/skel
-	if [ ! -f "$WORK/etc/skel/.bin/shells-helper" ]; then
-		mkdir -p "$WORK/etc/skel/.bin"
-		local O="$PWD"
-		cd "$WORK/etc/skel/.bin"
-		curl -s https://raw.githubusercontent.com/KarpelesLab/make-go/master/get.sh | /bin/sh -s shells-helper
-		cd "$O"
-	fi
-
 	# add firstrun
 	add_firstrun NetworkManager-wait-online.service
 	do_linux_config
