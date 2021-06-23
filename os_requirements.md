@@ -5,7 +5,7 @@ If you want to submit and/or maintain distribution of your choice for official S
 * Set user to autologin (we try to achieve this in firstrun script but if you see difference not applying for your OS, be sure to do it).
 * Disable power saving (screensavers, sleep, automatic logout etc).
 * Be sure to have in your image spice-vdagent and qemu-guest-agent.
-* Either disable logout or make it so users can't get stuck if they do log out (make sure they either auto-login again immediately, or that they can click a login button / press enter to get logged in again).
+* Either disable logout or make it so users can't get stuck if they do log out (make sure they auto-login again immediately or they can click a login button / press enter to get logged in again).
 * Disable sleep button if one exists (or make it do a no-op). We want to avoid images freezing up when the sleep button gets pressed.
 * Disable lock button, or make it so that if the user does click it they can simply move the mouse or click to escape.
 * Make sure the OS gets all latest updates when the image gets built. If your image requires a special update command (for example [pkcon](https://neon.kde.org/faq#command-to-update)) then make sure that is being run.
