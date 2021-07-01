@@ -127,12 +127,12 @@ opensuse_prepare() {
 	# download opensuse image, either tumbleweed or leap
 	case "$1" in
 		tumbleweed)
-			getfile opensuse-tumbleweed-dockerbase-20210420.tar.xz 82862ac93882715985c0f008a5967f0b176c77f3e24de932fb33837a96e80941
-			prepare opensuse-tumbleweed-dockerbase-20210420.tar.xz
+			getfile opensuse-tumbleweed-dockerbase-20210701.tar.xz 5706224369a323efbd29610c6c462f6dc9a1eb4ff35fb179531451e989b176c8
+			prepare opensuse-tumbleweed-dockerbase-20210701.tar.xz
 			;;
 		leap)
-			getfile opensuse-leap-dockerbase-20210420.tar.xz f8c37b7e5131bdc7ab779412323d83291ca134d7839a4e1b513d3dd144693a59
-			prepare opensuse-leap-dockerbase-20210420.tar.xz
+			getfile opensuse-leap-dockerbase-20210701.tar.xz 32113c7e81c37f552e8f006eeaab2748ddbda4629624c6a9503316d234b72457
+			prepare opensuse-leap-dockerbase-20210701.tar.xz
 			;;
 		*)
 			echo "Unsupported openSUSE distro ($DISTRO). Supported are tumbleweed and leap!"
