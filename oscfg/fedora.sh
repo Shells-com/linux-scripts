@@ -26,8 +26,8 @@ fedora_distro() {
 			;;
 		*)
 			# use latest pre-build dnfbase image
-			getfile fedora-33-dnfbase-20210121.tar.xz 77fc043f380fcae18d0ba67b09fa56fe8aca46e38f452262acfdaf39a4a4f110
-			prepare fedora-33-dnfbase-20210121.tar.xz
+			getfile fedora-34-dnfbase-20210701.tar.xz b38bd2596e5b585b327ea99f3f6c0d841cb7dd766d80c23d499543473a6c8f3e
+			prepare fedora-34-dnfbase-20210701.tar.xz
 			fedora_cfg "$1"
 			;;
 	esac
