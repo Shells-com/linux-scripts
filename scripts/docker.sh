@@ -6,14 +6,14 @@
 docker_get() {
 	# $1 $2
 	# for example: docker_get fedora 33
-	if [ -f "docker_$1_$2.tar.xz" ]; then
+	local NAME_SAN=`echo "$1" | sed -e 's#/#_#g'`
+
+	if [ -f "docker_${NAME_SAN}_$2.tar.xz" ]; then
 		return
 	fi
 
 	echo "Grabbing $1:$2 from docker..."
 	docker pull "$1:$2"
-
-	local NAME_SAN=`echo "$1" | sed -e 's#/#_#g'`
 
 	echo "Extracting..."
 	DOCKERTMP="docker$$"
