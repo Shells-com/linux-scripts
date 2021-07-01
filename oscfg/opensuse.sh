@@ -53,7 +53,7 @@ opensuse_distro() {
 			run zypper -n --root /new-root install-new-recommends
 			umount "$WORK/new-root/proc"
 
-			echo "Generating opensuse-$DISTRO-dockerbase.tar.xz"
+			echo "Generating opensuse-$DISTRO-dockerbase-$DATE.tar.xz"
 			tar cJf "opensuse-$DISTRO-dockerbase-$DATE.tar.xz" -C "$WORK/new-root" .
 
 			# perform prepare here so finalize makes something good
