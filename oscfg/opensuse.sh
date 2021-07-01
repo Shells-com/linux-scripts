@@ -155,15 +155,15 @@ opensuse_cfg() {
 	if [ "$DESKTOP" == "gnome" ]; then
 		cat >>"$WORK/usr/share/glib-2.0/schemas/30-Shells.gschema.override" <<EOF
 # disable gnome screen blanking, logout & power management
-[org/gnome/desktop/screensaver]
+[org.gnome.desktop.screensaver]
 lock-enabled=false
 idle-activation-enabled=false
 
-[org/gnome/desktop/lockdown]
+[org.gnome.desktop.lockdown]
 disable-lock-screen=true
 disable-log-out=true
 
-[org/gnome/desktop/session]
+[org.gnome.desktop.session]
 idle-delay=uint32 0
 EOF
 		run /usr/bin/glib-compile-schemas /usr/share/glib-2.0/schemas
@@ -200,15 +200,6 @@ cat >"$WORK/etc/skel/.config/kdesurc" <<EOF
 super-user-command=sudo
 EOF
 
-	fi
-
-	# add shells-helper to /etc/skel
-	if [ ! -f "$WORK/etc/skel/.bin/shells-helper" ]; then
-		mkdir -p "$WORK/etc/skel/.bin"
-		local O="$PWD"
-		cd "$WORK/etc/skel/.bin"
-		curl -s https://raw.githubusercontent.com/KarpelesLab/make-go/master/get.sh | /bin/sh -s shells-helper
-		cd "$O"
 	fi
 
 	# add firstrun
