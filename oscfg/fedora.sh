@@ -1,12 +1,12 @@
 #!/bin/sh
 
 fedora_distro() {
-	# fedora-version-xxx
-	# let's grab the version (33)
-	local VERSION="$(echo "$1" | cut -f2 -d-)"
+	# fedora-xxx
 
 	case "$1" in
 		*-dnfbase)
+			# fedora-34-dnfbase
+			local VERSION="$(echo "$1" | cut -f2 -d-)"
 			# grab min from docker
 			docker_prepare fedora "$VERSION"
 
@@ -34,8 +34,7 @@ fedora_distro() {
 }
 
 fedora_cfg() {
-	local VERSION="$(echo "$1" | cut -f2 -d-)"
-	local GROUP="$(echo "$1" | cut -f3- -d-)"
+	local GROUP="$(echo "$1" | cut -f2- -d-)"
 
 	echo 'nameserver 8.8.8.8' >"$WORK/etc/resolv.conf"
 	echo 'nameserver 8.8.4.4' >>"$WORK/etc/resolv.conf"
