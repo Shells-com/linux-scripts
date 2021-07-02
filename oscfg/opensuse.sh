@@ -141,8 +141,13 @@ opensuse_prepare() {
 	esac
 
 	# configure resolver
-	echo 'nameserver 8.8.8.8' >"$WORK/run/netconfig/resolv.conf"
-	echo 'nameserver 8.8.4.4' >>"$WORK/run/netconfig/resolv.conf"
+	if [ -L "$WORK/etc/resolv.conf" ]; then
+		echo 'nameserver 8.8.8.8' >"$WORK/run/netconfig/resolv.conf"
+		echo 'nameserver 8.8.4.4' >>"$WORK/run/netconfig/resolv.conf"
+	 else
+		echo 'nameserver 8.8.8.8' >"$WORK/etc/resolv.conf"
+		echo 'nameserver 8.8.4.4' >>"$WORK/etc/resolv.conf"
+	 fi
 
 	# refresh/update
 	run zypper -n ref
