@@ -56,7 +56,8 @@ doqemu() {
 		-device pcie-root-port,port=0x13,chassis=6,id=pci.6,bus=pcie.0,addr=0x2.0x3
 		-device pcie-root-port,port=0x14,chassis=7,id=pci.7,bus=pcie.0,addr=0x2.0x4
 		-device pcie-root-port,port=0x15,chassis=2,id=pci3.1,bus=pcie.0,multifunction=on,addr=0x3
-		-device qemu-xhci,p2=8,p3=8,id=usb,bus=pci.4,addr=0x0
+		-device qemu-usb-xhci,p2=8,p3=8,id=usb,bus=pci.4,addr=0x0
+		#-device nec-usb-xhci,p2=8,p3=8,id=usb,bus=pci.4,addr=0x0
 		-device usb-ehci,bus=pci.2,addr=0x2,id=ehci
 		-device virtio-serial-pci,id=virtio-serial0,bus=pci.5,addr=0x0
 		-blockdev "{\"driver\":\"file\",\"filename\":\"$DISK\",\"node-name\":\"libvirt-1-storage\",\"auto-read-only\":true,\"discard\":\"unmap\"}"
@@ -114,9 +115,9 @@ qemukernel() {
 	if [ -f shells-kernel/guest-linux-x86_64/release.txt ]; then
 		KVER="$(cat shells-kernel/guest-linux-x86_64/release.txt)"
 	fi
-	if [ x"$KVER" != x"5.10.33-shells" ]; then
-		getfile shells-kernel-5.10.33-20dd010.tar.bz2 20dd01047c2a30744b41b66b075b0b1ade059fa3b32fef7c8a27397cc0351fc9
-		tar xjf shells-kernel-5.10.33-20dd010.tar.bz2
+	if [ x"$KVER" != x"5.10.45-shells" ]; then
+		getfile shells-kernel-5.10.45-f5efd2a.tar.bz2 f5efd2a7377e0a47e2f558c820bd62207dfe52a947c851c9fa8ec371a373f466
+		tar xjf shells-kernel-5.10.45-f5efd2a.tar.bz2
 	fi
 
 	if [ x"$ARCH" = x ]; then
