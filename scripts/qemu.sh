@@ -56,7 +56,7 @@ doqemu() {
 		-device pcie-root-port,port=0x13,chassis=6,id=pci.6,bus=pcie.0,addr=0x2.0x3
 		-device pcie-root-port,port=0x14,chassis=7,id=pci.7,bus=pcie.0,addr=0x2.0x4
 		-device pcie-root-port,port=0x15,chassis=2,id=pci3.1,bus=pcie.0,multifunction=on,addr=0x3
-		-device qemu-usb-xhci,p2=8,p3=8,id=usb,bus=pci.4,addr=0x0
+		-device qemu-xhci,p2=8,p3=8,id=usb,bus=pci.4,addr=0x0
 		#-device nec-usb-xhci,p2=8,p3=8,id=usb,bus=pci.4,addr=0x0
 		-device usb-ehci,bus=pci.2,addr=0x2,id=ehci
 		-device virtio-serial-pci,id=virtio-serial0,bus=pci.5,addr=0x0
