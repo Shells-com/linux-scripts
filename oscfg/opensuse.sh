@@ -90,6 +90,9 @@ opensuse_distro() {
 			# for example: opensuse-leap-gnome-desktop
 			opensuse_prepare "$DISTRO"
 
+			# make zypper retry (more) on download
+			sed -i -e 's/# download.max_silent_tries.*/download.max_silent_tries = 10/' "$WORK/etc/zypp/zypp.conf"
+
 			# install what we need
 			run zypper -n install --download in-advance --auto-agree-with-licenses -t pattern fonts x11 imaging multimedia sw_management $PATTERN
 			run zypper -n install --download in-advance NetworkManager spice-vdagent
