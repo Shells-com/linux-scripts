@@ -29,6 +29,7 @@ if [ x"$SYSTEM_UUID" = x"bdef7bde-f7bd-ef7b-def7-bdef7bdef7bd" ]; then
 	SHELLS_USERNAME="test"
 	SHELLS_SSH=""
 	SHELLS_TZ="UTC"
+	SHELLS_LOCALE="en-US"
 	SHELLS_SHADOW=''
 	SHELLS_CMD=""
 else
@@ -40,6 +41,7 @@ else
 	SHELLS_USERNAME="$(curl -s -H "X-shells-metadata-token: $TOKEN" "http://169.254.169.254/latest/meta-data/username")"
 	SHELLS_SSH="$(curl -s -H "X-shells-metadata-token: $TOKEN" "http://169.254.169.254/latest/meta-data/public-keys/*/openssh-key")"
 	SHELLS_TZ="$(curl -s -H "X-shells-metadata-token: $TOKEN" "http://169.254.169.254/latest/meta-data/timezone")"
+	SHELLS_LOCALE="$(curl -s -H "X-shells-metadata-token: $TOKEN" "http://169.254.169.254/latest/meta-data/locale")"
 	SHELLS_SHADOW=''
 	SHELLS_CMD="$(curl -s -H "X-shells-metadata-token: $TOKEN" "http://169.254.169.254/latest/meta-data/firstrun")"
 fi
