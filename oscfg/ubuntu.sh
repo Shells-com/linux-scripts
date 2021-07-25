@@ -32,7 +32,7 @@ EOF
 			# perform apt get update (download cache)
 			run apt-get update
 			DEBIAN_FRONTEND=noninteractive run apt-get dist-upgrade -y
-			DEBIAN_FRONTEND=noninteractive run apt-get install -y locales-all python3-distro-info kmod qemu-guest-agent
+			DEBIAN_FRONTEND=noninteractive run apt-get install -y locales-all python3-distro-info kmod qemu-guest-agent bash-completion nano
 			;;
 		*)
 			# start from base
@@ -219,7 +219,7 @@ EOF
 	# if gnome
 	case "$1" in
 		ubuntu-*-ubuntu-desktop)
-			DEBIAN_FRONTEND=noninteractive run apt-get install -y gnome-software guake ubuntu-release-upgrader-core ubuntu-desktop bash-completion nano
+			DEBIAN_FRONTEND=noninteractive run apt-get install -y gnome-software guake ubuntu-release-upgrader-core ubuntu-desktop
 			run appstreamcli refresh --force && run apt update
 			run systemctl mask sleep.target suspend.target hibernate.target hybrid-sleep.target
 			;;

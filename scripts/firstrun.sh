@@ -123,7 +123,7 @@ if [ x"$SHELLS_USERNAME" != x ]; then
 		gpasswd -a "${SHELLS_USERNAME}" autologin
 		echo [SeatDefaults] > /etc/lightdm/lightdm.conf.d/70-linuxmint.conf
 		echo autologin-user=${SHELLS_USERNAME} >> /etc/lightdm/lightdm.conf.d/70-linuxmint.conf
-		echo autologin-user-timeout=1 >> /etc/lightdm/lightdm.conf.d/70-linuxmint.conf
+		echo autologin-user-timeout=0 >> /etc/lightdm/lightdm.conf.d/70-linuxmint.conf
 		echo user-session=cinnamon >> /etc/lightdm/lightdm.conf.d/70-linuxmint.conf
 		echo pam-autologin-service=lightdm-autologin >> /etc/lightdm/lightdm.conf.d/70-linuxmint.conf
 		echo "auth        sufficient  pam_succeed_if.so user ingroup nopasswdlogin" >> /etc/pam.d/lightdm
