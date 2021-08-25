@@ -112,7 +112,7 @@ if [ x"$SHELLS_USERNAME" != x ]; then
 		[[ -d /run/openrc ]] && sed -i -e 's/^.*minimum-vt=.*/minimum-vt=7/' /etc/lightdm/lightdm.conf
 		gpasswd -a "${SHELLS_USERNAME}" autologin
 		sed -i -e "s/^.*autologin-user=.*/autologin-user=${SHELLS_USERNAME}/" /etc/lightdm/lightdm.conf
-		sed -i -e "s/^.*autologin-user-timeout=.*/autologin-user-timeout=1/" /etc/lightdm/lightdm.conf
+		sed -i -e "s/^.*autologin-user-timeout=.*/autologin-user-timeout=0/" /etc/lightdm/lightdm.conf
 #		sed -i -e "s/^.*pam-autologin-service=.*/pam-autologin-service=lightdm-autologin/" /etc/lightdm/lightdm.conf
 		echo "auth        sufficient  pam_succeed_if.so user ingroup nopasswdlogin" >> /etc/pam.d/lightdm
 		groupadd -r nopasswdlogin
