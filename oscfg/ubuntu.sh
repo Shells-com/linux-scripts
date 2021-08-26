@@ -340,6 +340,7 @@ gsettings set org.cinnamon.settings-daemon.plugins.power sleep-display-ac 0
 gsettings set org.cinnamon.desktop.lockdown disable-log-out true
 gsettings set org.cinnamon.desktop.lockdown disable-lock-screen true
 gsettings set org.cinnamon.desktop.lockdown disable-user-switching true
+export CINNAMON_2D=true
 EOF
 			;;
 	esac
