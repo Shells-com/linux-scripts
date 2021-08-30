@@ -68,8 +68,8 @@ debian_cfg() {
 	case "$TASKSEL" in
 		mx-linux-desktop)
 			DEBIAN_FRONTEND=noninteractive run apt-get install -y gnupg
-			run apt-key adv --keyserver pool.sks-keyservers.net --recv-keys ED5748AC0E575DD249A56B84DB36CDF3452F0C20
-			run apt-key adv --keyserver pool.sks-keyservers.net --recv-keys 267EBAF14407521EE277AF5D276ECD5CEF864D8F
+			curl -s mxrepo.com/mx21repo.asc | run apt-key add -
+			curl -s mxrepo.com/mx19repo.asc | run apt-key add -
 			mkdir -p "$WORK/etc/apt/sources.list.d"
 			cat >"$WORK/etc/apt/sources.list.d/mx.list" <<EOF
 # MX Community Main and Test Repos
