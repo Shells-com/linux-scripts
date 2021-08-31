@@ -312,20 +312,34 @@ EOF
 	case "$1" in
 		ubuntu-*-ubuntu-desktop)
 			sed -i "/\[daemon]/a WaylandEnable=false" "$WORK/etc/gdm3/custom.conf"
-			cat >>"$WORK/etc/skel/.xprofile" <<EOF
-# disable gnome screen blanking & power management
-gsettings set org.gnome.desktop.screensaver lock-enabled false
-gsettings set org.gnome.desktop.screensaver idle-activation-enabled false
-gsettings set org.gnome.desktop.lockdown disable-lock-screen true
-gsettings set org.gnome.desktop.lockdown disable-log-out true
-gsettings set org.gnome.desktop.session idle-delay 0
-gsettings set org.gnome.settings-daemon.plugins.power active false
+			mkdir -p "$WORK/etc/dconf/profile"
 
-# set wallpaper
-gsettings set org.gnome.desktop.background picture-uri file:////usr/share/backgrounds/shells_bg.png
+			cat >>"$WORK/etc/dconf/profile/user" <<EOF
+service-db:keyfile/user
 
-# set theme
-#gsettings set org.gnome.desktop.interface icon-theme "Material-Black-Blueberry-3.36"
+EOF
+
+			mkdir -p "$WORK/etc/skel/.config/dconf"
+			run dconf dump / > "$WORK/etc/skel/.config/dconf/user.txt"
+		
+			cat >>"$WORK/etc/skel/.config/dconf/user.txt" <<EOF
+# disable gnome screen blanking, logout & power management
+[org/gnome/desktop/screensaver]
+lock-enabled=false
+idle-activation-enabled=false
+
+[org/gnome/desktop/lockdown]
+disable-lock-screen=true
+#disable-log-out=true
+
+[org/gnome/desktop/session]
+idle-delay=uint32 0
+
+[org/gnome/desktop/background]
+picture-uri='file:////usr/share/backgrounds/shells_bg.png'
+
+[org/gnome/desktop/interface]
+#icon-theme='Material-Black-Blueberry-3.36'
 
 EOF
 			;;
