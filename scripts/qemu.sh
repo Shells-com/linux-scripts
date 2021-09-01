@@ -32,7 +32,7 @@ doqemu() {
 			exit 1
 	esac
 
-	local QEMUSYS="$(which "qemu-system-$ARCH")"
+	local QEMUSYS="$(command -v "qemu-system-$ARCH")"
 
 	OPTS=(
 		-name guest=shell-xxxxxx-xxxx-xxxx-xxxx-xxxxxxxx,debug-threads=on
