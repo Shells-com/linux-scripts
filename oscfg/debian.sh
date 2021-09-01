@@ -64,6 +64,15 @@ debian_cfg() {
 	# make sure we have qemu-guest-agent always
 	DEBIAN_FRONTEND=noninteractive run apt-get install -y qemu-guest-agent
 	
+	#add swap
+	DEBIAN_FRONTEND=noninteractive run apt-get install -y zram-tools
+	
+	cat >"$WORK/etc/default/zramswap" <<EOF
+ALGO=lz4
+PERCENT=50
+PRIORITY=100
+EOF
+	
 	#mx linux
 	case "$TASKSEL" in
 		mx-linux-desktop)
