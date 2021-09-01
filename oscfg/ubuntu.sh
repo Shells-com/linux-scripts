@@ -54,6 +54,15 @@ ubuntu_cfg() {
 	run apt-get update
 
 	DEBIAN_FRONTEND=noninteractive run apt-get dist-upgrade -y
+	
+	#add swap
+	DEBIAN_FRONTEND=noninteractive run apt-get install -y zram-tools
+	
+	cat >"$WORK/etc/default/zramswap" <<EOF
+ALGO=lz4
+PERCENT=50
+PRIORITY=100
+EOF
 
 	# get tasksel value
 	local TASKSEL="$(echo "$1" | cut -d- -f3-)"
