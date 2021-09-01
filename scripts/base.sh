@@ -3,8 +3,8 @@
 if [ -d "/shells/software/qemu/bin" ]; then
 	export PATH="/shells/software/qemu/bin:$PATH"
 fi
-QEMUIMG="$(which qemu-img)"
-QEMUNBD="$(which qemu-nbd)"
+QEMUIMG="$(command -v qemu-img)"
+QEMUNBD="$(command -v qemu-nbd)"
 
 # various settings
 NBD="/dev/nbd2"
