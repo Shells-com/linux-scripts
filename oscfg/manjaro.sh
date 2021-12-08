@@ -31,7 +31,7 @@ manjaro_cfg() {
 			run pacman -S --noconfirm firefox thunderbird
 			run pacman -S --noconfirm onlyoffice-desktopeditors
 			run pacman -S --noconfirm pulseaudio pavucontrol 
-			run pacman -S --noconfirm xf86-input-libinput xf86-video-qxl-debian xorg-server xorg-mkfontscale xorg-xkill phodav spice-vdagent
+			run pacman -S --noconfirm xf86-input-libinput xf86-video-qxl xorg-server xorg-mkfontscale xorg-xkill phodav spice-vdagent
 			run pacman -S --noconfirm pamac-gtk pamac-snap-plugin pamac-flatpak-plugin
 			run systemctl enable apparmor snapd snapd.apparmor
 			sed -i -e 's|show-command-switchuser=true|show-command-switchuser=false|g' $WORK/etc/skel/.config/xfce4/panel/whiskermenu*.rc
