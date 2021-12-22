@@ -231,6 +231,7 @@ EOF
 			DEBIAN_FRONTEND=noninteractive run apt-get install -y gnome-software guake ubuntu-release-upgrader-core ubuntu-desktop
 			run appstreamcli refresh --force && run apt update
 			run systemctl mask sleep.target suspend.target hibernate.target hybrid-sleep.target
+			sed -i 's/After=remote-fs.target nss-user-lookup.target network.target/After=remote-fs.target nss-user-lookup.target/' "$WORK//usr/lib/systemd/system/systemd-user-sessions.service"
 			;;
 	esac
 
