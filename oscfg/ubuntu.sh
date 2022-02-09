@@ -32,7 +32,7 @@ EOF
 			# perform apt get update (download cache)
 			run apt-get update
 			DEBIAN_FRONTEND=noninteractive run apt-get dist-upgrade -y
-			DEBIAN_FRONTEND=noninteractive run apt-get install -y locales-all python3-distro-info kmod qemu-guest-agent bash-completion nano
+			DEBIAN_FRONTEND=noninteractive run apt-get install -y locales-all python3-distro-info kmod qemu-guest-agent bash-completion nano systemd-timesyncd
 			;;
 		*)
 			# start from base
