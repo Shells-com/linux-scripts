@@ -82,8 +82,8 @@ EOF
 			mkdir -p "$WORK/etc/apt/sources.list.d"
 			cat >"$WORK/etc/apt/sources.list.d/mx.list" <<EOF
 # MX Community Main and Test Repos
-deb http://mxrepo.com/mx/repo/ buster main non-free
-#deb http://mxrepo.com/mx/testrepo/ buster test
+deb http://mxrepo.com/mx/repo/ $SUITE main non-free
+#deb http://mxrepo.com/mx/testrepo/ $SUITE test
 EOF
 
 			run apt-get update && run apt-get dist-upgrade -y
