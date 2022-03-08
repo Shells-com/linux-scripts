@@ -16,14 +16,20 @@ debian_distro() {
 			echo "%shellsmgmt ALL=(ALL) NOPASSWD: ALL" > "$WORK/etc/sudoers.d/01-shells"
 			chmod 440 "$WORK/etc/sudoers.d/01-shells"
 
+			SECURITY="$SUITE-security"
+			if [ x"$SUITE" = x"buster" ]; then
+				# naming scheme until buster was different
+				SECURITY="$SUITE/updates"
+			fi
+
 			# build sources.list (add backports?)
 			# see: https://wiki.debian.org/SourcesList
 			cat >"$WORK/etc/apt/sources.list" <<EOF
 deb http://deb.debian.org/debian $SUITE main contrib non-free
 deb-src http://deb.debian.org/debian $SUITE main contrib non-free
 
-deb http://deb.debian.org/debian-security/ $SUITE/updates main contrib non-free
-deb-src http://deb.debian.org/debian-security/ $SUITE/updates main contrib non-free
+deb http://deb.debian.org/debian-security/ $SECURITY main contrib non-free
+deb-src http://deb.debian.org/debian-security/ $SECURITY main contrib non-free
 
 deb http://deb.debian.org/debian $SUITE-updates main contrib non-free
 deb-src http://deb.debian.org/debian $SUITE-updates main contrib non-free
