@@ -10,7 +10,7 @@ debian_distro() {
 			# for example: debian-buster-base
 			create_empty
 
-			debootstrap --include=wget,curl,net-tools,rsync,openssh-server,sudo $SUITE "$WORK"
+			debootstrap --include=wget,curl,net-tools,rsync,openssh-server,sudo,psmisc $SUITE "$WORK"
 
 			# make sudo available without password (default for key auth)
 			echo "%shellsmgmt ALL=(ALL) NOPASSWD: ALL" > "$WORK/etc/sudoers.d/01-shells"
