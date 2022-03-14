@@ -26,8 +26,22 @@ fedora_distro() {
 			;;
 		*)
 			# use latest pre-build dnfbase image
-			getfile fedora-34-dnfbase-20210701.tar.xz b38bd2596e5b585b327ea99f3f6c0d841cb7dd766d80c23d499543473a6c8f3e
-			prepare fedora-34-dnfbase-20210701.tar.xz
+			# fedora-34-dnfbase
+			local VERSION="$(echo "$1" | cut -f2 -d-)"
+
+			case $VERSION in
+			34)
+				getfile fedora-34-dnfbase-20210701.tar.xz b38bd2596e5b585b327ea99f3f6c0d841cb7dd766d80c23d499543473a6c8f3e
+				prepare fedora-34-dnfbase-20210701.tar.xz
+				;;
+			35)
+				getfile fedora-35-dnfbase-20220314.tar.xz f11a9c672b76b62f56e0f7483f9dc3f17c59a80f3570354c9e308a9c3d6d3fc7
+				prepare fedora-35-dnfbase-20220314.tar.xz
+				;;
+			*)
+				echo "unsupported fedora version: $VERSION"
+				exit 1
+			esac
 			fedora_cfg "$1"
 			;;
 	esac
