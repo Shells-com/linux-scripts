@@ -2,6 +2,12 @@
 
 This repository includes scripts used for building Linux images used on Shells™.
 
+To run these scripts you need to have relevant packages installed on your machine:
+
+#### sudo apt install git qemu qemu-utils qemu-system php8.1 debootstrap squashfs-tools jq
+
+After which you clone this repo and run the build (and test scripts).
+
 # build_image.sh
 
 This script will build an image for a given distibution.
