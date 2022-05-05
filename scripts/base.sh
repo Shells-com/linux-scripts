@@ -41,7 +41,7 @@ create_empty() {
 
 	"$QEMUIMG" create -f qcow2 "$TMPIMG" 8G
 	"$QEMUNBD" -c "$NBD" -f qcow2 "$TMPIMG"
-	parted --script -a optimal -- "$NBD" mklabel msdos mkpart primary ext4 1MiB -2048s
+	parted --script -a optimal -- "$NBD" mklabel gpt mkpart primary ext4 1MiB -2048s
 	mkfs.ext4 -L root "$NBD"p1
 	mkdir "$WORK"
 	mount "$NBD"p1 "$WORK"
