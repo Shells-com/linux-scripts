@@ -1,8 +1,8 @@
 #!/bin/sh
 
 manjaro_distro() {
-	getfile manjaro-base-20220519b.tar.xz ba24af43b26f65f5dede278532a6507cca1e9cda64f04027fe7bb90cc17f1774
-	prepare manjaro-base-20220519b.tar.xz
+	getfile manjaro-base-20220519c.tar.xz b48e1702a6e190d03ff3280efa1159349620cdfabc9daa6a2e9aa0e3f9718095
+	prepare manjaro-base-20220519c.tar.xz
 	manjaro_cfg "$1"
 }
 
