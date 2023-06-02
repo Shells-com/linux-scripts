@@ -185,5 +185,8 @@ WantedBy=sysinit.target
 EOF
 		# enable
 		run systemctl enable cloud-firstrun
+	else
+		echo "No systemd found!"
+		exit 1
 	fi
 }

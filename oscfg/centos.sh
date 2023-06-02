@@ -78,6 +78,7 @@ centos_cfg() {
 	case $VERSION in
 		7*)
 			DNF=yum
+			echo 'NETWORKING=yes' >"$WORK/etc/sysconfig/network"
 			;;
 	esac
 
