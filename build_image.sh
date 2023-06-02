@@ -11,6 +11,7 @@ set -e
 . oscfg/gentoo.sh
 . oscfg/fedora.sh
 . oscfg/opensuse.sh
+. oscfg/centos.sh
 
 dodistro() {
 	if [ -f "$1-$DATE.qcow2" ]; then
@@ -36,6 +37,9 @@ dodistro() {
                 opensuse-*)
                         opensuse_distro "$1"
                         ;;
+		centos-*)
+			centos_distro "$1"
+			;;
 		*)
 			echo "unsupported distro $1"
 			;;
