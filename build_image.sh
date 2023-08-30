@@ -12,6 +12,7 @@ set -e
 . oscfg/fedora.sh
 . oscfg/opensuse.sh
 . oscfg/centos.sh
+. oscfg/deepin.sh
 
 dodistro() {
 	if [ -f "$1-$DATE.qcow2" ]; then
@@ -39,6 +40,9 @@ dodistro() {
                         ;;
 		centos-*)
 			centos_distro "$1"
+			;;
+		deepin-*)
+			deepin_distro "$1"
 			;;
 		*)
 			echo "unsupported distro $1"
