@@ -1,7 +1,6 @@
 #!/bin/sh
 
 manjaro_distro() {
-	create_empty
 	docker_prepare "manjarolinux/base" latest
 	manjaro_cfg "$1"
 }
