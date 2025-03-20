@@ -1,8 +1,7 @@
 #!/bin/sh
 
 manjaro_distro() {
-	getfile manjaro-base-20220921.tar.xz d169a7e16247eb2c6a86a0fec0baac5ea6dc9b9c282b994cae6cd07c61b58069
-	prepare manjaro-base-20220921.tar.xz
+	docker_prepare "manjarolinux/base" latest
 	manjaro_cfg "$1"
 }
 
@@ -27,12 +26,12 @@ manjaro_cfg() {
 	case "$1" in
 		manjaro-desktop)
 			run pacman -S --noconfirm glibc-locales xfce4 ttf-dejavu accountsservice xfce4-goodies xfce4-pulseaudio-plugin mugshot engrampa catfish screenfetch network-manager-applet noto-fonts noto-fonts-cjk
-			run pacman -S --noconfirm manjaro-xfce-settings-shells manjaro-release manjaro-firmware manjaro-system manjaro-hello manjaro-application-utility manjaro-documentation-en manjaro-browser-settings nano inxi wallpaper-manjaro-shells
+			run pacman -S --noconfirm manjaro-xfce-settings-shells manjaro-release manjaro-system manjaro-hello manjaro-browser-settings nano inxi wallpaper-manjaro-shells
 			run pacman -S --noconfirm firefox thunderbird
 			run pacman -S --noconfirm onlyoffice-desktopeditors
 			run pacman -S --noconfirm pulseaudio pavucontrol 
-			run pacman -S --noconfirm xf86-input-libinput xf86-video-qxl-debian xorg-server xorg-mkfontscale xorg-xkill phodav spice-vdagent
-			run pacman -S --noconfirm pamac-gtk pamac-snap-plugin pamac-flatpak-plugin
+			run pacman -S --noconfirm xf86-input-libinput xf86-video-qxl xorg-server xorg-mkfontscale xorg-xkill phodav spice-vdagent
+			run pacman -S --noconfirm pamac-gtk3 pamac-snap-plugin pamac-flatpak-plugin xdg-desktop-portal-gtk
 			run systemctl enable apparmor snapd snapd.apparmor
 			sed -i -e 's|show-command-switchuser=true|show-command-switchuser=false|g' $WORK/etc/skel/.config/xfce4/panel/whiskermenu*.rc
 			sed -i -e 's|show-command-logout=true|show-command-logout=false|g' $WORK/etc/skel/.config/xfce4/panel/whiskermenu*.rc
@@ -71,22 +70,15 @@ EOF
 			;;
 		manjaro-kde-desktop)
 			run pacman -S --noconfirm glibc-locales plasma-meta ark dolphin dolphin-plugins kate kcalc kfind okular kget libktorrent kdenetwork-filesharing kio-extras konsole konversation ksystemlog kwalletmanager gwenview spectacle kdegraphics-thumbnailers ffmpegthumbs ruby kimageformats qt5-imageformats systemd-kcm yakuake vlc oxygen-icons kaccounts-providers
-			run pacman -S --noconfirm manjaro-kde-settings manjaro-release manjaro-firmware manjaro-system manjaro-hello manjaro-application-utility manjaro-documentation-en manjaro-browser-settings sddm-breath2-theme nano inxi illyria-wallpaper wallpapers-juhraya wallpapers-2018 manjaro-wallpapers-18.0 plasma5-themes-breath2-shells
+			run pacman -S --noconfirm manjaro-kde-settings manjaro-release manjaro-system manjaro-hello manjaro-browser-settings nano inxi
 			run pacman -S --noconfirm firefox thunderbird
 			run pacman -S --noconfirm onlyoffice-desktopeditors
 			run pacman -S --noconfirm pulseaudio pavucontrol 
-			run pacman -S --noconfirm xf86-input-libinput xf86-video-qxl-debian xorg-server xorg-mkfontscale xorg-xkill phodav spice-vdagent
-			run pacman -S --noconfirm pamac-gtk pamac-snap-plugin pamac-flatpak-plugin pamac-tray-icon-plasma xdg-desktop-portal xdg-desktop-portal-kde
+			run pacman -S --noconfirm xf86-input-libinput xf86-video-qxl xorg-server xorg-mkfontscale xorg-xkill phodav spice-vdagent
+			run pacman -S --noconfirm pamac-gtk3 pamac-snap-plugin pamac-flatpak-plugin pamac-tray-icon-plasma xdg-desktop-portal-kde
 			run systemctl enable sddm
 			run systemctl enable apparmor snapd snapd.apparmor
 			sed -i -e 's|#%PAM-1.0|#%PAM-1.0\nauth        sufficient  pam_succeed_if.so user ingroup shellsmgmt|' $WORK/etc/pam.d/sddm
-			cat > "$WORK/etc/sddm.conf.d/manjaro-theme.conf" <<EOF
-[Theme]
-# Current theme name
-Current=breath2
-# Cursor theme used in the greeter
-CursorTheme=breeze_cursors
-EOF
 			printf "[super-user-command]\nsuper-user-command=sudo" > "$WORK/etc/skel/.config/kdesurc"
 			printf "\n[Daemon]\nAutolock=false\n" >> "$WORK/etc/skel/.config/kscreenlockerrc"
 			cat >> "$WORK/etc/skel/.config/kdeglobals" <<EOF
@@ -106,13 +98,13 @@ Autolock=false
 EOF
 			;;
 		manjaro-gnome-desktop)
-			run pacman -S --noconfirm glibc-locales adwaita-icon-theme adwaita-maia alacarte baobab file-roller gedit gdm gnome-backgrounds gnome-calculator gnome-control-center gnome-desktop gnome-disk-utility gnome-keyring gnome-online-accounts gnome-initial-setup gnome-screenshot gnome-session gnome-settings-daemon gnome-shell gnome-shell-extensions gnome-shell-extension-nightthemeswitcher gnome-system-log gnome-system-monitor gnome-terminal gnome-themes-standard gnome-tweak-tool gnome-user-docs gnome-wallpapers gnome-clocks gnome-todo gtksourceview-pkgbuild mutter nautilus nautilus-admin nautilus-empty-file seahorse papirus-maia-icon-theme lighter-gnome disable-tracker
-			run pacman -S --noconfirm manjaro-gnome-settings-shells manjaro-gnome-extension-settings-shells manjaro-gnome-assets manjaro-gnome-tour manjaro-gdm-theme manjaro-release manjaro-system manjaro-hello manjaro-application-utility manjaro-documentation-en nano inxi illyria-wallpaper wallpapers-juhraya wallpapers-2018 manjaro-wallpapers-18.0 manjaro-zsh-config wallpaper-manjaro-shells
-			run pacman -S --noconfirm firefox firefox-gnome-theme-maia 
+			run pacman -S --noconfirm glibc-locales adwaita-icon-theme alacarte baobab file-roller gedit gdm gnome-backgrounds gnome-calculator gnome-control-center gnome-desktop gnome-disk-utility gnome-keyring gnome-online-accounts gnome-initial-setup gnome-screenshot gnome-session gnome-settings-daemon gnome-shell gnome-shell-extensions gnome-shell-extension-nightthemeswitcher gnome-system-monitor gnome-terminal gnome-themes-standard gnome-tweak-tool gnome-user-docs gnome-wallpapers gnome-clocks gnome-todo gtksourceview-pkgbuild mutter nautilus nautilus-admin nautilus-empty-file seahorse papirus-maia-icon-theme lighter-gnome
+			run pacman -S --noconfirm manjaro-gnome-settings-shells manjaro-gnome-extension-settings-shells manjaro-release manjaro-system manjaro-hello nano inxi manjaro-zsh-config wallpaper-manjaro-shells
+			run pacman -S --noconfirm firefox
 			run pacman -S --noconfirm onlyoffice-desktopeditors
 			run pacman -S --noconfirm pulseaudio pavucontrol 
-			run pacman -S --noconfirm networkmanager xf86-input-libinput xf86-video-qxl-debian xorg-server xorg-mkfontscale xorg-xkill phodav spice-vdagent xdg-user-dirs
-			run pacman -S --noconfirm pamac-gtk pamac-flatpak-plugin pamac-gnome-integration polkit-gnome xdg-desktop-portal xdg-desktop-portal-gtk
+			run pacman -S --noconfirm networkmanager xf86-input-libinput xf86-video-qxl xorg-server xorg-mkfontscale xorg-xkill phodav spice-vdagent xdg-user-dirs
+			run pacman -S --noconfirm pamac-gtk pamac-flatpak-plugin pamac-gnome-integration polkit-gnome xdg-desktop-portal-gnome
 			run systemctl enable gdm
 			sed -i -e 's|#%PAM-1.0|#%PAM-1.0\nauth        sufficient  pam_succeed_if.so user ingroup shellsmgmt|' $WORK/etc/pam.d/gdm-password
 			run systemctl mask sleep.target suspend.target hibernate.target hybrid-sleep.target
