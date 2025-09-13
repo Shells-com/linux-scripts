@@ -123,7 +123,7 @@ EOF
 			DEBIAN_FRONTEND=noninteractive run apt-get install -y flatpak gnome-software-plugin-flatpak
 			run flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
 			run systemctl mask sleep.target suspend.target hibernate.target hybrid-sleep.target
-			sed -i 's/After=remote-fs.target nss-user-lookup.target nss-user-lookup.target/' "$WORK//usr/lib/systemd/system/systemd-user-sessions.service"
+			#sed -i 's/After=remote-fs.target nss-user-lookup.target nss-user-lookup.target/' "$WORK//usr/lib/systemd/system/systemd-user-sessions.service"
 			cat <<'EOF' >>"$WORK/etc/pulse/default.pa"
 set-sink-volume 0 32768
 set-sink-mute 0 0

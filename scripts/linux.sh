@@ -7,7 +7,7 @@ do_linux_config() {
 
 do_linux_init_config() {
 	# initial config for all linux installs
-	cat "$WORK/etc/group" | grep -q ^shellsmgmt: || run groupadd shellsmgmt
+	cat "$WORK/etc/group" | grep -q ^shellsmgmt: || run /usr/sbin/groupadd shellsmgmt
 }
 
 do_linux_polkit_config() {

@@ -32,6 +32,7 @@ perform_clean() {
 		umount 2>/dev/null "$WORK/proc" "$WORK/sys" "$WORK/dev" || umount 2>/dev/null -l "$WORK/proc" "$WORK/sys" "$WORK/dev" || true
 		umount 2>/dev/null "$WORK" || true
 		"$NBDCL" 2>/dev/null -d "$NBD" || true
+		killall qemu-storage-daemon || true
 		# should be empty after umount
 		rmdir "$WORK"
 	fi
@@ -41,8 +42,8 @@ create_empty() {
 	perform_clean
 
 	echo "Creating and partitionning $TMPIMG..."
-	"$QEMUIMG" create -f qcow2 "$TMPIMG" 8G
-	"$QEMUSD" --daemonize --blockdev "driver=qcow2,file.driver=file,file.filename=$TMPIMG,node-name=disk0" --nbd-server addr.type=unix,addr.path=/tmp/nbd.sock --export type=nbd,id=exp0,node-name=disk0,name=disk0,writable=on
+	"$QEMUIMG" create -f qcow2 "$TMPIMG" 10G
+	"$QEMUSD" --daemonize --pidfile qemusd.$$.pid --blockdev "driver=qcow2,file.driver=file,file.filename=$TMPIMG,node-name=disk0" --nbd-server addr.type=unix,addr.path=/tmp/nbd.sock --export type=nbd,id=exp0,node-name=disk0,name=disk0,writable=on
 	"$NBDCL" -unix /tmp/nbd.sock -N disk0 -b 4096 "$NBD"
 	sleep 0.5
 	parted --script -a optimal -- "$NBD" mklabel gpt mkpart primary ext4 1MiB -2048s
@@ -75,7 +76,7 @@ prepare() {
 
 			# mount
 			mkdir "$WORK"
-			"$QEMUSD" --daemonize --blockdev "driver=qcow2,file.driver=file,file.filename=$TMPIMG,node-name=disk0" --nbd-server addr.type=unix,addr.path=/tmp/nbd.sock --export type=nbd,id=exp0,node-name=disk0,name=disk0,writable=on
+			"$QEMUSD" --daemonize --pidfile qemusd.$$.pid --blockdev "driver=qcow2,file.driver=file,file.filename=$TMPIMG,node-name=disk0" --nbd-server addr.type=unix,addr.path=/tmp/nbd.sock --export type=nbd,id=exp0,node-name=disk0,name=disk0,writable=on
 			"$NBDCL" -unix /tmp/nbd.sock -N disk0 -b 4096 "$NBD"
 			sleep 1
 			mount "$NBD"p1 "$WORK"
@@ -137,6 +138,14 @@ EOF
 	echo "Syncing..."
 	umount "$WORK"
 	"$NBDCL" -d "$NBD"
+	sleep 0.5
+	if [ -f qemusd.$$.pid ]; then
+		kill $(cat qemusd.$$.pid )
+		sleep 0.5
+	fi
+
+	"$QEMUIMG" convert -c -f qcow2 -O qcow2 "work$$.qcow2" "$1-$DATE.qcow2"
+	mv -f "work$$.qcow2" "$1.qcow2"
 
 	# complete, list the file
 	ls -la "$1-$DATE.qcow2"

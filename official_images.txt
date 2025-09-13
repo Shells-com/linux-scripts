@@ -5,8 +5,8 @@ debian-bookworm-gnome-desktop
 debian-bookworm-ssh-server
 debian-trixie-gnome-desktop
 debian-trixie-ssh-server
-fedora-server
-fedora-workstation-product
+fedora-35-server
+fedora-35-workstation-product
 manjaro-desktop
 manjaro-gnome-desktop
 manjaro-kde-desktop

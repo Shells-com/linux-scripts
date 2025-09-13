@@ -1,4 +1,7 @@
 /shells-kernel/
 /shells-kernel-*.tar.bz2
+/work/
 *_test.qcow2
+*.squashfs
+*.pid
 *.qcow2

@@ -11,6 +11,13 @@ ubuntu_distro() {
 			# for example: ubuntu-focal-base
 			create_empty
 
+			if [ ! -f /usr/share/keyrings/ubuntu-archive-keyring.gpg ]; then
+				mkdir -p /usr/share/keyrings
+				curl -sL https://archive.ubuntu.com/ubuntu/pool/main/u/ubuntu-keyring/ubuntu-keyring_2023.11.28.1.tar.xz | tar xJ
+				mv -v ubuntu-keyring/keyrings/* /usr/share/keyrings
+				rm -fr ubuntu-keyring
+			fi
+
 			debootstrap --include=wget,curl,net-tools,rsync,openssh-server,sudo,psmisc $SUITE "$WORK"
 
 			# make sudo available without password (default for key auth)
