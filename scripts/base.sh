@@ -4,7 +4,8 @@ if [ -d "/shells/software/qemu/bin" ]; then
 	export PATH="/shells/software/qemu/bin:$PATH"
 fi
 QEMUIMG="$(command -v qemu-img)"
-QEMUNBD="$(command -v qemu-nbd)"
+QEMUSD="$(command -v qemu-storage-daemon)"
+NBDCL="$(command -v nbd-client)"
 
 # various settings
 NBD="/dev/nbd2"
@@ -30,7 +31,7 @@ perform_clean() {
 		fuser --kill --ismountpoint --mount "$WORK" && sleep 1 || true
 		umount 2>/dev/null "$WORK/proc" "$WORK/sys" "$WORK/dev" || umount 2>/dev/null -l "$WORK/proc" "$WORK/sys" "$WORK/dev" || true
 		umount 2>/dev/null "$WORK" || true
-		"$QEMUNBD" 2>/dev/null -d "$NBD" || true
+		"$NBDCL" 2>/dev/null -d "$NBD" || true
 		# should be empty after umount
 		rmdir "$WORK"
 	fi
@@ -39,10 +40,13 @@ perform_clean() {
 create_empty() {
 	perform_clean
 
+	echo "Creating and partitionning $TMPIMG..."
 	"$QEMUIMG" create -f qcow2 "$TMPIMG" 8G
-	"$QEMUNBD" -c "$NBD" -f qcow2 "$TMPIMG"
+	"$QEMUSD" --daemonize --blockdev "driver=qcow2,file.driver=file,file.filename=$TMPIMG,node-name=disk0" --nbd-server addr.type=unix,addr.path=/tmp/nbd.sock --export type=nbd,id=exp0,node-name=disk0,name=disk0
+	"$NBDCL" -unix /tmp/nbd.sock -N disk0 -b 4096 "$NBD"
 	parted --script -a optimal -- "$NBD" mklabel gpt mkpart primary ext4 1MiB -2048s
 	sleep 0.1 # wait for /dev to update
+	echo "Formatting and mounting..."
 	mkfs.ext4 -L root "$NBD"p1
 	mkdir "$WORK"
 	mount "$NBD"p1 "$WORK"
@@ -70,7 +74,8 @@ prepare() {
 
 			# mount
 			mkdir "$WORK"
-			"$QEMUNBD" -c "$NBD" -f qcow2 "$TMPIMG"
+			"$QEMUSD" --daemonize --blockdev "driver=qcow2,file.driver=file,file.filename=$TMPIMG,node-name=disk0" --nbd-server addr.type=unix,addr.path=/tmp/nbd.sock --export type=nbd,id=exp0,node-name=disk0,name=disk0
+			"$NBDCL" -unix /tmp/nbd.sock -N disk0 -b 4096 "$NBD"
 			sleep 1
 			mount "$NBD"p1 "$WORK"
 		else
@@ -130,7 +135,7 @@ EOF
 
 	echo "Syncing..."
 	umount "$WORK"
-	"$QEMUNBD" -d "$NBD"
+	"$NBDCL" -d "$NBD"
 
 	echo "Converting image..."
 	# somehow qemuimg cannot output to stdout
