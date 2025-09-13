@@ -29,9 +29,9 @@ ubuntu_distro() {
 deb http://archive.ubuntu.com/ubuntu $SUITE main restricted universe multiverse
 
 ###### Ubuntu Update Repos
-deb http://archive.ubuntu.com/ubuntu/ $SUITE-security main restricted universe multiverse
-deb http://archive.ubuntu.com/ubuntu/ $SUITE-updates main restricted universe multiverse
-deb http://archive.ubuntu.com/ubuntu/ $SUITE-backports main restricted universe multiverse
+deb http://security.ubuntu.com/ubuntu $SUITE-security main restricted universe multiverse
+deb http://archive.ubuntu.com/ubuntu $SUITE-updates main restricted universe multiverse
+deb http://archive.ubuntu.com/ubuntu $SUITE-backports main restricted universe multiverse
 EOF
 
 			echo 'LANG=en_US.UTF-8' >"$WORK/etc/default/locale"
@@ -73,6 +73,19 @@ EOF
 
 	# get tasksel value
 	local TASKSEL="$(echo "$1" | cut -d- -f3-)"
+
+	# block mesa-amber as it breaks install
+	# Msg: libglapi-amber : Breaks: libglapi-mesa
+	case "$TASKSEL" in
+		*desktop)
+			cat >"$WORK/etc/apt/preferences.d/mesa-amber" <<'EOF'
+Package: libglapi-amber libgl1-amber-dri mesa-amber*
+Pin: release *
+Pin-Priority: -1
+EOF
+		;;
+	esac
+
 
 	case "$TASKSEL" in
 		kde-neon-desktop)
