@@ -90,20 +90,25 @@ EOF
 			bullseye)
 				MXVER=mx21
 				;;
+			bookworm)
+				MXVER=mx23
+				;;
 			*)
 				echo "unsupported mx version"
 				exit 1
 			esac
-			curl -s mxrepo.com/${MXVER}repo.asc | run apt-key add -
+			curl -s https://mxrepo.com/${MXVER}repo.asc | run apt-key add -
 			mkdir -p "$WORK/etc/apt/sources.list.d"
 			cat >"$WORK/etc/apt/sources.list.d/mx.list" <<EOF
 # MX Community Main and Test Repos
-deb http://mxrepo.com/mx/repo/ $SUITE main non-free
-#deb http://mxrepo.com/mx/testrepo/ $SUITE test
+deb https://mxrepo.com/mx/repo/ $SUITE main non-free
+#deb https://mxrepo.com/mx/testrepo/ $SUITE test
 EOF
 
+			# E: Unable to locate package mx-pkexec
+
 			run apt-get update && run apt-get dist-upgrade -y
-			DEBIAN_FRONTEND=noninteractive run apt-get install -y desktop-defaults-mx-xfce $MXVER-archive-keyring mx-apps mx-fluxbox mx-gpg-keys mx-goodies  mx-greybird-themes mx-pkexec mx-sound-theme-borealis mx-sound-theme-fresh-and-clean sound-theme-freedesktop $MXVER-artwork antix-archive-keyring antix-libs cli-shell-utils debconf-utils xdg-user-dirs xkb-data compton-conf conky-manager conky-all desktop-defaults-mx-common desktop-defaults-mx-applications desktop-file-utils localize-repo-mx xdg-utils xfce-keyboard-shortcuts xfce4-notes xfce4-power-manager xfce4-power-manager-plugins xfce4 lightdm qemu-kvm qemu-system-x86 qemu-system-gui qemu-utils xserver-xorg-video-qxl spice-vdagent spice-webdavd network-manager catfish cups libreoffice libreoffice-gnome libreoffice-gtk3 samba
+			DEBIAN_FRONTEND=noninteractive run apt-get install -y desktop-defaults-mx-xfce $MXVER-archive-keyring mx-apps mx-fluxbox mx-gpg-keys mx-goodies  mx-greybird-themes mx-sound-theme-borealis mx-sound-theme-fresh-and-clean sound-theme-freedesktop $MXVER-artwork antix-archive-keyring antix-libs cli-shell-utils debconf-utils xdg-user-dirs xkb-data compton-conf conky-manager conky-all desktop-defaults-mx-common desktop-defaults-mx-applications desktop-file-utils localize-repo-mx xdg-utils xfce-keyboard-shortcuts xfce4-notes xfce4-power-manager xfce4-power-manager-plugins xfce4 lightdm qemu-kvm qemu-system-x86 qemu-system-gui qemu-utils xserver-xorg-video-qxl spice-vdagent spice-webdavd network-manager catfish cups libreoffice libreoffice-gnome libreoffice-gtk3 samba
 			DEBIAN_FRONTEND=noninteractive run apt-get install -y firefox thunderbird clementine vlc vrms deb-multimedia-keyring openssl pkg-mozilla-archive-keyring rsync curl xfce4-goodies mx-system transmission-gtk printer-driver-cups-pdf unrar genisoimage htop mc tmux whois apt-transport-https apt-xapian-index advert-block-antix cli-aptix featherpad file-roller gdebi gimp geany gparted mesa-utils luckybackup papirus-icon-theme nomacs nwipe openconnect openvpn orage seahorse unzip zip unpaper smxi-inxi-antix
 			;;
 	esac
@@ -238,6 +243,24 @@ EOF
 	
 	case "$TASKSEL" in
 		mx-linux-desktop)
+			case $SUITE in
+				buster)
+					MX_VERS="19.3"
+					MX_CODENAME="patito feo"
+					MX_DATE="March 31, 2021"
+					;;
+				bullseye)
+					MX_VERS="21.3"
+					MX_CODENAME="wildflower"
+					MX_DATE="October 21, 2021"
+					;;
+				bookworm)
+					MX_VERS="23.6"
+					MX_CODENAME="libretto"
+					MX_DATE="March 31, 2025" # probably
+					;;
+			esac
+
 			cat >"$WORK/etc/apt/apt.conf" <<EOF
 // Recommends are as of now still abused in many packages
 APT::Install-Recommends "0";
@@ -245,15 +268,15 @@ APT::Install-Suggests "0";
 EOF
 
 		cat >"$WORK/etc/lsb-release" <<EOF
-PRETTY_NAME="MX 19.3 patito feo"
+PRETTY_NAME="MX $MX_VERS $MX_CODENAME"
 DISTRIB_ID=MX
-DISTRIB_RELEASE=19.3
-DISTRIB_CODENAME="patito feo"
-DISTRIB_DESCRIPTION="MX 19.3 patito feo"
+DISTRIB_RELEASE=$MX_VERS
+DISTRIB_CODENAME="$MX_CODENAME"
+DISTRIB_DESCRIPTION="MX $MX_VERS $MX_CODENAME"
 EOF
 
 			cat >"$WORK/etc/mx-version" <<EOF
-MX-19.4_x64 patito feo March 31, 2021
+MX-${MX_VERS}_x64 $MX_CODENAME $MX_DATE
 EOF
 
 			cat <<'EOF' >"$WORK/etc/adduser.conf"
