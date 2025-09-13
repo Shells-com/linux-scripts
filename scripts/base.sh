@@ -42,10 +42,11 @@ create_empty() {
 
 	echo "Creating and partitionning $TMPIMG..."
 	"$QEMUIMG" create -f qcow2 "$TMPIMG" 8G
-	"$QEMUSD" --daemonize --blockdev "driver=qcow2,file.driver=file,file.filename=$TMPIMG,node-name=disk0" --nbd-server addr.type=unix,addr.path=/tmp/nbd.sock --export type=nbd,id=exp0,node-name=disk0,name=disk0
+	"$QEMUSD" --daemonize --blockdev "driver=qcow2,file.driver=file,file.filename=$TMPIMG,node-name=disk0" --nbd-server addr.type=unix,addr.path=/tmp/nbd.sock --export type=nbd,id=exp0,node-name=disk0,name=disk0,writable=on
 	"$NBDCL" -unix /tmp/nbd.sock -N disk0 -b 4096 "$NBD"
+	sleep 0.5
 	parted --script -a optimal -- "$NBD" mklabel gpt mkpart primary ext4 1MiB -2048s
-	sleep 0.1 # wait for /dev to update
+	sleep 0.5 # wait for /dev to update
 	echo "Formatting and mounting..."
 	mkfs.ext4 -L root "$NBD"p1
 	mkdir "$WORK"
@@ -74,7 +75,7 @@ prepare() {
 
 			# mount
 			mkdir "$WORK"
-			"$QEMUSD" --daemonize --blockdev "driver=qcow2,file.driver=file,file.filename=$TMPIMG,node-name=disk0" --nbd-server addr.type=unix,addr.path=/tmp/nbd.sock --export type=nbd,id=exp0,node-name=disk0,name=disk0
+			"$QEMUSD" --daemonize --blockdev "driver=qcow2,file.driver=file,file.filename=$TMPIMG,node-name=disk0" --nbd-server addr.type=unix,addr.path=/tmp/nbd.sock --export type=nbd,id=exp0,node-name=disk0,name=disk0,writable=on
 			"$NBDCL" -unix /tmp/nbd.sock -N disk0 -b 4096 "$NBD"
 			sleep 1
 			mount "$NBD"p1 "$WORK"
@@ -137,21 +138,8 @@ EOF
 	umount "$WORK"
 	"$NBDCL" -d "$NBD"
 
-	echo "Converting image..."
-	# somehow qemuimg cannot output to stdout
-	"$QEMUIMG" convert -f qcow2 -O raw "work$$.qcow2" "$1-$DATE.raw"
-	# keep result too
-	mv -f "work$$.qcow2" "$1.qcow2"
-
-	if [ ! -d rbdconv ]; then
-		# grab rbdconv
-		git clone https://github.com/Shells-com/rbdconv.git
-	fi
-	php rbdconv/raw-to-rbd.php "$1-$DATE.raw" | xz -z -9 -T $(nproc --ignore=4) -v >"$1-$DATE.shells"
-	rm -f "$1-$DATE.raw"
-
 	# complete, list the file
-	ls -la "$1-$DATE.shells"
+	ls -la "$1-$DATE.qcow2"
 }
 
 add_firstrun() {

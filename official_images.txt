@@ -1,11 +1,10 @@
-debian-buster-gnome-desktop
-debian-buster-ssh-server
-debian-buster-mx-linux-desktop
 debian-bullseye-gnome-desktop
 debian-bullseye-ssh-server
 debian-bullseye-mx-linux-desktop
 debian-bookworm-gnome-desktop
 debian-bookworm-ssh-server
+debian-trixie-gnome-desktop
+debian-trixie-ssh-server
 fedora-server
 fedora-workstation-product
 manjaro-desktop
