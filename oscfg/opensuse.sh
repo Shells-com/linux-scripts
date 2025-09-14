@@ -101,7 +101,7 @@ opensuse_distro() {
 			run systemctl mask systemd-firstboot
 
 			# ensure networkmanager is enabled and not systemd-networkd
-			#run systemctl disable wicked
+			run systemctl disable wicked # required for leap
 			run systemctl enable NetworkManager NetworkManager-wait-online
 			run systemctl enable sshd
 
