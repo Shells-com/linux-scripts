@@ -109,7 +109,10 @@ EOF
 
 			run apt-get update && run apt-get dist-upgrade -y
 			DEBIAN_FRONTEND=noninteractive run apt-get install -y desktop-defaults-mx-xfce $MXVER-archive-keyring mx-apps mx-fluxbox mx-gpg-keys mx-goodies  mx-greybird-themes mx-sound-theme-borealis mx-sound-theme-fresh-and-clean sound-theme-freedesktop $MXVER-artwork antix-archive-keyring antix-libs cli-shell-utils debconf-utils xdg-user-dirs xkb-data compton-conf conky-manager conky-all desktop-defaults-mx-common desktop-defaults-mx-applications desktop-file-utils localize-repo-mx xdg-utils xfce-keyboard-shortcuts xfce4-notes xfce4-power-manager xfce4-power-manager-plugins xfce4 lightdm qemu-kvm qemu-system-x86 qemu-system-gui qemu-utils xserver-xorg-video-qxl spice-vdagent spice-webdavd network-manager catfish cups libreoffice libreoffice-gnome libreoffice-gtk3 samba
-			DEBIAN_FRONTEND=noninteractive run apt-get install -y firefox thunderbird clementine vlc vrms deb-multimedia-keyring openssl pkg-mozilla-archive-keyring rsync curl xfce4-goodies mx-system transmission-gtk printer-driver-cups-pdf unrar genisoimage htop mc tmux whois apt-transport-https apt-xapian-index advert-block-antix cli-aptix featherpad file-roller gdebi gimp geany gparted mesa-utils luckybackup papirus-icon-theme nomacs nwipe openconnect openvpn orage seahorse unzip zip unpaper smxi-inxi-antix
+			# E: Unable to locate package deb-multimedia-keyring
+			# E: Unable to locate package pkg-mozilla-archive-keyring
+			# E: Unable to locate package smxi-inxi-antix
+			DEBIAN_FRONTEND=noninteractive run apt-get install -y firefox thunderbird clementine vlc vrms openssl rsync curl xfce4-goodies mx-system transmission-gtk printer-driver-cups-pdf unrar genisoimage htop mc tmux whois apt-transport-https apt-xapian-index advert-block-antix cli-aptix featherpad file-roller gdebi gimp geany gparted mesa-utils luckybackup papirus-icon-theme nomacs nwipe openconnect openvpn orage seahorse unzip zip unpaper
 			;;
 	esac
 

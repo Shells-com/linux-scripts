@@ -5,3 +5,4 @@
 *.squashfs
 *.pid
 *.qcow2
+*.tar.xz

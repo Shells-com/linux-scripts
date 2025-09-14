@@ -144,8 +144,10 @@ EOF
 		sleep 0.5
 	fi
 
-	"$QEMUIMG" convert -c -f qcow2 -O qcow2 "work$$.qcow2" "$1-$DATE.qcow2"
+	"$QEMUIMG" convert -c -p -f qcow2 -O qcow2 "work$$.qcow2" "$1-$DATE.qcow2"
 	mv -f "work$$.qcow2" "$1.qcow2"
+
+	go run github.com/KarpelesLab/rest/cli/restupload@latest -api Shell/OS:uploadOfficialImage -params 'blocksize=4096' "$1-$DATE.qcow2" "$1-$DATE.squashfs"
 
 	# complete, list the file
 	ls -la "$1-$DATE.qcow2"

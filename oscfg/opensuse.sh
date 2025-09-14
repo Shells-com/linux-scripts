@@ -95,13 +95,13 @@ opensuse_distro() {
 
 			# install what we need
 			run zypper -n install --download in-advance --auto-agree-with-licenses -t pattern fonts x11 imaging multimedia sw_management $PATTERN
-			run zypper -n install --download in-advance NetworkManager spice-vdagent
+			run zypper -n install --download in-advance NetworkManager spice-vdagent sudo
 
 			# we get a cloud-firstboot
 			run systemctl mask systemd-firstboot
 
 			# ensure networkmanager is enabled and not systemd-networkd
-			run systemctl disable wicked
+			#run systemctl disable wicked
 			run systemctl enable NetworkManager NetworkManager-wait-online
 			run systemctl enable sshd
 
@@ -130,12 +130,12 @@ opensuse_prepare() {
 	# download opensuse image, either tumbleweed or leap
 	case "$1" in
 		tumbleweed)
-			getfile opensuse-tumbleweed-dockerbase-20210701.tar.xz 5706224369a323efbd29610c6c462f6dc9a1eb4ff35fb179531451e989b176c8
-			prepare opensuse-tumbleweed-dockerbase-20210701.tar.xz
+			getfile opensuse-tumbleweed-dockerbase-20250914.tar.xz c0f15f55e7f1aec0c287086a822ebb345762f8583328db6c5fe836be728f94dc
+			prepare opensuse-tumbleweed-dockerbase-20250914.tar.xz
 			;;
 		leap)
-			getfile opensuse-leap-dockerbase-20210701.tar.xz 32113c7e81c37f552e8f006eeaab2748ddbda4629624c6a9503316d234b72457
-			prepare opensuse-leap-dockerbase-20210701.tar.xz
+			getfile opensuse-leap-dockerbase-20250914.tar.xz 9a9fc9ac15c9603ea0d65090d58b8ac92a87ae4c6a336851765b6f55ca4240dc
+			prepare opensuse-leap-dockerbase-20250914.tar.xz
 			;;
 		*)
 			echo "Unsupported openSUSE distro ($DISTRO). Supported are tumbleweed and leap!"
@@ -153,6 +153,9 @@ opensuse_prepare() {
 	 fi
 
 	# refresh/update
+	run zypper repos
+	# force import of NVIDIA:repo-non-free as it doesn't happen automatically
+	run zypper --gpg-auto-import-keys ref -f 'NVIDIA:repo-non-free'
 	run zypper -n ref
 	run zypper -n dup
 }

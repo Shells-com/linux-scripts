@@ -3,6 +3,7 @@ debian-bullseye-ssh-server
 debian-bullseye-mx-linux-desktop
 debian-bookworm-gnome-desktop
 debian-bookworm-ssh-server
+debian-bookworm-mx-linux-desktop
 debian-trixie-gnome-desktop
 debian-trixie-ssh-server
 fedora-35-server
