@@ -29,7 +29,7 @@ DATE=$(date +'%Y%m%d')
 perform_clean() {
 	if [ -d "$WORK" ]; then
 		fuser --kill --ismountpoint --mount "$WORK" && sleep 1 || true
-		umount 2>/dev/null "$WORK/proc" "$WORK/sys" "$WORK/dev" || umount 2>/dev/null -l "$WORK/proc" "$WORK/sys" "$WORK/dev" || true
+		umount 2>/dev/null "$WORK/proc" "$WORK/sys" "$WORK/dev/pts" "$WORK/dev" || umount 2>/dev/null -l "$WORK/proc" "$WORK/sys" "$WORK/dev" || true
 		umount 2>/dev/null "$WORK" || true
 		"$NBDCL" 2>/dev/null -d "$NBD" || true
 		killall qemu-storage-daemon || true
@@ -87,7 +87,9 @@ prepare() {
 		# mount proc, sys, dev
 		mount -t proc proc "$WORK/proc"
 		mount -t sysfs sys "$WORK/sys"
-		mount -o bind /dev "$WORK/dev"
+		mount -t devtmpfs udev "$WORK/dev"
+		mkdir -p "$WORK/dev/pts"
+		mount -t devpts devpts "$WORK/dev/pts"
 
 		# prevent service activation (will be deleted by finalize)
 		echo -e '#!/bin/sh\nexit 101' >"$WORK/usr/sbin/policy-rc.d"
@@ -130,7 +132,7 @@ EOF
 	# making sure we have no remaining process
 	fuser --kill --ismountpoint --mount "$WORK" && sleep 1 || true
 
-	umount "$WORK/proc" "$WORK/sys" "$WORK/dev" || umount -l "$WORK/proc" "$WORK/sys" "$WORK/dev" || true
+	umount "$WORK/proc" "$WORK/sys" "$WORK/dev/pts" "$WORK/dev" || umount -l "$WORK/proc" "$WORK/sys" "$WORK/dev" || true
 
 	# build squashfs image
 	mksquashfs "$WORK" "$1-$DATE.squashfs" -comp xz -noappend -progress
