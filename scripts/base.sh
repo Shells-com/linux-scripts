@@ -4,7 +4,8 @@ if [ -d "/shells/software/qemu/bin" ]; then
 	export PATH="/shells/software/qemu/bin:$PATH"
 fi
 QEMUIMG="$(command -v qemu-img)"
-QEMUNBD="$(command -v qemu-nbd)"
+QEMUSD="$(command -v qemu-storage-daemon)"
+NBDCL="$(command -v nbd-client)"
 
 # various settings
 NBD="/dev/nbd2"
@@ -28,9 +29,10 @@ DATE=$(date +'%Y%m%d')
 perform_clean() {
 	if [ -d "$WORK" ]; then
 		fuser --kill --ismountpoint --mount "$WORK" && sleep 1 || true
-		umount 2>/dev/null "$WORK/proc" "$WORK/sys" "$WORK/dev" || umount 2>/dev/null -l "$WORK/proc" "$WORK/sys" "$WORK/dev" || true
+		umount 2>/dev/null "$WORK/proc" "$WORK/sys" "$WORK/dev/pts" "$WORK/dev" || umount 2>/dev/null -l "$WORK/proc" "$WORK/sys" "$WORK/dev" || true
 		umount 2>/dev/null "$WORK" || true
-		"$QEMUNBD" 2>/dev/null -d "$NBD" || true
+		"$NBDCL" 2>/dev/null -d "$NBD" || true
+		killall qemu-storage-daemon || true
 		# should be empty after umount
 		rmdir "$WORK"
 	fi
@@ -39,10 +41,14 @@ perform_clean() {
 create_empty() {
 	perform_clean
 
-	"$QEMUIMG" create -f qcow2 "$TMPIMG" 8G
-	"$QEMUNBD" -c "$NBD" -f qcow2 "$TMPIMG"
+	echo "Creating and partitionning $TMPIMG..."
+	"$QEMUIMG" create -f qcow2 "$TMPIMG" 10G
+	"$QEMUSD" --daemonize --pidfile qemusd.$$.pid --blockdev "driver=qcow2,file.driver=file,file.filename=$TMPIMG,node-name=disk0" --nbd-server addr.type=unix,addr.path=/tmp/nbd.sock --export type=nbd,id=exp0,node-name=disk0,name=disk0,writable=on
+	"$NBDCL" -unix /tmp/nbd.sock -N disk0 -b 4096 "$NBD"
+	sleep 0.5
 	parted --script -a optimal -- "$NBD" mklabel gpt mkpart primary ext4 1MiB -2048s
-	sleep 0.1 # wait for /dev to update
+	sleep 0.5 # wait for /dev to update
+	echo "Formatting and mounting..."
 	mkfs.ext4 -L root "$NBD"p1
 	mkdir "$WORK"
 	mount "$NBD"p1 "$WORK"
@@ -70,7 +76,8 @@ prepare() {
 
 			# mount
 			mkdir "$WORK"
-			"$QEMUNBD" -c "$NBD" -f qcow2 "$TMPIMG"
+			"$QEMUSD" --daemonize --pidfile qemusd.$$.pid --blockdev "driver=qcow2,file.driver=file,file.filename=$TMPIMG,node-name=disk0" --nbd-server addr.type=unix,addr.path=/tmp/nbd.sock --export type=nbd,id=exp0,node-name=disk0,name=disk0,writable=on
+			"$NBDCL" -unix /tmp/nbd.sock -N disk0 -b 4096 "$NBD"
 			sleep 1
 			mount "$NBD"p1 "$WORK"
 		else
@@ -80,7 +87,9 @@ prepare() {
 		# mount proc, sys, dev
 		mount -t proc proc "$WORK/proc"
 		mount -t sysfs sys "$WORK/sys"
-		mount -o bind /dev "$WORK/dev"
+		mount -t devtmpfs udev "$WORK/dev"
+		mkdir -p "$WORK/dev/pts"
+		mount -t devpts devpts "$WORK/dev/pts"
 
 		# prevent service activation (will be deleted by finalize)
 		echo -e '#!/bin/sh\nexit 101' >"$WORK/usr/sbin/policy-rc.d"
@@ -123,30 +132,27 @@ EOF
 	# making sure we have no remaining process
 	fuser --kill --ismountpoint --mount "$WORK" && sleep 1 || true
 
-	umount "$WORK/proc" "$WORK/sys" "$WORK/dev" || umount -l "$WORK/proc" "$WORK/sys" "$WORK/dev" || true
+	umount "$WORK/proc" "$WORK/sys" "$WORK/dev/pts" "$WORK/dev" || umount -l "$WORK/proc" "$WORK/sys" "$WORK/dev" || true
 
 	# build squashfs image
 	mksquashfs "$WORK" "$1-$DATE.squashfs" -comp xz -noappend -progress
 
 	echo "Syncing..."
 	umount "$WORK"
-	"$QEMUNBD" -d "$NBD"
+	"$NBDCL" -d "$NBD"
+	sleep 0.5
+	if [ -f qemusd.$$.pid ]; then
+		kill $(cat qemusd.$$.pid )
+		sleep 0.5
+	fi
 
-	echo "Converting image..."
-	# somehow qemuimg cannot output to stdout
-	"$QEMUIMG" convert -f qcow2 -O raw "work$$.qcow2" "$1-$DATE.raw"
-	# keep result too
+	"$QEMUIMG" convert -c -p -f qcow2 -O qcow2 "work$$.qcow2" "$1-$DATE.qcow2"
 	mv -f "work$$.qcow2" "$1.qcow2"
 
-	if [ ! -d rbdconv ]; then
-		# grab rbdconv
-		git clone https://github.com/Shells-com/rbdconv.git
-	fi
-	php rbdconv/raw-to-rbd.php "$1-$DATE.raw" | xz -z -9 -T $(nproc --ignore=4) -v >"$1-$DATE.shells"
-	rm -f "$1-$DATE.raw"
+	go run github.com/KarpelesLab/rest/cli/restupload@latest -api Shell/OS:uploadOfficialImage -params 'blocksize=4096' "$1-$DATE.qcow2" "$1-$DATE.squashfs"
 
 	# complete, list the file
-	ls -la "$1-$DATE.shells"
+	ls -la "$1-$DATE.qcow2"
 }
 
 add_firstrun() {

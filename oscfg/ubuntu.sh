@@ -11,6 +11,13 @@ ubuntu_distro() {
 			# for example: ubuntu-focal-base
 			create_empty
 
+			if [ ! -f /usr/share/keyrings/ubuntu-archive-keyring.gpg ]; then
+				mkdir -p /usr/share/keyrings
+				curl -sL https://archive.ubuntu.com/ubuntu/pool/main/u/ubuntu-keyring/ubuntu-keyring_2023.11.28.1.tar.xz | tar xJ
+				mv -v ubuntu-keyring/keyrings/* /usr/share/keyrings
+				rm -fr ubuntu-keyring
+			fi
+
 			debootstrap --include=wget,curl,net-tools,rsync,openssh-server,sudo,psmisc $SUITE "$WORK"
 
 			# make sudo available without password (default for key auth)
@@ -22,9 +29,9 @@ ubuntu_distro() {
 deb http://archive.ubuntu.com/ubuntu $SUITE main restricted universe multiverse
 
 ###### Ubuntu Update Repos
-deb http://archive.ubuntu.com/ubuntu/ $SUITE-security main restricted universe multiverse
-deb http://archive.ubuntu.com/ubuntu/ $SUITE-updates main restricted universe multiverse
-deb http://archive.ubuntu.com/ubuntu/ $SUITE-backports main restricted universe multiverse
+deb http://security.ubuntu.com/ubuntu $SUITE-security main restricted universe multiverse
+deb http://archive.ubuntu.com/ubuntu $SUITE-updates main restricted universe multiverse
+deb http://archive.ubuntu.com/ubuntu $SUITE-backports main restricted universe multiverse
 EOF
 
 			echo 'LANG=en_US.UTF-8' >"$WORK/etc/default/locale"
@@ -66,6 +73,19 @@ EOF
 
 	# get tasksel value
 	local TASKSEL="$(echo "$1" | cut -d- -f3-)"
+
+	# block mesa-amber as it breaks install
+	# Msg: libglapi-amber : Breaks: libglapi-mesa
+	case "$TASKSEL" in
+		*desktop)
+			cat >"$WORK/etc/apt/preferences.d/mesa-amber" <<'EOF'
+Package: libglapi-amber libgl1-amber-dri mesa-amber*
+Pin: release *
+Pin-Priority: -1
+EOF
+		;;
+	esac
+
 
 	case "$TASKSEL" in
 		kde-neon-desktop)

@@ -62,7 +62,7 @@ doqemu() {
 		-device virtio-serial-pci,id=virtio-serial0,bus=pci.5,addr=0x0
 		-blockdev "{\"driver\":\"file\",\"filename\":\"$DISK\",\"node-name\":\"libvirt-1-storage\",\"auto-read-only\":true,\"discard\":\"unmap\"}"
 		-blockdev '{"node-name":"libvirt-1-format","read-only":false,"driver":"qcow2","file":"libvirt-1-storage"}'
-		-device virtio-blk-pci,bus=pci.6,addr=0x0,drive=libvirt-1-format,id=virtio-disk0,bootindex=1
+		-device virtio-blk-pci,bus=pci.6,addr=0x0,drive=libvirt-1-format,id=virtio-disk0,bootindex=1,logical_block_size=4096,physical_block_size=4096,min_io_size=4096,opt_io_size=1048576
 		-netdev user,id=hostnet0,hostfwd=tcp::10022-:22
 		#-netdev socket,id=hostnet0,connect=:4221
 		-device virtio-net-pci,netdev=hostnet0,id=net0,mac=d2:89:f4:90:ee:76,bus=pci.3,addr=0x0
@@ -90,6 +90,7 @@ doqemu() {
 		-device "$VIDEO,id=video0,bus=pcie.0,addr=0x1"
 		-device intel-hda,id=sound0,bus=pci.2,addr=0x1
 		-device hda-duplex,id=sound0-codec0,bus=sound0.0,cad=0
+		-audio driver=none
 		#-chardev spicevmc,id=charredir0,name=usbredir
 		#-device usb-redir,chardev=charredir0,id=redir0,bus=usb.0,port=2
 		#-chardev spicevmc,id=charredir1,name=usbredir
@@ -115,9 +116,9 @@ qemukernel() {
 	if [ -f shells-kernel/guest-linux-x86_64/release.txt ]; then
 		KVER="$(cat shells-kernel/guest-linux-x86_64/release.txt)"
 	fi
-	if [ x"$KVER" != x"5.10.105-shells" ]; then
-		getfile shells-kernel-5.10.105-f78e31d.tar.bz2 f78e31d442fe4a47d469899b288e6e65b4969b4da8abf5b186fbb0cfaf356dae
-		tar xjf shells-kernel-5.10.105-f78e31d.tar.bz2
+	if [ x"$KVER" != x"6.12.47-shells" ]; then
+		getfile shells-kernel-6.12.47-9171e9f.tar.bz2 9171e9fb4e0519f266b3106a6d2257168f7babca2705ea4ddd37f4981d66410c
+		tar xjf shells-kernel-6.12.47-9171e9f.tar.bz2
 	fi
 
 	if [ x"$ARCH" = x ]; then

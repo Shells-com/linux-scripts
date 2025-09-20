@@ -1,6 +1,8 @@
 /shells-kernel/
 /shells-kernel-*.tar.bz2
+/work/
 *_test.qcow2
-*.shells
+*.squashfs
+*.pid
 *.qcow2
-/rbdconv/
+*.tar.xz

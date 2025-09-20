@@ -16,20 +16,12 @@ docker_get() {
 	docker pull "$1:$2"
 
 	echo "Extracting..."
-	DOCKERTMP="docker$$"
-	mkdir "$DOCKERTMP"
-	docker save "$1:$2" | tar -xC "$DOCKERTMP"
-	local LAYER="$(find "$DOCKERTMP" -mindepth 1 -type d \! -name 'lost+found')"
-	if [ $(echo "$LAYER" | wc -l) -eq 1 ]; then
-		# all good
-		mv "$LAYER/layer.tar" "docker_${NAME_SAN}_$2.tar"
-		rm -fr "$DOCKERTMP"
-		xz -z -9 -T 16 -v "docker_${NAME_SAN}_$2.tar"
-	else
-		rm -fr "$DOCKERTMP"
-		echo "Failed to extract: image contains more than one layer"
-		exit 1
-	fi
+	# Create a throwaway container and export its merged rootfs
+	cid=$(docker create --platform=linux/amd64 "$1:$2")
+	docker export "$cid" -o "docker_${NAME_SAN}_$2.tar"
+	docker rm "$cid"
+
+	xz -z -9 -T 16 -v "docker_${NAME_SAN}_$2.tar"
 }
 
 docker_prepare() {
