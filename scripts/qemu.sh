@@ -77,7 +77,7 @@ doqemu() {
 		-chardev vc,id=ttyUSB1
 		-device usb-serial,chardev=ttyUSB1,id=serialu1,bus=usb.0,port=3
 
-		-chardev socket,id=charchannel0,path=/tmp/qga.sock,server,nowait
+		-chardev socket,id=charchannel0,path=/tmp/qga.sock,server=on,wait=off
 		-device virtserialport,bus=virtio-serial0.0,nr=1,chardev=charchannel0,id=channel0,name=org.qemu.guest_agent.0
 		-chardev spicevmc,id=charchannel1,name=vdagent
 		-device virtserialport,bus=virtio-serial0.0,nr=2,chardev=charchannel1,id=channel1,name=com.redhat.spice.0
