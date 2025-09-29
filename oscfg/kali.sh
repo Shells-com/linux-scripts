@@ -16,6 +16,7 @@ kali_cfg() {
 
 	run apt update
 	DEBIAN_FRONTEND=noninteractive run apt full-upgrade -y
+	DEBIAN_FRONTEND=noninteractive run apt-get -y install wget curl net-tools rsync openssh-server sudo psmisc
 
 	# make sudo available without password (default for key auth)
 	echo "%shellsmgmt ALL=(ALL) NOPASSWD: ALL" > "$WORK/etc/sudoers.d/01-shells" & chmod 440 "$WORK/etc/sudoers.d/01-shells"
@@ -50,6 +51,8 @@ kali_cfg() {
 	if [ ! -f "$WORK/etc/localtime" ]; then
 		ln -sf "/usr/share/zoneinfo/UTC" "$WORK/etc/localtime"
 	fi
+
+	run apt-get clean
 
 	add_firstrun NetworkManager-wait-online.service
 	do_linux_config

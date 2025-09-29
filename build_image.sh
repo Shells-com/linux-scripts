@@ -44,6 +44,10 @@ dodistro() {
 		deepin-*)
 			deepin_distro "$1"
 			;;
+		kali-*)
+			. oscfg/kali.sh
+			kali_distro "$1"
+			;;
 		*)
 			echo "unsupported distro $1"
 			;;
