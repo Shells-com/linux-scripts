@@ -149,7 +149,16 @@ EOF
 	"$QEMUIMG" convert -c -p -f qcow2 -O qcow2 "work$$.qcow2" "$1-$DATE.qcow2"
 	mv -f "work$$.qcow2" "$1.qcow2"
 
-	go run github.com/KarpelesLab/rest/cli/restupload@latest -api Shell/OS:uploadOfficialImage -params 'blocksize=4096' "$1-$DATE.qcow2" "$1-$DATE.squashfs"
+	if [ ! -d rbdconv ]; then
+		# grab rbdconv
+		git clone https://github.com/Shells-com/rbdconv.git
+	fi
+	# need to convert to raw file first so that raw-to-rbd.php can get the filesize first
+	"$QEMUIMG" convert -f qcow2 -O raw "$1-$DATE.qcow2" "$1-$DATE.raw"
+	php rbdconv/raw-to-rbd.php "$1-$DATE.raw" | xz -z -9 -T $(nproc --ignore=4) -v >"$1-$DATE.shells"
+	rm -f "$1-$DATE.raw"
+
+	go run github.com/KarpelesLab/rest/cli/restupload@latest -api Shell/OS:uploadOfficialImage -params 'blocksize=4096' "$1-$DATE.qcow2" "$1-$DATE.squashfs" "$1-$DATE.shells"
 
 	# complete, list the file
 	ls -la "$1-$DATE.qcow2"

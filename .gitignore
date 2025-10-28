@@ -4,5 +4,7 @@
 *_test.qcow2
 *.squashfs
 *.pid
+*.shells
 *.qcow2
 *.tar.xz
+/rbdconv/
