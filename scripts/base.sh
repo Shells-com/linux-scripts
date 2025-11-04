@@ -1,7 +1,7 @@
 #!/bin/bash
 
-if [ -d "/shells/software/qemu/bin" ]; then
-	export PATH="/shells/software/qemu/bin:$PATH"
+if [ -d "/shells/software/qemu-8.2.9/bin" ]; then
+	export PATH="/shells/software/qemu-8.2.9/bin:$PATH"
 fi
 QEMUIMG="$(command -v qemu-img)"
 QEMUSD="$(command -v qemu-storage-daemon)"
