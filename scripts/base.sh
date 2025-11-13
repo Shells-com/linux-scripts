@@ -13,6 +13,7 @@ RESDIR="$PWD/res"
 SCRIPTSDIR="$PWD/scripts"
 TMPIMG="work$$.qcow2"
 API_PREFIX="https://ws.atonline.com/_special/rest/"
+BLOCKSIZE=512
 
 if [ -d /shells ]; then
 	WORK="/shells/work"
@@ -44,7 +45,7 @@ create_empty() {
 	echo "Creating and partitionning $TMPIMG..."
 	"$QEMUIMG" create -f qcow2 "$TMPIMG" 10G
 	"$QEMUSD" --daemonize --pidfile qemusd.$$.pid --blockdev "driver=qcow2,file.driver=file,file.filename=$TMPIMG,node-name=disk0" --nbd-server addr.type=unix,addr.path=/tmp/nbd.sock --export type=nbd,id=exp0,node-name=disk0,name=disk0,writable=on
-	"$NBDCL" -unix /tmp/nbd.sock -N disk0 -b 4096 "$NBD"
+	"$NBDCL" -unix /tmp/nbd.sock -N disk0 -b "$BLOCKSIZE" "$NBD"
 	sleep 0.5
 	parted --script -a optimal -- "$NBD" mklabel gpt mkpart primary ext4 1MiB -2048s
 	sleep 0.5 # wait for /dev to update
@@ -77,7 +78,7 @@ prepare() {
 			# mount
 			mkdir "$WORK"
 			"$QEMUSD" --daemonize --pidfile qemusd.$$.pid --blockdev "driver=qcow2,file.driver=file,file.filename=$TMPIMG,node-name=disk0" --nbd-server addr.type=unix,addr.path=/tmp/nbd.sock --export type=nbd,id=exp0,node-name=disk0,name=disk0,writable=on
-			"$NBDCL" -unix /tmp/nbd.sock -N disk0 -b 4096 "$NBD"
+			"$NBDCL" -unix /tmp/nbd.sock -N disk0 -b "$BLOCKSIZE" "$NBD"
 			sleep 1
 			mount "$NBD"p1 "$WORK"
 		else
@@ -158,7 +159,7 @@ EOF
 	php rbdconv/raw-to-rbd.php "$1-$DATE.raw" | xz -z -9 -T $(nproc --ignore=4) -v >"$1-$DATE.shells"
 	rm -f "$1-$DATE.raw"
 
-	go run github.com/KarpelesLab/rest/cli/restupload@latest -api Shell/OS:uploadOfficialImage -params 'blocksize=4096' "$1-$DATE.qcow2" "$1-$DATE.squashfs" "$1-$DATE.shells"
+	go run github.com/KarpelesLab/rest/cli/restupload@latest -api Shell/OS:uploadOfficialImage -params "blocksize=$BLOCKSIZE" "$1-$DATE.qcow2" "$1-$DATE.squashfs" "$1-$DATE.shells"
 
 	# complete, list the file
 	ls -la "$1-$DATE.qcow2"

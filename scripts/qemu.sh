@@ -62,7 +62,7 @@ doqemu() {
 		-device virtio-serial-pci,id=virtio-serial0,bus=pci.5,addr=0x0
 		-blockdev "{\"driver\":\"file\",\"filename\":\"$DISK\",\"node-name\":\"libvirt-1-storage\",\"auto-read-only\":true,\"discard\":\"unmap\"}"
 		-blockdev '{"node-name":"libvirt-1-format","read-only":false,"driver":"qcow2","file":"libvirt-1-storage"}'
-		-device virtio-blk-pci,bus=pci.6,addr=0x0,drive=libvirt-1-format,id=virtio-disk0,bootindex=1,logical_block_size=4096,physical_block_size=4096,min_io_size=4096,opt_io_size=1048576
+		-device virtio-blk-pci,bus=pci.6,addr=0x0,drive=libvirt-1-format,id=virtio-disk0,bootindex=1,logical_block_size=$BLOCKSIZE,physical_block_size=$BLOCKSIZE,min_io_size=$BLOCKSIZE,opt_io_size=1048576
 		-netdev user,id=hostnet0,hostfwd=tcp::10022-:22
 		#-netdev socket,id=hostnet0,connect=:4221
 		-device virtio-net-pci,netdev=hostnet0,id=net0,mac=d2:89:f4:90:ee:76,bus=pci.3,addr=0x0

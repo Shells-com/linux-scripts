@@ -25,6 +25,9 @@ ubuntu-jammy-rescue
 ubuntu-noble-openssh-server
 ubuntu-noble-ubuntu-desktop
 ubuntu-noble-rescue
+ubuntu-plucky-openssh-server
+ubuntu-plucky-ubuntu-desktop
+ubuntu-plucky-rescue
 opensuse-leap-gnome-desktop
 opensuse-leap-kde-desktop
 opensuse-tumbleweed-gnome-desktop
