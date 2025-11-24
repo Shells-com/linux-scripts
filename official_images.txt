@@ -22,6 +22,7 @@ ubuntu-focal-mint-cinnamon-desktop
 ubuntu-jammy-openssh-server
 ubuntu-jammy-ubuntu-desktop
 ubuntu-jammy-rescue
+ubuntu-noble-kde-neon-desktop
 ubuntu-noble-openssh-server
 ubuntu-noble-ubuntu-desktop
 ubuntu-noble-rescue
