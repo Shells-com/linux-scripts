@@ -20,6 +20,10 @@ ubuntu_distro() {
 
 			debootstrap --include=wget,curl,net-tools,rsync,openssh-server,sudo,psmisc $SUITE "$WORK"
 
+			# mount tmpfs for apt cache to avoid cleanup later
+			mkdir -p "$WORK/var/cache/apt/archives"
+			mount -t tmpfs tmpfs "$WORK/var/cache/apt/archives"
+
 			# make sudo available without password (default for key auth)
 			echo "%shellsmgmt ALL=(ALL) NOPASSWD: ALL" > "$WORK/etc/sudoers.d/01-shells"
 			chmod 440 "$WORK/etc/sudoers.d/01-shells"
@@ -49,6 +53,11 @@ EOF
 			fi
 
 			prepare "ubuntu-$SUITE-base"
+
+			# mount tmpfs for apt cache to avoid cleanup later
+			mkdir -p "$WORK/var/cache/apt/archives"
+			mount -t tmpfs tmpfs "$WORK/var/cache/apt/archives"
+
 			ubuntu_cfg "$1"
 			;;
 	esac
@@ -391,9 +400,6 @@ EOF
 			;;
 	esac
 
-
-	# cleanup apt
-	run apt-get clean
 
 	if [ x"$TASKSEL" = x"rescue" ]; then
 		# make root autologin

@@ -9,6 +9,10 @@ deepin_distro() {
 		# hack for deepin, debootstrap does not support deepin, some packages need to be replaced.
 		debootstrap --include=wget,curl,net-tools,rsync,openssh-server,sudo buster "$WORK" https://mirrors.ustc.edu.cn/debian/
 
+		# mount tmpfs for apt cache to avoid cleanup later
+		mkdir -p "$WORK/var/cache/apt/archives"
+		mount -t tmpfs tmpfs "$WORK/var/cache/apt/archives"
+
 		# make sudo available without password (default for key auth)
 		echo "%shellsmgmt ALL=(ALL) NOPASSWD: ALL" >"$WORK/etc/sudoers.d/01-shells"
 		chmod 440 "$WORK/etc/sudoers.d/01-shells"
@@ -54,6 +58,11 @@ EOF
 		fi
 
 		prepare "deepin-$SUITE-base"
+
+		# mount tmpfs for apt cache to avoid cleanup later
+		mkdir -p "$WORK/var/cache/apt/archives"
+		mount -t tmpfs tmpfs "$WORK/var/cache/apt/archives"
+
 		deepin_cfg "$1"
 		;;
 	esac
@@ -145,6 +154,6 @@ EOF
 
 	fi
 
-	# cleanup apt
-	run apt clean && run apt update
+	# update apt cache
+	run apt update
 }

@@ -12,6 +12,10 @@ debian_distro() {
 
 			debootstrap --include=wget,curl,net-tools,rsync,openssh-server,sudo,psmisc $SUITE "$WORK"
 
+			# mount tmpfs for apt cache to avoid cleanup later
+			mkdir -p "$WORK/var/cache/apt/archives"
+			mount -t tmpfs tmpfs "$WORK/var/cache/apt/archives"
+
 			# make sudo available without password (default for key auth)
 			echo "%shellsmgmt ALL=(ALL) NOPASSWD: ALL" > "$WORK/etc/sudoers.d/01-shells"
 			chmod 440 "$WORK/etc/sudoers.d/01-shells"
@@ -50,6 +54,11 @@ EOF
 			fi
 
 			prepare "debian-$SUITE-base"
+
+			# mount tmpfs for apt cache to avoid cleanup later
+			mkdir -p "$WORK/var/cache/apt/archives"
+			mount -t tmpfs tmpfs "$WORK/var/cache/apt/archives"
+
 			debian_cfg "$1"
 			;;
 	esac
@@ -692,6 +701,6 @@ EOF
 	;;
 	esac
 
-	# cleanup apt
-	run apt-get clean && run apt-get update
+	# update apt cache
+	run apt-get update
 }

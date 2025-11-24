@@ -2,6 +2,11 @@
 
 kali_distro() {
 	docker_prepare "kalilinux/kali-last-release" latest
+
+	# mount tmpfs for apt cache to avoid cleanup later
+	mkdir -p "$WORK/var/cache/apt/archives"
+	mount -t tmpfs tmpfs "$WORK/var/cache/apt/archives"
+
 	kali_cfg "$1"
 }
 
@@ -51,8 +56,6 @@ kali_cfg() {
 	if [ ! -f "$WORK/etc/localtime" ]; then
 		ln -sf "/usr/share/zoneinfo/UTC" "$WORK/etc/localtime"
 	fi
-
-	run apt-get clean
 
 	add_firstrun NetworkManager-wait-online.service
 	do_linux_config

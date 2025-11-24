@@ -133,7 +133,10 @@ EOF
 	# making sure we have no remaining process
 	fuser --kill --ismountpoint --mount "$WORK" && sleep 1 || true
 
-	umount "$WORK/proc" "$WORK/sys" "$WORK/dev/pts" "$WORK/dev" || umount -l "$WORK/proc" "$WORK/sys" "$WORK/dev" || true
+	# unmount all mounts under $WORK (in reverse order, deepest first)
+	grep " $WORK/" /proc/self/mounts | cut -d' ' -f2 | sort -r | while read mnt; do
+		umount "$mnt" 2>/dev/null || umount -l "$mnt" 2>/dev/null || true
+	done
 
 	# build squashfs image
 	mksquashfs "$WORK" "$1-$DATE.squashfs" -comp xz -noappend -progress
