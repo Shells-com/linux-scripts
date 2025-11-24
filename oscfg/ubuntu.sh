@@ -90,8 +90,10 @@ EOF
 	case "$TASKSEL" in
 		kde-neon-desktop)
 			DEBIAN_FRONTEND=noninteractive run apt-get install -y gnupg
-			curl -s https://archive.neon.kde.org/public.key | run apt-key add -
-			echo "deb http://archive.neon.kde.org/user focal main" >"$WORK/etc/apt/sources.list.d/kde-neon.list"
+			# Use modern signed-by method instead of deprecated apt-key
+			mkdir -p "$WORK/etc/apt/keyrings"
+			curl -s https://archive.neon.kde.org/public.key | gpg --dearmor > "$WORK/etc/apt/keyrings/neon-archive-keyring.gpg"
+			echo "deb [signed-by=/etc/apt/keyrings/neon-archive-keyring.gpg] http://archive.neon.kde.org/user $SUITE main" >"$WORK/etc/apt/sources.list.d/kde-neon.list"
 			run apt-get update
 			DEBIAN_FRONTEND=noninteractive run apt-get install -y neon-settings
 			DEBIAN_FRONTEND=noninteractive run apt-get full-upgrade -y
