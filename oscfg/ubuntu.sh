@@ -267,6 +267,9 @@ EOF
 	esac
 
 	DEBIAN_FRONTEND=noninteractive run apt-get install -y network-manager
+	run systemctl disable systemd-networkd.service
+	run systemctl disable systemd-networkd.socket
+	run systemctl disable systemd-networkd-wait-online.service
 
 	# fix network config
 	cat >"$WORK/etc/netplan/config.yaml" <<EOF

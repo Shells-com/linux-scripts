@@ -176,7 +176,7 @@ add_firstrun() {
 	local AFTER="$1"
 	if [ x"$AFTER" = x ]; then
 		# can also be NetworkManager-wait-online.service
-		AFTER="systemd-networkd-wait-online.service"
+		AFTER="network-online.target"
 	fi
 
 	if [ -d "$WORK/usr/lib/systemd/system" ]; then
