@@ -125,9 +125,23 @@ EOF
 
 			;;
 		mint-cinnamon-desktop)
+			# Map Ubuntu suite to Linux Mint codename
+			local MINT_CODENAME
+			case "$SUITE" in
+				focal)  MINT_CODENAME="uma" ;;
+				jammy)  MINT_CODENAME="virginia" ;;
+				noble)  MINT_CODENAME="wilma" ;;
+				*)
+					echo "Unsupported Ubuntu suite '$SUITE' for Linux Mint"
+					exit 1
+					;;
+			esac
+
 			DEBIAN_FRONTEND=noninteractive run apt-get install -y gnupg
-			run apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 302F0738F465C1535761F965A6616109451BBBF2
-			echo "deb http://packages.linuxmint.com uma main upstream import backport" >"$WORK/etc/apt/sources.list.d/linux-mint.list"
+			# Use modern signed-by method instead of deprecated apt-key
+			mkdir -p "$WORK/etc/apt/keyrings"
+			curl -s 'https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x302F0738F465C1535761F965A6616109451BBBF2' | gpg --dearmor > "$WORK/etc/apt/keyrings/linuxmint-keyring.gpg"
+			echo "deb [signed-by=/etc/apt/keyrings/linuxmint-keyring.gpg] http://packages.linuxmint.com $MINT_CODENAME main upstream import backport" >"$WORK/etc/apt/sources.list.d/linux-mint.list"
 			cat >> "$WORK/etc/apt/preferences.d/official-package-repositories.pref" <<EOF
 Package: *
 Pin: origin live.linuxmint.com
