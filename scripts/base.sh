@@ -30,6 +30,7 @@ DATE=$(date +'%Y%m%d')
 perform_clean() {
 	if [ -d "$WORK" ]; then
 		fuser --kill --ismountpoint --mount "$WORK" && sleep 1 || true
+		umount 2>/dev/null "$WORK/var/cache/apt/archives" || true
 		umount 2>/dev/null "$WORK/proc" "$WORK/sys" "$WORK/dev/pts" "$WORK/dev" || umount 2>/dev/null -l "$WORK/proc" "$WORK/sys" "$WORK/dev" || true
 		umount 2>/dev/null "$WORK" || true
 		"$NBDCL" 2>/dev/null -d "$NBD" || true
