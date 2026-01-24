@@ -158,7 +158,15 @@ EOF
 			DEBIAN_FRONTEND=noninteractive run apt-get install --no-install-recommends -y celluloid xdg-user-dirs-gtk firefox firefox-locale-en pix xed xreader xviewer-plugins sticky
 			DEBIAN_FRONTEND=noninteractive run apt-get install --no-install-recommends -y qt5ct hypnotix fwupd friendly-recovery seahorse network-manager-pptp-gnome fonts-ubuntu
 			DEBIAN_FRONTEND=noninteractive run apt-get install -y gamemode drawing gufw hexchat gucharmap neofetch language-pack-gnome-en warpinator webapp-manager timeshift
-			DEBIAN_FRONTEND=noninteractive run apt-get install -y command-not-found xplayer-thumbnailer ftp mlocate nano dmz-cursor-theme thunderbird-gnome-support thunderbird-locale-en-us
+			# Package names differ between versions
+			case "$SUITE" in
+				focal)
+					DEBIAN_FRONTEND=noninteractive run apt-get install -y command-not-found xplayer-thumbnailer ftp mlocate nano dmz-cursor-theme thunderbird-gnome-support thunderbird-locale-en-us
+					;;
+				*)
+					DEBIAN_FRONTEND=noninteractive run apt-get install -y command-not-found ftp plocate nano dmz-cursor-theme thunderbird-gnome-support thunderbird-locale-en-us
+					;;
+			esac
 			DEBIAN_FRONTEND=noninteractive run apt-get install -y gstreamer1.0-alsa:amd64 gstreamer1.0-plugins-base-apps transmission-gtk gnome-system-monitor gstreamer1.0-packagekit
 			DEBIAN_FRONTEND=noninteractive run apt-get install --no-install-recommends -y gstreamer1.0-tools gtk2-engines-murrine:amd64 gtk2-engines:amd64 gnome-session-canberra
 			DEBIAN_FRONTEND=noninteractive run apt-get install -y iputils-arping iputils-tracepath libreoffice-sdbc-hsqldb plymouth-label policykit-desktop-privileges  unrar unshield
