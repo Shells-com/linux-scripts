@@ -172,7 +172,14 @@ EOF
 			DEBIAN_FRONTEND=noninteractive run apt-get install -y iputils-arping iputils-tracepath libreoffice-sdbc-hsqldb plymouth-label policykit-desktop-privileges  unrar unshield
 			DEBIAN_FRONTEND=noninteractive run apt-get install --no-install-recommends -y network-manager-config-connectivity-ubuntu network-manager-openvpn-gnome simple-scan os-prober
 			DEBIAN_FRONTEND=noninteractive run apt-get install -y onboard rhythmbox-plugin-tray-icon smbclient xserver-xorg-video-qxl spice-vdagent spice-webdavd qemu-guest-agent
-			DEBIAN_FRONTEND=noninteractive run apt-get install --no-install-recommends -y gnome-calendar gnome-disk-utility gnome-font-viewer gnome-logs youtube-dl sticky bulky
+			case "$SUITE" in
+				noble)
+					DEBIAN_FRONTEND=noninteractive run apt-get install --no-install-recommends -y gnome-calendar gnome-disk-utility gnome-font-viewer gnome-logs yt-dlp sticky bulky
+					;;
+				*)
+					DEBIAN_FRONTEND=noninteractive run apt-get install --no-install-recommends -y gnome-calendar gnome-disk-utility gnome-font-viewer gnome-logs youtube-dl sticky bulky
+					;;
+			esac
 			DEBIAN_FRONTEND=noninteractive run apt-get purge -y gdm3 gnome-startup-applications gparted gnome-software ubuntu-advantage-tools && run apt-get dist-upgrade -y
 			run systemctl disable mintupdate-automation-upgrade.service
 			run systemctl disable mintupdate-automation-upgrade.timer
