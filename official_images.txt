@@ -19,6 +19,8 @@ ubuntu-focal-ubuntu-desktop
 ubuntu-focal-xubuntu-desktop
 ubuntu-focal-rescue
 ubuntu-focal-mint-cinnamon-desktop
+ubuntu-jammy-mint-cinnamon-desktop
+ubuntu-noble-mint-cinnamon-desktop
 ubuntu-jammy-openssh-server
 ubuntu-jammy-ubuntu-desktop
 ubuntu-jammy-rescue
